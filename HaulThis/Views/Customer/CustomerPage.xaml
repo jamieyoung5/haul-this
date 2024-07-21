@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="HaulThis.Views.Customer.CustomerPage"
+             Title="CustomerPage">
+    <VerticalStackLayout>
+        <Label
+            Text="Welcome Customer"
+            VerticalOptions="Center"
+            HorizontalOptions="Center"/>
+
+        <Button
+            x:Name="ManageAccount"
+            Text="Manage Account"
+            SemanticProperties.Hint="Opens Manage Account page"
+            Clicked="ManageAccount_Clicked"
+            HorizontalOptions="Fill"/>
+
+        <Button
+            x:Name="ManageBilling"
+            Text="Manage Billing"
+            SemanticProperties.Hint="Opens Manage Billing page"
+            Clicked="ManageBilling_Clicked"
+            HorizontalOptions="Fill"/>
+
+        <Button
+            x:Name="RequestPickup"
+            Text="RequestPickup"
+            SemanticProperties.Hint="Opens Manage Request Pickup page"
+            Clicked="RequestPickup_Clicked"
+            HorizontalOptions="Fill"/>
+
+        <Button
+            x:Name="TrackItem"
+            Text="Track Item"
+            SemanticProperties.Hint="Opens Manage Track Item page"
+            Clicked="TrackItem_Clicked"
+            HorizontalOptions="Fill"/>
+
+        <Button
+            x:Name="CustomerConfirmPickup"
+            Text="Confirm Pickup"
+            SemanticProperties.Hint="Opens Manage Confirm Pickup page"
+            Clicked="CustomerConfirmPickup_Clicked"
+            HorizontalOptions="Fill"/>
+
+
+    </VerticalStackLayout>
+</ContentPage>
