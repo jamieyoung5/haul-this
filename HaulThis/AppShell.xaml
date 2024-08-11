@@ -4,12 +4,35 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:HaulThis"
+    xmlns:CustomerViews="clr-namespace:HaulThis.Views.Customer"
+    xmlns:DriverViews="clr-namespace:HaulThis.Views.Driver"
+    xmlns:AdminViews="clr-namespace:HaulThis.Views.Admin"
     Shell.FlyoutBehavior="Disabled"
     Title="HaulThis">
 
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+
+
+    <TabBar>
+        <ShellContent
+            Title="Home"
+            ContentTemplate="{DataTemplate local:MainPage}"
+            Icon="{OnPlatform 'home.png', iOS='home.png', MacCatalyst='home.png'}"/>
+
+        <ShellContent
+            Title="Customer"
+            ContentTemplate="{DataTemplate CustomerViews:CustomerPage}"
+            Icon="{OnPlatform 'customer.png', iOS='customer.png', MacCatalyst='customer.png'}"/>
+        
+        <ShellContent
+            Title="Driver"
+            ContentTemplate="{DataTemplate DriverViews:DriverPage}"
+            Icon="{OnPlatform 'driver.png', iOS='driver.png', MacCatalyst='driver.png'}"/>
+        
+        <ShellContent
+            Title="Admin"
+            ContentTemplate="{DataTemplate AdminViews:AdminPage}"
+            Icon="{OnPlatform 'admin.png', iOS='admin.png', MacCatalyst='admin.png'}"/>
+    </TabBar>
+
 
 </Shell>
