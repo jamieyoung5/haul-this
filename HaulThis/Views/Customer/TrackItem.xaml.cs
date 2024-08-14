@@ -1,9 +1,12 @@
 namespace HaulThis.Views.Customer;
+using HaulThis.ViewModels;
 
 public partial class TrackItem : ContentPage
 {
-	public TrackItem()
+	public TrackItem(TrackItemViewModel viewModel)
 	{
+		BindingContext = viewModel;
 		InitializeComponent();
+        
 	}
 }

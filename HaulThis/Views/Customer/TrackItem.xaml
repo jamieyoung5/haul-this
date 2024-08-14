@@ -3,10 +3,34 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="HaulThis.Views.Customer.TrackItem"
              Title="TrackItem">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to Track Item!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+
+    <StackLayout Padding="10">
+
+        <Entry Placeholder="Enter Tracking ID" 
+               Text="{Binding TrackingID}" />
+
+        <Button Text="Track Item" 
+                Command="{Binding TrackItemCommand}" />
+
+        <Label Text="{Binding StatusMessage}" 
+               TextColor="Red" />
+
+        <!-- Optionally, display the item details if found -->
+       <StackLayout>
+            <StackLayout.Triggers>
+                <DataTrigger TargetType="StackLayout" Binding="{Binding TrackedItem}" Value="{x:Null}">
+                    <Setter Property="IsVisible" Value="False" />
+                </DataTrigger>
+                <DataTrigger TargetType="StackLayout" Binding="{Binding TrackedItem}" Value="{x:Null}">
+                    <Setter Property="IsVisible" Value="True" />
+                </DataTrigger>
+            </StackLayout.Triggers>
+
+            <Label Text="{Binding TrackedItem.Description}" />
+            <Label Text="{Binding TrackedItem.PickupLocation.Address}" />
+            <Label Text="{Binding TrackedItem.DeliveryLocation.Address}" />
+        </StackLayout>
+
+    </StackLayout>
+
 </ContentPage>
