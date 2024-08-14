@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="HaulThis.Views.Customer.CustomerShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:HaulThis.Views.Customer"
+    Title="Customer"
+    FlyoutBehavior="Flyout">
+
+    <FlyoutItem FlyoutDisplayOptions="AsMultipleItems">
+        <ShellContent Title="Confirm Pickup" ContentTemplate="{DataTemplate local:CustomerConfirmPickup}" />
+        <ShellContent Title="Manage Account" ContentTemplate="{DataTemplate local:ManageAccount}" />
+        <ShellContent Title="Manage Billing" ContentTemplate="{DataTemplate local:ManageBilling}" />
+        <ShellContent Title="Request Pickup" ContentTemplate="{DataTemplate local:RequestPickup}" />
+        <ShellContent Title="Track Item" ContentTemplate="{DataTemplate local:TrackItem}" />
+    </FlyoutItem>
+
+</Shell>
