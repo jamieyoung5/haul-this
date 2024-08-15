@@ -1,12 +1,14 @@
-﻿namespace HaulThis.ViewModels;
-
-using System;
+﻿using System;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using Microsoft.Data.SqlClient;
+using HaulThis.Database.Data;
+using HaulThis.Database.Models;
+
+namespace HaulThis.ViewModels;
 
 public class TrackItemViewModel : INotifyPropertyChanged
 {

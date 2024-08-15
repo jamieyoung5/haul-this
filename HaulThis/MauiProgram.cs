@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
-using System.Reflection;
-using Microsoft.Extensions.Configuration;
-using Microsoft.EntityFrameworkCore;
 using HaulThis.Views.Customer;
 using HaulThis.ViewModels;
+using HaulThis.Database.Data;
+using System.Reflection;
+using Microsoft.Extensions.Configuration;
 
 namespace HaulThis;
 
@@ -20,17 +20,8 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             });
 
-        var a = Assembly.GetExecutingAssembly();
-        using var stream = a.GetManifestResourceStream("HaulThis.appsettings.json");
-
-        var config = new ConfigurationBuilder()
-            .AddJsonStream(stream)
-            .Build();
-
-        builder.Configuration.AddConfiguration(config);
-
-        var connectionString = builder.Configuration.GetConnectionString("DevelopmentConnection");
-        builder.Services.AddDbContext<HaulThisDbContext>(options => options.UseSqlServer(connectionString));
+       
+        builder.Services.AddDbContext<HaulThisDbContext>();
 
         builder.Services.AddSingleton<TrackItemViewModel>();
         builder.Services.AddTransient<TrackItem>();

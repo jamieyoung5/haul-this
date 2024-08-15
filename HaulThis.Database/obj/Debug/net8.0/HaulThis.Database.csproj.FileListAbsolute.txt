@@ -1,0 +1,15 @@
+C:\Users\nash_\Documents\Uni Haul\haul-this\HaulThis.Database\bin\Debug\net8.0\HaulThis.Database.deps.json
+C:\Users\nash_\Documents\Uni Haul\haul-this\HaulThis.Database\bin\Debug\net8.0\HaulThis.Database.runtimeconfig.json
+C:\Users\nash_\Documents\Uni Haul\haul-this\HaulThis.Database\bin\Debug\net8.0\HaulThis.Database.dll
+C:\Users\nash_\Documents\Uni Haul\haul-this\HaulThis.Database\bin\Debug\net8.0\HaulThis.Database.pdb
+C:\Users\nash_\Documents\Uni Haul\haul-this\HaulThis.Database\obj\Debug\net8.0\HaulThis.Database.csproj.AssemblyReference.cache
+C:\Users\nash_\Documents\Uni Haul\haul-this\HaulThis.Database\obj\Debug\net8.0\HaulThis.Database.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\nash_\Documents\Uni Haul\haul-this\HaulThis.Database\obj\Debug\net8.0\HaulThis.Database.AssemblyInfoInputs.cache
+C:\Users\nash_\Documents\Uni Haul\haul-this\HaulThis.Database\obj\Debug\net8.0\HaulThis.Database.AssemblyInfo.cs
+C:\Users\nash_\Documents\Uni Haul\haul-this\HaulThis.Database\obj\Debug\net8.0\HaulThis.Database.csproj.CoreCompileInputs.cache
+C:\Users\nash_\Documents\Uni Haul\haul-this\HaulThis.Database\obj\Debug\net8.0\HaulThis.Database.sourcelink.json
+C:\Users\nash_\Documents\Uni Haul\haul-this\HaulThis.Database\obj\Debug\net8.0\HaulThis.Database.dll
+C:\Users\nash_\Documents\Uni Haul\haul-this\HaulThis.Database\obj\Debug\net8.0\refint\HaulThis.Database.dll
+C:\Users\nash_\Documents\Uni Haul\haul-this\HaulThis.Database\obj\Debug\net8.0\HaulThis.Database.pdb
+C:\Users\nash_\Documents\Uni Haul\haul-this\HaulThis.Database\obj\Debug\net8.0\HaulThis.Database.genruntimeconfig.cache
+C:\Users\nash_\Documents\Uni Haul\haul-this\HaulThis.Database\obj\Debug\net8.0\ref\HaulThis.Database.dll
