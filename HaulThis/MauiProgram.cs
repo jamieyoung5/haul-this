@@ -1,6 +1,9 @@
 ﻿using HaulThis.Services;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System.Reflection;
+using Microsoft.Extensions.Options;
 
 namespace HaulThis;
 
@@ -20,8 +23,13 @@ public static class MauiProgram
 #if DEBUG
         builder.Logging.AddDebug();
 #endif
+        var configBuilder = new ConfigurationBuilder();
+        configBuilder.SetBasePath(Directory.GetCurrentDirectory())
+               .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
-        string connectionString = "connection string";
+        IConfiguration config = configBuilder.Build();
+
+        string connectionString = config.GetConnectionString("DevelopmentConnection");
         var loggerFactory = LoggerFactory.Create(builder =>
         {
             builder.AddConsole();
