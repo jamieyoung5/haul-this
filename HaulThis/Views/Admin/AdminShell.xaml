@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="HaulThis.Views.Admin.AdminShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:HaulThis.Views.Admin"
+    Title="Admin"
+    FlyoutBehavior="Flyout">
+
+    <FlyoutItem FlyoutDisplayOptions="AsMultipleItems">
+        <ShellContent Title="Manage Customer Bills" ContentTemplate="{DataTemplate local:ManageCustomerBills}" />
+        <ShellContent Title="Manage Customers" ContentTemplate="{DataTemplate local:ManageCustomers}" />
+        <ShellContent Title="Manage Employees" ContentTemplate="{DataTemplate local:ManageEmployees}" />
+        <ShellContent Title="Manage Trip Manifests" ContentTemplate="{DataTemplate local:ManageTripManifests}" />
+        <ShellContent Title="Manage Vehicles" ContentTemplate="{DataTemplate local:ManageVehicles}" />
+        <ShellContent Title="Plan Route Trips" ContentTemplate="{DataTemplate local:PlanRouteTrips}" />
+        <ShellContent Title="Resource Trips" ContentTemplate="{DataTemplate local:ResourceTrips}" />
+        <ShellContent Title="Track Trips" ContentTemplate="{DataTemplate local:TrackTrips}" />
+    </FlyoutItem>
+
+</Shell>

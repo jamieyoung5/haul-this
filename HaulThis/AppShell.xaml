@@ -10,27 +10,21 @@
     Shell.FlyoutBehavior="Disabled"
     Title="HaulThis">
 
-
-
     <TabBar>
-        <ShellContent
-            Title="Home"
-            ContentTemplate="{DataTemplate local:MainPage}"
-            Icon="{OnPlatform 'home.png', iOS='home.png', MacCatalyst='home.png'}"/>
 
         <ShellContent
             Title="Customer"
-            ContentTemplate="{DataTemplate CustomerViews:CustomerPage}"
+            ContentTemplate="{DataTemplate CustomerViews:CustomerShell}"
             Icon="{OnPlatform 'customer.png', iOS='customer.png', MacCatalyst='customer.png'}"/>
         
         <ShellContent
             Title="Driver"
-            ContentTemplate="{DataTemplate DriverViews:DriverPage}"
+            ContentTemplate="{DataTemplate DriverViews:DriverShell}"
             Icon="{OnPlatform 'driver.png', iOS='driver.png', MacCatalyst='driver.png'}"/>
         
         <ShellContent
             Title="Admin"
-            ContentTemplate="{DataTemplate AdminViews:AdminPage}"
+            ContentTemplate="{DataTemplate AdminViews:AdminShell}"
             Icon="{OnPlatform 'admin.png', iOS='admin.png', MacCatalyst='admin.png'}"/>
     </TabBar>
 

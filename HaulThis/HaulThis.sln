@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# 
-VisualStudioVersion = 17.5.002.0
-MinimumVisualStudioVersion = 
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HaulThis", "HaulThis.csproj", "{903EA70C-6966-43FA-89DF-17EB013EED2F}"
+
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35122.118
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HaulThis", "HaulThis.csproj", "{903EA70C-6966-43FA-89DF-17EB013EED2F}"
+
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HaulThis.Database", "..\HaulThis.Database\HaulThis.Database.csproj", "{09CB82EC-BFB0-4D02-9902-6F70DCA7FA4B}"
 EndProject
@@ -17,6 +19,7 @@ Global
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{903EA70C-6966-43FA-89DF-17EB013EED2F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{903EA70C-6966-43FA-89DF-17EB013EED2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{903EA70C-6966-43FA-89DF-17EB013EED2F}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
 		{903EA70C-6966-43FA-89DF-17EB013EED2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{903EA70C-6966-43FA-89DF-17EB013EED2F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{09CB82EC-BFB0-4D02-9902-6F70DCA7FA4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -27,6 +30,9 @@ Global
 		{73101D1F-2AE0-4B2B-8334-6250169B7A1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{73101D1F-2AE0-4B2B-8334-6250169B7A1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{73101D1F-2AE0-4B2B-8334-6250169B7A1B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

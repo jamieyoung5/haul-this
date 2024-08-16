@@ -75,10 +75,12 @@
       <Compile Update="Views\Driver\DriverShell.xaml.cs">
         <DependentUpon>DriverShell.xaml</DependentUpon>
       </Compile>
+
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\HaulThis.Database\HaulThis.Database.csproj" />
+
     </ItemGroup>
 
 </Project>
