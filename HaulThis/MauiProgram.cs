@@ -25,7 +25,7 @@ public static class MauiProgram
 #endif
         var configBuilder = new ConfigurationBuilder();
         configBuilder.SetBasePath(Directory.GetCurrentDirectory())
-               .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+               .AddJsonFile("HaulThis/appsettings.json", optional: false, reloadOnChange: true);
 
         IConfiguration config = configBuilder.Build();
 
