@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using HaulThis.Services;
 
 public class DatabaseConnectionTests
 {
@@ -10,7 +11,7 @@ public class DatabaseConnectionTests
     {
         _mockConnection = new Mock<IDbConnection>();
         _mockLogger = new Mock<ILogger<DatabaseService>>();
-        _databaseConnection = new DatabaseService(_mockConnection.Object, _mockLogger.Object);
+        _databaseConnection = new DatabaseService("FakeConnectionString", _mockLogger.Object);
     }
 
     [Fact]
@@ -69,38 +70,5 @@ public class DatabaseConnectionTests
             (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()
         ), Times.Once);
         Assert.False(result);
-    }
-}
-
-// Use the existing DatabaseService, cyclic dependency issue when trying to reference HaulThis.Services
-public class DatabaseService
-{
-    private readonly IDbConnection _connection;
-    private readonly ILogger<DatabaseService> _logger;
-
-    public DatabaseService(IDbConnection connection, ILogger<DatabaseService> logger)
-    {
-        _connection = connection;
-        _logger = logger;
-    }
-
-    public bool CreateConnection()
-    {
-        try
-        {
-            _logger.LogInformation("Attempting to open database connection.");
-            if (_connection.State == ConnectionState.Closed)
-            {
-                _connection.Open();
-            }
-
-            _logger.LogInformation("Connected to the database successfully.");
-            return true;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Failed to connect to the database.");
-            return false;
-        }
     }
 }
