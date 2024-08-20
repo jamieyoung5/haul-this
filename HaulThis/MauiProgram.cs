@@ -36,9 +36,9 @@ public static class MauiProgram
             builder.AddDebug();
         });
 
-        ILogger<DatabaseService> _logger = loggerFactory.CreateLogger<DatabaseService>();
+        ILogger<Services.DatabaseService> _logger = loggerFactory.CreateLogger<Services.DatabaseService>();
         _logger.LogInformation("Attempting to connect");
-        IDatabaseService db = new DatabaseService(connectionString, _logger);
+        IDatabaseService db = new Services.DatabaseService(connectionString, _logger);
         _logger.LogInformation("Connected successfully");
         _logger.LogInformation("Attempting to ping");
         db.CreateConnection();
