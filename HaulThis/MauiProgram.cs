@@ -6,6 +6,7 @@ using System.Reflection;
 using Microsoft.Extensions.Options;
 using HaulThis.ViewModels;
 using HaulThis.Views.Customer;
+using Microsoft.Data.SqlClient;
 
 namespace HaulThis;
 
@@ -38,9 +39,9 @@ public static class MauiProgram
             builder.AddDebug();
         });
 
-        ILogger<Services.DatabaseService> _logger = loggerFactory.CreateLogger<Services.DatabaseService>();
+        ILogger<DatabaseService> _logger = loggerFactory.CreateLogger<DatabaseService>();
         _logger.LogInformation("Attempting to connect");
-        IDatabaseService db = new Services.DatabaseService(connectionString, _logger);
+        IDatabaseService db = new DatabaseService(new SqlConnection(connectionString), _logger);
         _logger.LogInformation("Connected successfully");
         _logger.LogInformation("Attempting to ping");
         db.CreateConnection();
