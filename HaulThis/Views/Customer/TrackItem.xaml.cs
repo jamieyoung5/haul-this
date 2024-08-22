@@ -1,6 +1,6 @@
 namespace HaulThis.Views.Customer;
 
-public partial class TrackItem : ContentPage
+public partial class TrackItem
 {
 	public TrackItem()
 	{

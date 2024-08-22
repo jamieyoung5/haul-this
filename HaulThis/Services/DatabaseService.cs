@@ -1,166 +1,158 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Common;
-using System.Threading.Tasks;
-using Microsoft.Data.SqlClient;
+﻿using System.Data;
 using Microsoft.Extensions.Logging;
 
-namespace HaulThis.Services
+namespace HaulThis.Services;
+
+/// <summary>
+/// Provides a common service for connecting and performing basic operations with a database
+/// </summary>
+public class DatabaseService : IDatabaseService
 {
+    private readonly IDbConnection _connection;
+    private readonly ILogger<DatabaseService> _logger;
+
     /// <summary>
-    /// Provides a common service for connecting and performing basic operations with a database
+    /// Initializes a new instance of the <see cref="DatabaseService"/> class with the specified connection string.
     /// </summary>
-    public class DatabaseService : IDatabaseService
+    /// <param name="connection">The sql connection object.</param>
+    /// <param name="logger">Generic logger</param>
+    public DatabaseService(IDbConnection connection, ILogger<DatabaseService> logger)
     {
-        private readonly DbConnection _connection;
-        private readonly ILogger<DatabaseService> _logger;
+        _connection = connection;
+        _logger = logger;
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DatabaseService"/> class with the specified connection string.
-        /// </summary>
-        /// <param name="connectionString">The connection string for the database.</param>
-        public DatabaseService(string connectionString, ILogger<DatabaseService> logger)
+    public bool CreateConnection()
+    {
+        try
         {
-            _connection = new SqlConnection(connectionString);
-            _logger = logger;
-        }
-
-        public bool CreateConnection()
-        {
-            try
+            _logger.LogInformation("Attempting to open database connection.");
+            if (_connection.State == ConnectionState.Closed)
             {
-                _logger.LogInformation("Attempting to open database connection.");
-                if (_connection.State == ConnectionState.Closed)
-                {
-                    _connection.Open();
-                }
-
-                _logger.LogInformation("Connected to the database successfully.");
-                return true;
+                _connection.Open();
             }
-            catch (Exception ex)
+
+            _logger.LogInformation("Connected to the database successfully.");
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to connect to the database.");
+            return false;
+        }
+    }
+
+    /// <inheritdoc />
+    public bool Ping()
+    {
+        try
+        {
+            if (_connection.State == ConnectionState.Closed)
             {
-                _logger.LogError(ex, "Failed to connect to the database.");
+                _logger.LogError("Connection is not open. Please call Connect first.");
                 return false;
             }
-        }
 
-        /// <inheritdoc />
-        public bool Ping()
+            // Simple query to ensure the connection is active
+            using var command = _connection.CreateCommand();
+            command.CommandText = "SELECT 1";
+            command.ExecuteScalar();
+
+            _logger.LogInformation("Pinged database successfully.");
+            return true;
+        }
+        catch (Exception ex)
         {
-            try
-            {
-                if (_connection.State == ConnectionState.Closed)
-                {
-                    _logger.LogError("Connection is not open. Please call Connect first.");
-                    return false;
-                }
-
-                // Simple query to ensure the connection is active
-                using var command = _connection.CreateCommand();
-                command.CommandText = "SELECT 1";
-                command.ExecuteScalar();
-
-                _logger.LogInformation("Pinged database successfully.");
-                return true;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Failed to ping the database.");
-                return false;
-            }
+            _logger.LogError(ex, "Failed to ping the database.");
+            return false;
         }
+    }
 
-        /// <inheritdoc />
-        public void CloseConnection()
+    /// <inheritdoc />
+    public void CloseConnection()
+    {
+        if (_connection.State == ConnectionState.Closed) return;
+        _connection.Close();
+        _logger.LogInformation("Database connecton closed.");
+    }
+
+    /// <inheritdoc />
+    public int Execute(string query, params object[] args)
+    {
+        try
         {
-            if (_connection.State != ConnectionState.Closed)
-            {
-                _connection.Close();
-                _logger.LogInformation("Database connecton closed.");
-            }
+            using var command = CreateCommand(query, args);
+            int result = command.ExecuteNonQuery();
+            _logger.LogInformation("Executed command: {Query}", query);
+            return result;
         }
-
-        /// <inheritdoc />
-        public int Execute(string query, params object[] args)
+        catch (Exception ex)
         {
-            try
-            {
-                using var command = CreateCommand(query, args);
-                int result = command.ExecuteNonQuery();
-                _logger.LogInformation("Executed command: {Query}", query);
-                return result;
-            } 
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Failed to execute command: {Query}", query);
-                throw;
-            }
-            
+            _logger.LogError(ex, "Failed to execute command: {Query}", query);
+            throw;
         }
 
-        /// <inheritdoc />
-        public IDataReader Query(string query, params object[] args)
+    }
+
+    /// <inheritdoc />
+    public IDataReader Query(string query, params object[] args)
+    {
+        try
         {
-            try
-            {
-                using var command = CreateCommand(query, args);
-                _logger.LogInformation("Executing query: {Query}", query);
-                return command.ExecuteReader();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Failed to execute query: {Query}", query);
-                throw;
-            }
+            using var command = CreateCommand(query, args);
+            _logger.LogInformation("Executing query: {Query}", query);
+            return command.ExecuteReader();
         }
-
-        /// <inheritdoc />
-        public IDataRecord QueryRow(string query, params object[] args)
+        catch (Exception ex)
         {
-            try
-            {
-                using var command = CreateCommand(query, args);
-                var reader = command.ExecuteReader();
-
-                if (reader.Read())
-                {
-                    _logger.LogInformation("Query returned a row: {Query}", query);
-                    return reader;
-                }
-                else
-                {
-                    _logger.LogWarning("Query did not return any rows: {Query}", query);
-                    return null;
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Failed to execute query: {Query}", query);
-                throw;
-            }
+            _logger.LogError(ex, "Failed to execute query: {Query}", query);
+            throw;
         }
+    }
 
-        private DbCommand CreateCommand(string query, params object[] args)
+    /// <inheritdoc />
+    public IDataRecord QueryRow(string query, params object[] args)
+    {
+        try
         {
-            var command = _connection.CreateCommand();
-            command.CommandText = query;
+            using var command = CreateCommand(query, args);
+            var reader = command.ExecuteReader();
 
-            for (int i = 0; i < args.Length; i++)
+            if (reader.Read())
             {
-                var parameter = command.CreateParameter();
-                parameter.ParameterName = $"@p{i}";
-                parameter.Value = args[i] ?? DBNull.Value;
-                command.Parameters.Add(parameter);
+                _logger.LogInformation("Query returned a row: {Query}", query);
+                return reader;
             }
 
-            return command;
+            _logger.LogWarning("Query did not return any rows: {Query}", query);
+            return null;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to execute query: {Query}", query);
+            throw;
+        }
+    }
+
+    private IDbCommand CreateCommand(string query, params object[] args)
+    {
+        var command = _connection.CreateCommand();
+        command.CommandText = query;
+
+        for (int i = 0; i < args.Length; i++)
+        {
+            var parameter = command.CreateParameter();
+            parameter.ParameterName = $"@p{i}";
+            parameter.Value = args[i];
+            command.Parameters.Add(parameter);
         }
 
-        public void Dispose()
-        {
-            _connection?.Dispose();
-        }
+        return command;
+    }
+
+    public void Dispose()
+    {
+        _connection.Dispose();
+        GC.SuppressFinalize(this);
     }
 }

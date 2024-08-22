@@ -1,6 +1,6 @@
 namespace HaulThis.Views.Driver;
 
-public partial class DriverConfirmPickup : ContentPage
+public partial class DriverConfirmPickup
 {
 	public DriverConfirmPickup()
 	{
