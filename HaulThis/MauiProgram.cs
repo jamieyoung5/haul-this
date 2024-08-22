@@ -4,6 +4,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
 using Microsoft.Extensions.Options;
+using HaulThis.ViewModels;
+using HaulThis.Views.Customer;
 
 namespace HaulThis;
 
@@ -49,6 +51,14 @@ public static class MauiProgram
         {
             _logger.LogInformation("pinged unsuccessfully");
         }
+
+         // Register services and ViewModel
+        ITrackingService trackingService = new TrackingService(db);
+        builder.Services.AddSingleton(trackingService);
+       
+
+        // Register the pages
+        builder.Services.AddTransient<TrackItem>(_ => new TrackItem(trackingService));
         
 
         return builder.Build();
