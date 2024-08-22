@@ -12,7 +12,6 @@ namespace HaulThis.ViewModels
     {
         private readonly ITrackingService _trackingService;
 
-        // Updated constructor to use the ITrackingService interface
         public TrackingViewModel(ITrackingService trackingService)
         {
             _trackingService = trackingService;

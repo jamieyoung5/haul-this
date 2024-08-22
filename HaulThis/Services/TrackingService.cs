@@ -10,11 +10,10 @@ namespace HaulThis.Services
         private readonly IDatabaseService _databaseService;
         private readonly ILogger<TrackingService> _logger;
 
-       public TrackingService(IDatabaseService databaseService)
+        public TrackingService(IDatabaseService databaseService)
         {
             _databaseService = databaseService;
 
-            // Create a logger instance
             using var loggerFactory = LoggerFactory.Create(builder =>
             {
                 builder.AddConsole();
@@ -27,7 +26,8 @@ namespace HaulThis.Services
         {
             try
             {
-                
+                _logger.LogInformation("Starting GetTrackingInfo for Tracking ID: {TrackingId}", trackingId);
+
                 if (!_databaseService.CreateConnection())
                 {
                     _logger.LogError("Failed to create a database connection.");
@@ -50,41 +50,60 @@ namespace HaulThis.Services
                         wp.ArrivalTime DESC
                     LIMIT 1";
 
-                using var reader = _databaseService.Query(query, trackingId);
+                _logger.LogInformation("Executing query: {Query} with trackingId: {TrackingId}", query, trackingId);
 
-                if (reader.Read())
+                var reader = _databaseService.Query(query, trackingId);
+
+                try
                 {
-                    var location = reader.GetString(0);
-                    var arrivalTime = reader.GetDateTime(1);
-                    var eta = CalculateETA(arrivalTime);
-
-                    return new TrackingInfo
+                    if (reader.Read())
                     {
-                        CurrentLocation = location,
-                        ETA = eta,
-                        Status = eta.HasValue && eta > DateTime.UtcNow ? "In Transit" : "Delivered"
-                    };
+                        _logger.LogInformation("Query returned data for Tracking ID: {TrackingId}", trackingId);
+
+                        var location = reader.GetString(0);
+                        var arrivalTime = reader.GetDateTime(1);
+                        var eta = CalculateETA(arrivalTime);
+
+                        _logger.LogInformation("Tracking Info - Location: {Location}, Arrival Time: {ArrivalTime}, ETA: {ETA}", location, arrivalTime, eta);
+
+                        return new TrackingInfo
+                        {
+                            CurrentLocation = location,
+                            ETA = eta,
+                            Status = eta.HasValue && eta > DateTime.UtcNow ? "In Transit" : "Delivered"
+                        };
+                    }
+                    else
+                    {
+                        _logger.LogWarning("Query did not return any rows for Tracking ID: {TrackingId}", trackingId);
+                    }
+                }
+                finally
+                {
+                    reader.Close(); // Explicitly close the reader after reading
                 }
 
-                
                 return null;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while retrieving tracking information.");
+                _logger.LogError(ex, "An error occurred while retrieving tracking information for Tracking ID: {TrackingId}", trackingId);
                 return null;
             }
             finally
             {
                 _databaseService.CloseConnection();
+                _logger.LogInformation("Database connection closed.");
             }
         }
 
         private DateTime? CalculateETA(DateTime lastKnownLocationTime)
         {
-            // Example logic for calculating ETA based on the last known location time
-            // This is a placeholder; actual implementation would depend on business requirements
-            return lastKnownLocationTime.AddHours(2);
+            //Placeholder for actual ETA calculation logic
+            // Assuming that from the last known location, the delivery is expected within 2 hours
+            var expectedDeliveryTime = lastKnownLocationTime.AddHours(2);
+            // If the expected delivery time is in the future, return it as the ETA
+            return expectedDeliveryTime > DateTime.UtcNow ? expectedDeliveryTime : null;
         }
     }
 

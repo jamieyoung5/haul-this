@@ -1,80 +1,76 @@
-using System.Data;
-using HaulThis.Services;
-using Microsoft.Extensions.Logging;
-using Moq;
 using Xunit;
+using Moq;
+using HaulThis.Services;
+using HaulThis.Models;
+using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
+using System;
 
-namespace HaulThis.Tests.Services
+public class TrackingServiceTests
 {
-    public class TrackingServiceTests
+    private readonly Mock<IDatabaseService> _databaseServiceMock;
+    private readonly TrackingService _trackingService;
+
+    public TrackingServiceTests()
     {
-        private readonly TrackingService _trackingService;
-        private readonly Mock<IDatabaseService> _mockDatabaseService;
-        private readonly Mock<ILogger<TrackingService>> _mockLogger;
+        _databaseServiceMock = new Mock<IDatabaseService>();
+        var loggerMock = new Mock<ILogger<TrackingService>>();
+        _trackingService = new TrackingService(_databaseServiceMock.Object);
+    }
 
-        public TrackingServiceTests()
-        {
-            _mockDatabaseService = new Mock<IDatabaseService>();
-            _mockLogger = new Mock<ILogger<TrackingService>>();
-            _trackingService = new TrackingService(_mockDatabaseService.Object);
-        }
+    [Fact]
+    public async Task GetTrackingInfo_ValidTrackingId_ShouldReturnTrackingInfo()
+    {
+        // Arrange
+        _databaseServiceMock.Setup(db => db.CreateConnection()).Returns(true);
+        _databaseServiceMock.Setup(db => db.Query(It.IsAny<string>(), It.IsAny<string>()))
+            .Returns(new Mock<IDataReader>().Object);
 
-        [Fact]
-        public async Task GetTrackingInfo_ReturnsCorrectInfo_ForValidTrackingId()
-        {
-            
-            _mockDatabaseService.Setup(db => db.Query(It.IsAny<string>(), It.IsAny<object[]>()))
-                .Returns(Mock.Of<IDataReader>(reader =>
-                    reader.Read() == true &&
-                    reader.GetString(0) == "Location A" &&
-                    reader.GetDateTime(1) == DateTime.UtcNow));
+        // Mock the data reader behavior
+        var readerMock = new Mock<IDataReader>();
+        readerMock.Setup(reader => reader.Read()).Returns(true);
+        readerMock.Setup(reader => reader.GetString(0)).Returns("Gondor");
+        readerMock.Setup(reader => reader.GetDateTime(1)).Returns(DateTime.UtcNow);
 
-         
-            var result = await _trackingService.GetTrackingInfo("1");
+        _databaseServiceMock.Setup(db => db.Query(It.IsAny<string>(), It.IsAny<string>()))
+            .Returns(readerMock.Object);
 
-         
-            Assert.NotNull(result);
-            Assert.Equal("Location A", result.CurrentLocation);
-        }
+        // Act
+        var trackingInfo = await _trackingService.GetTrackingInfo("123");
 
-        [Fact]
-        public async Task GetTrackingInfo_ReturnsNull_ForInvalidTrackingId()
-        {
-            
-            _mockDatabaseService.Setup(db => db.Query(It.IsAny<string>(), It.IsAny<object[]>()))
-                .Returns(Mock.Of<IDataReader>(reader => reader.Read() == false)); // Simulate no results
+        // Assert
+        Assert.NotNull(trackingInfo);
+        Assert.Equal("Gondor", trackingInfo.CurrentLocation);
+        Assert.Equal("In Transit", trackingInfo.Status);
+    }
 
-           
-            var result = await _trackingService.GetTrackingInfo("9999"); // Invalid ID
+    [Fact]
+    public async Task GetTrackingInfo_InvalidTrackingId_ShouldReturnNull()
+    {
+        // Arrange
+        _databaseServiceMock.Setup(db => db.CreateConnection()).Returns(true);
+        var readerMock = new Mock<IDataReader>();
+        readerMock.Setup(reader => reader.Read()).Returns(false);
+        _databaseServiceMock.Setup(db => db.Query(It.IsAny<string>(), It.IsAny<string>()))
+            .Returns(readerMock.Object);
 
-            
-            Assert.Null(result);
-        }
+        // Act
+        var trackingInfo = await _trackingService.GetTrackingInfo("invalid");
 
-        [Fact]
-        public async Task GetTrackingInfo_ReturnsLatestWaypoint_ForMultipleWaypoints()
-        {
-            
-            var now = DateTime.UtcNow;
+        // Assert
+        Assert.Null(trackingInfo);
+    }
 
-            var mockDataReader = new Mock<IDataReader>();
-            mockDataReader.SetupSequence(r => r.Read())
-                .Returns(true)
-                .Returns(true)
-                .Returns(false); 
+    [Fact]
+    public async Task GetTrackingInfo_DatabaseConnectionFails_ShouldReturnNull()
+    {
+        // Arrange
+        _databaseServiceMock.Setup(db => db.CreateConnection()).Returns(false);
 
-            mockDataReader.Setup(r => r.GetString(0)).Returns("Location B");
-            mockDataReader.Setup(r => r.GetDateTime(1)).Returns(now.AddHours(-1));
+        // Act
+        var trackingInfo = await _trackingService.GetTrackingInfo("123");
 
-            _mockDatabaseService.Setup(db => db.Query(It.IsAny<string>(), It.IsAny<object[]>()))
-                .Returns(mockDataReader.Object);
-
-            
-            var result = await _trackingService.GetTrackingInfo("1");
-
-            
-            Assert.NotNull(result);
-            Assert.Equal("Location B", result.CurrentLocation);
-        }
+        // Assert
+        Assert.Null(trackingInfo);
     }
 }
