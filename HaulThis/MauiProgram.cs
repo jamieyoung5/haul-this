@@ -1,10 +1,12 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Text.Json;
 using HaulThis.Services;
 using Microsoft.Extensions.Logging;
 using CommunityToolkit.Maui;
 using HaulThis.Views.Admin;
 using Microsoft.Data.SqlClient;
+using HaulThis.ViewModels;
+using HaulThis.Views.Customer;
 
 namespace HaulThis;
 
@@ -47,6 +49,15 @@ public static class MauiProgram
         {
             logger.LogInformation("pinged unsuccessfully");
         }
+
+         // Register services and ViewModel
+        ITrackingService trackingService = new TrackingService(db);
+        builder.Services.AddSingleton(trackingService);
+       
+
+        // Register the pages
+        builder.Services.AddTransient<TrackItem>(_ => new TrackItem(trackingService));
+        
 
         IUserService userService = new UserService(db);
 
