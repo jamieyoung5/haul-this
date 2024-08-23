@@ -1,12 +1,24 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="HaulThis.Views.Customer.TrackItem"
-             Title="TrackItem">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to Track Item!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             x:Class="HaulThis.Views.Customer.TrackItem">
+
+    
+    <StackLayout Padding="20">
+        <Label Text="Enter Your Item ID:" FontSize="Medium" />
+        <Entry Text="{Binding TrackingId}" Placeholder="Tracking ID" />
+        <Button Text="Track Item" Command="{Binding TrackItemCommand}" /> 
+
+        <Label Text="Current Location:" FontSize="Medium" Margin="0,20,0,0" />
+        <Label Text="{Binding CurrentLocation}" FontSize="Small" />
+
+        <Label Text="Estimated Time of Arrival:" FontSize="Medium" Margin="0,20,0,0" />
+        <Label Text="{Binding ETA, StringFormat='{0:MMMM dd, yyyy HH:mm}'}" FontSize="Small" />
+
+        <Label Text="Status:" FontSize="Medium" Margin="0,20,0,0" />
+        <Label Text="{Binding Status}" FontSize="Small" />
+
+        <Label Text="{Binding ErrorMessage}" TextColor="Red" FontSize="Small" Margin="0,20,0,0" />
+    </StackLayout>
+
 </ContentPage>

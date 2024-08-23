@@ -1,28 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
-using System.Threading.Tasks;
-using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
 
 namespace HaulThis.Services
 {
-    /// <summary>
-    /// Provides a common service for connecting and performing basic operations with a database
-    /// </summary>
-    public class DatabaseService : IDatabaseService
+    public class DatabaseService : IDatabaseService, IDisposable
     {
-        private readonly DbConnection _connection;
+        private readonly IDbConnection _connection;
         private readonly ILogger<DatabaseService> _logger;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DatabaseService"/> class with the specified connection string.
-        /// </summary>
-        /// <param name="connectionString">The connection string for the database.</param>
-        public DatabaseService(string connectionString, ILogger<DatabaseService> logger)
+        public DatabaseService(IDbConnection connection, ILogger<DatabaseService> logger)
         {
-            _connection = new SqlConnection(connectionString);
+            _connection = connection;
             _logger = logger;
         }
 
@@ -46,7 +35,6 @@ namespace HaulThis.Services
             }
         }
 
-        /// <inheritdoc />
         public bool Ping()
         {
             try
@@ -57,7 +45,6 @@ namespace HaulThis.Services
                     return false;
                 }
 
-                // Simple query to ensure the connection is active
                 using var command = _connection.CreateCommand();
                 command.CommandText = "SELECT 1";
                 command.ExecuteScalar();
@@ -72,17 +59,13 @@ namespace HaulThis.Services
             }
         }
 
-        /// <inheritdoc />
         public void CloseConnection()
         {
-            if (_connection.State != ConnectionState.Closed)
-            {
-                _connection.Close();
-                _logger.LogInformation("Database connecton closed.");
-            }
+            if (_connection.State == ConnectionState.Closed) return;
+            _connection.Close();
+            _logger.LogInformation("Database connection closed.");
         }
 
-        /// <inheritdoc />
         public int Execute(string query, params object[] args)
         {
             try
@@ -91,23 +74,21 @@ namespace HaulThis.Services
                 int result = command.ExecuteNonQuery();
                 _logger.LogInformation("Executed command: {Query}", query);
                 return result;
-            } 
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Failed to execute command: {Query}", query);
                 throw;
             }
-            
         }
 
-        /// <inheritdoc />
         public IDataReader Query(string query, params object[] args)
         {
             try
             {
-                using var command = CreateCommand(query, args);
+                var command = CreateCommand(query, args); 
                 _logger.LogInformation("Executing query: {Query}", query);
-                return command.ExecuteReader();
+                return command.ExecuteReader(CommandBehavior.CloseConnection); 
             }
             catch (Exception ex)
             {
@@ -116,7 +97,6 @@ namespace HaulThis.Services
             }
         }
 
-        /// <inheritdoc />
         public IDataRecord QueryRow(string query, params object[] args)
         {
             try
@@ -129,11 +109,9 @@ namespace HaulThis.Services
                     _logger.LogInformation("Query returned a row: {Query}", query);
                     return reader;
                 }
-                else
-                {
-                    _logger.LogWarning("Query did not return any rows: {Query}", query);
-                    return null;
-                }
+
+                _logger.LogWarning("Query did not return any rows: {Query}", query);
+                return null;
             }
             catch (Exception ex)
             {
@@ -142,7 +120,7 @@ namespace HaulThis.Services
             }
         }
 
-        private DbCommand CreateCommand(string query, params object[] args)
+        private IDbCommand CreateCommand(string query, params object[] args)
         {
             var command = _connection.CreateCommand();
             command.CommandText = query;
@@ -151,7 +129,7 @@ namespace HaulThis.Services
             {
                 var parameter = command.CreateParameter();
                 parameter.ParameterName = $"@p{i}";
-                parameter.Value = args[i] ?? DBNull.Value;
+                parameter.Value = args[i];
                 command.Parameters.Add(parameter);
             }
 
@@ -160,7 +138,8 @@ namespace HaulThis.Services
 
         public void Dispose()
         {
-            _connection?.Dispose();
+            _connection.Dispose();
+            GC.SuppressFinalize(this);
         }
     }
 }

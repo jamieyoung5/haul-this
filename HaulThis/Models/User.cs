@@ -6,7 +6,7 @@ namespace HaulThis.Models
     /// <summary>
     /// Represents a user in the haul-this system
     /// </summary>
-    class User
+    public class User
     {
         /// <summary>
         /// Gets or sets the unique identifier for the user.
