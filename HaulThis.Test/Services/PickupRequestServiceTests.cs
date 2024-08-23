@@ -43,7 +43,7 @@ namespace HaulThis.Tests
     {
       var mockDatabaseService = new Mock<IDatabaseService>();
       mockDatabaseService.Setup(db => db.Execute(It.IsAny<string>(), It.IsAny<object>()))
-                         .Returns(0); // Simulate unsuccessful insertion (0 rows affected)
+          .Returns(0); 
 
       var mockLogger = new Mock<ILogger<PickupRequestService>>();
       var service = new PickupRequestService(mockDatabaseService.Object);
@@ -70,7 +70,7 @@ namespace HaulThis.Tests
     {
       var mockDatabaseService = new Mock<IDatabaseService>();
       mockDatabaseService.Setup(db => db.Execute(It.IsAny<string>(), It.IsAny<object>()))
-                         .Throws(new Exception("Database error")); // Simulate an exception
+        .Throws(new Exception("Database error")); 
 
       var mockLogger = new Mock<ILogger<PickupRequestService>>();
       var service = new PickupRequestService(mockDatabaseService.Object);
