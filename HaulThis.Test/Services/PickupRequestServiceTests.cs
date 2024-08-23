@@ -41,7 +41,6 @@ namespace HaulThis.Tests
     [Fact]
     public async Task RequestPickup_UnsuccessfulInsertion_ReturnsFalse()
     {
-      // Arrange
       var mockDatabaseService = new Mock<IDatabaseService>();
       mockDatabaseService.Setup(db => db.Execute(It.IsAny<string>(), It.IsAny<object>()))
                          .Returns(0); // Simulate unsuccessful insertion (0 rows affected)

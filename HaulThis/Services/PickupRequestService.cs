@@ -1,5 +1,5 @@
 using System;
-using System.Threading.Tasks; // Make sure to include this
+using System.Threading.Tasks;
 using HaulThis.Models;
 using Microsoft.Extensions.Logging;
 
@@ -42,7 +42,6 @@ namespace HaulThis.Services
           pickupRequest.Status
         };
 
-        // This line uses a synchronous method but wraps it in Task.Run to make it async
         int rowsAffected = await Task.Run(() => _databaseService.Execute(InsertPickupRequestQuery, parameters));
 
         if (rowsAffected > 0)
