@@ -13,7 +13,7 @@ namespace HaulThis.Models
         /// </summary>
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int UniqueId { get; set; }
+        public int Id { get; set; }
 
         /// <summary>
         /// Gets or sets the trip ID associated with the manifest.

@@ -14,7 +14,7 @@ namespace HaulThis.Models
         /// </summary>
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int UniqueId { get; set; }
+        public int Id { get; set; }
 
         /// <summary>
         /// Gets or sets the user ID associated with the driver.

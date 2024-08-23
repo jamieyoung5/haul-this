@@ -80,18 +80,18 @@ namespace HaulThis.ViewModels
             try
             {
                 var trackingInfo = await _trackingService.GetTrackingInfo(TrackingId);
-                if (trackingInfo != null)
-                {
-                    CurrentLocation = trackingInfo.CurrentLocation;
-                    ETA = trackingInfo.ETA;
-                    Status = trackingInfo.Status;
-                    ErrorMessage = string.Empty;
-                }
-                else
+
+                if (trackingInfo == null)
                 {
                     ErrorMessage = "Invalid tracking ID. Please try again.";
                     ClearTrackingData();
+                    return;
                 }
+
+                CurrentLocation = trackingInfo.CurrentLocation;
+                ETA = trackingInfo.ETA;
+                Status = trackingInfo.Status;
+                ErrorMessage = string.Empty;
             }
             catch (Exception ex)
             {
@@ -108,6 +108,7 @@ namespace HaulThis.ViewModels
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

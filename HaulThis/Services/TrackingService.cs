@@ -9,6 +9,22 @@ namespace HaulThis.Services
     {
         private readonly IDatabaseService _databaseService;
         private readonly ILogger<TrackingService> _logger;
+        private IDatabaseService db;
+        private const string GetTrackingInfoQuery = @"
+            SELECT 
+                wp.Location, 
+                wp.ArrivalTime, 
+                tm.ItemId, 
+                tm.TripId 
+            FROM 
+                Waypoint wp
+            INNER JOIN 
+                TripManifest tm ON tm.TripId = wp.TripId
+            WHERE 
+                tm.ItemId = @p0
+            ORDER BY 
+                wp.ArrivalTime DESC
+            LIMIT 1";
 
         public TrackingService(IDatabaseService databaseService)
         {
@@ -28,61 +44,32 @@ namespace HaulThis.Services
             {
                 _logger.LogInformation("Starting GetTrackingInfo for Tracking ID: {TrackingId}", trackingId);
 
-                if (!_databaseService.CreateConnection())
+                _logger.LogInformation("Executing query with trackingId: {TrackingId}", trackingId);
+                var reader = _databaseService.Query(GetTrackingInfoQuery, trackingId);
+
+                if (reader.Read())
                 {
-                    _logger.LogError("Failed to create a database connection.");
-                    return null;
-                }
+                    _logger.LogInformation("Query returned data for Tracking ID: {TrackingId}", trackingId);
 
-                string query = @"
-                    SELECT 
-                        wp.Location, 
-                        wp.ArrivalTime, 
-                        tm.ItemId, 
-                        tm.TripId 
-                    FROM 
-                        Waypoint wp
-                    INNER JOIN 
-                        TripManifest tm ON tm.TripId = wp.TripId
-                    WHERE 
-                        tm.ItemId = @p0
-                    ORDER BY 
-                        wp.ArrivalTime DESC
-                    LIMIT 1";
+                    var location = reader.GetString(0);
+                    var arrivalTime = reader.GetDateTime(1);
+                    var eta = CalculateETA(arrivalTime);
 
-                _logger.LogInformation("Executing query: {Query} with trackingId: {TrackingId}", query, trackingId);
+                    _logger.LogInformation("Tracking Info - Location: {Location}, Arrival Time: {ArrivalTime}, ETA: {ETA}", location, arrivalTime, eta);
 
-                var reader = _databaseService.Query(query, trackingId);
-
-                try
-                {
-                    if (reader.Read())
+                    return new TrackingInfo
                     {
-                        _logger.LogInformation("Query returned data for Tracking ID: {TrackingId}", trackingId);
-
-                        var location = reader.GetString(0);
-                        var arrivalTime = reader.GetDateTime(1);
-                        var eta = CalculateETA(arrivalTime);
-
-                        _logger.LogInformation("Tracking Info - Location: {Location}, Arrival Time: {ArrivalTime}, ETA: {ETA}", location, arrivalTime, eta);
-
-                        return new TrackingInfo
-                        {
-                            CurrentLocation = location,
-                            ETA = eta,
-                            Status = eta.HasValue && eta > DateTime.UtcNow ? "In Transit" : "Delivered"
-                        };
-                    }
-                    else
-                    {
-                        _logger.LogWarning("Query did not return any rows for Tracking ID: {TrackingId}", trackingId);
-                    }
+                        CurrentLocation = location,
+                        ETA = eta,
+                        Status = eta.HasValue && eta > DateTime.UtcNow ? "In Transit" : "Delivered"
+                    };
                 }
-                finally
+                else
                 {
-                    reader.Close(); // Explicitly close the reader after reading
+                    _logger.LogWarning("Query did not return any rows for Tracking ID: {TrackingId}", trackingId);
                 }
 
+                reader.Close(); // Explicitly close the reader after reading
                 return null;
             }
             catch (Exception ex)
@@ -90,18 +77,13 @@ namespace HaulThis.Services
                 _logger.LogError(ex, "An error occurred while retrieving tracking information for Tracking ID: {TrackingId}", trackingId);
                 return null;
             }
-            finally
-            {
-                _databaseService.CloseConnection();
-                _logger.LogInformation("Database connection closed.");
-            }
         }
 
         private DateTime? CalculateETA(DateTime lastKnownLocationTime)
         {
-            //Placeholder for actual ETA calculation logic
-            // Assuming that from the last known location, the delivery is expected within 2 hours
+            // TODO: Implement actual ETA calculation logic
             var expectedDeliveryTime = lastKnownLocationTime.AddHours(2);
+
             // If the expected delivery time is in the future, return it as the ETA
             return expectedDeliveryTime > DateTime.UtcNow ? expectedDeliveryTime : null;
         }

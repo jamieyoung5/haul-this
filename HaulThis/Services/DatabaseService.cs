@@ -86,9 +86,9 @@ namespace HaulThis.Services
         {
             try
             {
-                var command = CreateCommand(query, args); // Remove 'using' here
+                var command = CreateCommand(query, args); 
                 _logger.LogInformation("Executing query: {Query}", query);
-                return command.ExecuteReader(CommandBehavior.CloseConnection); // Ensure connection is closed when reader is closed
+                return command.ExecuteReader(CommandBehavior.CloseConnection); 
             }
             catch (Exception ex)
             {

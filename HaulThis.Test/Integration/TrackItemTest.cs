@@ -15,13 +15,12 @@ public class TrackingServiceIntegrationTests : IDisposable
     public TrackingServiceIntegrationTests()
     {
         var serviceCollection = new ServiceCollection();
-
         // Create an in-memory database connection
         _connection = new SqliteConnection("Data Source=:memory:");
         _connection.Open();  // Keep the connection open for the lifetime of the test
 
         // Register the in-memory SQLite database connection as a singleton
-        serviceCollection.AddSingleton(_connection);
+        serviceCollection.AddSingleton<IDbConnection>(_connection);
 
         // Register the existing DatabaseService and other services
         serviceCollection.AddTransient<IDatabaseService, DatabaseService>();
@@ -43,18 +42,18 @@ public class TrackingServiceIntegrationTests : IDisposable
     }
 
     private void SeedDatabase(IDatabaseService databaseService)
-{   
-     var arrivalTime = DateTime.UtcNow.AddHours(-1).ToString("yyyy-MM-ddTHH:mm:ss");
+    {
+        var arrivalTime = DateTime.UtcNow.AddHours(-1).ToString("yyyy-MM-ddTHH:mm:ss");
 
-    string seedQuery = $@"
+        string seedQuery = $@"
         CREATE TABLE IF NOT EXISTS TripManifest (ItemId TEXT, TripId TEXT);
         CREATE TABLE IF NOT EXISTS Waypoint (Location TEXT, ArrivalTime DATETIME, TripId TEXT);
         INSERT INTO TripManifest (ItemId, TripId) VALUES ('123', 'Trip1');
         INSERT INTO Waypoint (Location, ArrivalTime, TripId) VALUES ('New York', '{arrivalTime}', 'Trip1');
     ";
 
-    databaseService.Execute(seedQuery);
-}
+        databaseService.Execute(seedQuery);
+    }
 
 
     [Fact]
@@ -88,7 +87,31 @@ public class TrackingServiceIntegrationTests : IDisposable
     }
 
     public void Dispose()
+{
+    if (_connection != null)
     {
-        _connection.Close(); 
+        try
+        {
+            if (_connection.State != ConnectionState.Closed)
+            {
+                _connection.Close();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error when closing the connection: {ex.Message}");
+        }
+        finally
+        {
+            _connection.Dispose();
+        }
     }
+    else
+    {
+        Console.WriteLine("Connection is already null when attempting to dispose.");
+    }
+
+    _serviceProvider?.Dispose();
+}
+
 }
