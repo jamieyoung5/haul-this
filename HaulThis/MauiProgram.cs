@@ -1,4 +1,6 @@
-﻿using HaulThis.Services;
+﻿using System.Reflection;
+using System.Text.Json;
+using HaulThis.Services;
 using Microsoft.Extensions.Logging;
 using CommunityToolkit.Maui;
 using HaulThis.Views.Admin;
@@ -24,8 +26,8 @@ public static class MauiProgram
         builder.Logging.AddDebug();
 #endif
 
-
-        string connectionString = "Connection string";
+        var config = LoadConfiguration();
+        string connectionString = config.ConnectionStrings.DevelopmentConnection;
         var loggerFactory = LoggerFactory.Create(loggerBuilder =>
         {
             loggerBuilder.AddConsole();
@@ -53,5 +55,14 @@ public static class MauiProgram
         builder.Services.AddTransient<ManageEmployees>(_ => new ManageEmployees(userService));
 
         return builder.Build();
+    }
+    
+    private static AppSettings LoadConfiguration()
+    {
+        var assembly = Assembly.GetExecutingAssembly();
+        using Stream stream = assembly.GetManifestResourceStream("HaulThis.appsettings.json");
+        using StreamReader reader = new StreamReader(stream);
+        string json = reader.ReadToEnd();
+        return JsonSerializer.Deserialize<AppSettings>(json);
     }
 }

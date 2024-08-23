@@ -2,6 +2,9 @@
 
 namespace HaulThis.Services;
 
+/// <summary>
+/// A service used to perform User CRUD operations against a database
+/// </summary>
 public class UserService(IDatabaseService databaseService) : IUserService
 {
     private const string GetAllUsersQuery =  "SELECT u.Id, u.firstName, u.lastName, u.email, u.phoneNumber, u.address, u.createdAt, u.updatedAt, r.roleName FROM users u JOIN role r ON u.roleId = r.Id";
@@ -19,6 +22,7 @@ public class UserService(IDatabaseService databaseService) : IUserService
                                           """;
     private const string DeleteUserStmt = "DELETE FROM users WHERE id = @p0";
     
+    /// <inheritdoc />
     public async Task<IEnumerable<User>> GetAllUsersAsync()
     {
         var users = new List<User>();
@@ -44,7 +48,8 @@ public class UserService(IDatabaseService databaseService) : IUserService
 
         return await Task.FromResult(users);
     }
-
+    
+    /// <inheritdoc />
     public async Task<User> GetUserByIdAsync(int userId)
     {
         var reader = databaseService.QueryRow(GetAllUsersByIdQuery, userId);
@@ -67,17 +72,20 @@ public class UserService(IDatabaseService databaseService) : IUserService
             Role = Enum.Parse<Role>(reader.GetString(8))
         });
     }
-
+    
+    /// <inheritdoc />
     public async Task<int> AddUserAsync(User user)
     {
-        return await Task.FromResult(databaseService.Execute(AddUserStmt, user.FirstName, user.LastName, user.Email, user.PhoneNumber, user.Address, user.Role.ToString(), user.CreatedAt));
+         return await Task.FromResult(databaseService.Execute(AddUserStmt, user.FirstName, user.LastName, user.Email, user.PhoneNumber, user.Address, user.Role.ToString(), user.CreatedAt));
     }
-
+    
+    /// <inheritdoc />
     public async Task<int> UpdateUserAsync(User user)
     {
         return await Task.FromResult(databaseService.Execute(UpdateUserStmt, user.FirstName, user.LastName, user.Email, user.PhoneNumber, user.Address, user.Role.ToString(), DateTime.UtcNow, user.Id));
     }
-
+    
+    /// <inheritdoc />
     public async Task<int> DeleteUserAsync(int userId)
     {
         return await Task.FromResult(databaseService.Execute(DeleteUserStmt, userId));

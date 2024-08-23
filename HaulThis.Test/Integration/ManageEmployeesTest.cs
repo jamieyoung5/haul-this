@@ -1,17 +1,39 @@
 ﻿using HaulThis.Models;
 using HaulThis.Services;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace HaulThis.Test.Integration;
 
-public class ManageEmployeesTest : IClassFixture<TestDatabaseFixture>
+public class ManageEmployeesTest : IDisposable
 {
     private readonly IUserService _userService;
-
-    public ManageEmployeesTest(TestDatabaseFixture fixture)
+    private readonly IDatabaseService _databaseService;
+    private readonly SqlConnection _connection;
+    private readonly DatabaseSetup _databaseSetup;
+    
+    public ManageEmployeesTest()
     {
-        var databaseService = new DatabaseService("");
-        _userService = new UserService(databaseService);
+        var connectionString = "Server=(localdb)\\MSSQLLocalDB;Database=master;Integrated Security=true;MultipleActiveResultSets=true;";
+
+
+        _connection = new SqlConnection(connectionString);
+        _connection.Open();
+        
+        var loggerFactory = LoggerFactory.Create(loggerBuilder =>
+        {
+            loggerBuilder.AddConsole();
+            loggerBuilder.AddDebug();
+        });
+        ILogger<DatabaseService> logger = loggerFactory.CreateLogger<DatabaseService>();
+        _databaseService = new DatabaseService(_connection, logger);
+        _userService = new UserService(_databaseService);
+
+        _databaseSetup = new DatabaseSetup();
+        _databaseSetup.InitializeDatabase(_connection);
+        _databaseSetup.ApplyMigrationChangeSet(_connection);
     }
 
     [Fact]
@@ -84,22 +106,10 @@ public class ManageEmployeesTest : IClassFixture<TestDatabaseFixture>
         Assert.Equal(1, result);
         Assert.Equal("UpdatedSmith", updatedUser.LastName);
     }
-}
-
-public class TestDatabaseFixture : IDisposable
-{
-    public IConfiguration Configuration { get; }
-
-    public TestDatabaseFixture()
-    {
-        var builder = new ConfigurationBuilder()
-            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-            .AddEnvironmentVariables();
-        Configuration = builder.Build();
-    }
 
     public void Dispose()
     {
-        // Clean up database or other resources if needed
+        _databaseSetup.TearDownDatabase(_connection);
+        _databaseService.CloseConnection(); 
     }
 }

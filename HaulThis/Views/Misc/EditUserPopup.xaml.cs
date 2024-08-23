@@ -30,6 +30,7 @@ public partial class EditUserPopup
         _user.LastName = LastNameEntry.Text;
         _user.Email = EmailEntry.Text;
         _user.PhoneNumber = PhoneEntry.Text;
+        _user.Address = AddressEntry.Text;
         _user.Role = (Role)Enum.Parse(typeof(Role), RolePicker.SelectedItem.ToString() ?? "UNKNOWN");
         
         Close(true);

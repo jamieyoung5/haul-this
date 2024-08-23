@@ -1,3 +1,4 @@
+using System.ComponentModel.Design.Serialization;
 using CommunityToolkit.Maui.Views;
 using HaulThis.Models;
 using HaulThis.Services;
@@ -25,10 +26,10 @@ public partial class ManageEmployees
         object? result = await this.ShowPopupAsync(addUserPopup);
 
         if (result is not User newUser) return;
+        
         await _userService.AddUserAsync(newUser);
 
-        var viewModel = BindingContext as UserListViewModel;
-        viewModel?.Users.Add(newUser);
+        BindingContext = new UserListViewModel(_userService);
     }
 
     private async void OnEditButtonClicked(object sender, EventArgs e)
