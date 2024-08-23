@@ -56,11 +56,13 @@ public static class MauiProgram
          // Register services and ViewModel
         ITrackingService trackingService = new TrackingService(db);
         builder.Services.AddSingleton(trackingService);
-       
+
+        IPickupRequestService pickupRequestService = new PickupRequestService(db);
+        builder.Services.AddSingleton(pickupRequestService);
 
         // Register the pages
         builder.Services.AddTransient<TrackItem>(_ => new TrackItem(trackingService));
-        
+        builder.Services.AddTransient<RequestPickup>(_ => new RequestPickup(pickupRequestService));
 
         return builder.Build();
     }

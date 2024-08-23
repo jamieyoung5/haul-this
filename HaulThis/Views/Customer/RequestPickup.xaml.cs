@@ -1,9 +1,20 @@
-namespace HaulThis.Views.Customer;
+using System;
+using Microsoft.Maui.Controls;
+using HaulThis.ViewModels;
+using HaulThis.Services;
+using HaulThis.Models;
 
-public partial class RequestPickup : ContentPage
+namespace HaulThis.Views.Customer
 {
-	public RequestPickup()
-	{
-		InitializeComponent();
-	}
+  public partial class RequestPickup : ContentPage
+  {
+    private readonly IPickupRequestService _pickupRequestService;
+
+    public RequestPickup(IPickupRequestService pickupRequestService)
+    {
+      InitializeComponent();
+      _pickupRequestService = pickupRequestService ?? throw new ArgumentNullException(nameof(pickupRequestService));
+      BindingContext = new PickupRequestModel(_pickupRequestService);
+    }
+  }
 }

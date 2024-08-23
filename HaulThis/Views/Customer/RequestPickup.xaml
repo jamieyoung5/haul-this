@@ -2,11 +2,46 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="HaulThis.Views.Customer.RequestPickup"
-             Title="RequestPickup">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to Request Pickup!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             Title="Request Pickup">
+
+    <StackLayout Padding="20" Spacing="15">
+
+        <Entry x:Name="PickupLocationEntry"
+               Placeholder="Enter Pickup Location"
+               Text="{Binding PickupLocation}" />
+
+        <Entry x:Name="DestinationEntry"
+               Placeholder="Enter Destination"
+               Text="{Binding Destination}" />
+
+        <DatePicker x:Name="RequestedTimePicker"
+                    Date="{Binding RequestedTime}"
+                    Format="D" />
+
+        <Entry x:Name="CustomerNameEntry"
+               Placeholder="Enter Name"
+               Text="{Binding CustomerName}" />
+
+        <Entry x:Name="CustomerContactEntry"
+               Placeholder="Enter Contact Number"
+               Text="{Binding CustomerContact}" />
+
+        <Picker x:Name="StatusPicker"
+                Title="Select Status"
+                SelectedItem="{Binding Status}">
+            <Picker.Items>
+                <x:String>Pending</x:String>
+                <x:String>Confirmed</x:String>
+                <x:String>Completed</x:String>
+            </Picker.Items>
+        </Picker>
+
+        <Button Text="Submit"
+                Command="{Binding SubmitPickupRequestCommand}" />
+
+        <Label Text="{Binding ErrorMessage}"
+               TextColor="Red"
+               IsVisible="{Binding IsErrorVisible}" />
+
+    </StackLayout>
 </ContentPage>
