@@ -14,9 +14,15 @@
                Placeholder="Enter Destination"
                Text="{Binding Destination}" />
 
-        <DatePicker x:Name="RequestedTimePicker"
-                    Date="{Binding RequestedTime}"
-                    Format="D" />
+        <StackLayout Orientation="Horizontal" Spacing="5">
+            <Label Text="Date:"
+                   VerticalOptions="Center"
+                   HorizontalOptions="Start" />
+            <DatePicker x:Name="RequestedTimePicker"
+                        Date="{Binding RequestedTime}"
+                        Format="D"/>
+        </StackLayout>
+
 
         <Entry x:Name="CustomerNameEntry"
                Placeholder="Enter Name"

@@ -17,6 +17,7 @@ namespace HaulThis.ViewModels
     {
       _pickupRequestService = pickupRequestService;
       SubmitPickupRequestCommand = new Command(async () => await SubmitPickupRequest());
+      RequestedTime = DateTime.Now;
     }
 
     private string _pickupLocation;
@@ -121,7 +122,7 @@ namespace HaulThis.ViewModels
         }
         else
         {
-          ErrorMessage = "Failed to submit pickup request.";
+          ErrorMessage = "Failed to submit pickup request, all fields are required.";
         }
       }
       catch (Exception ex)
