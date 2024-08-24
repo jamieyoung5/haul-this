@@ -30,8 +30,9 @@ public class ManageEmployeesTest : IDisposable
     }
 
     [Fact]
-    public async Task AddUser_ShouldAddUserToDatabase()
+    public async Task AddUser_ShouldAddUserToDatabase_WhenValidUserIsProvided()
     {
+        // Arrange
         var user = new User
         {
             FirstName = "John",
@@ -43,16 +44,19 @@ public class ManageEmployeesTest : IDisposable
             CreatedAt = DateTime.UtcNow
         };
         
+        // Act
         int result = await _userService.AddUserAsync(user);
-        var users = await _userService.GetAllUsersAsync();
         
+        // Assert
+        var users = await _userService.GetAllUsersAsync();
         Assert.Equal(1, result);
         Assert.Contains(users, u => u.Email == "john.doe@example.com");
     }
 
     [Fact]
-    public async Task DeleteUser_ShouldRemoveUserFromDatabase()
+    public async Task DeleteUser_ShouldRemoveUserFromDatabase_WhenUserIdIsExists()
     {
+        // Arrange
         var user = new User
         {
             FirstName = "Jane",
@@ -63,21 +67,24 @@ public class ManageEmployeesTest : IDisposable
             Role = Role.Administrator,
             CreatedAt = DateTime.UtcNow
         };
-
+        
         int userId = await _userService.AddUserAsync(user);
         var usersBeforeDeletion = await _userService.GetAllUsersAsync();
         Assert.Contains(usersBeforeDeletion, u => u.Email == "jane.doe@example.com");
         
+        // Act
         int result = await _userService.DeleteUserAsync(userId);
-        var usersAfterDeletion = await _userService.GetAllUsersAsync();
         
+        // Assert
+        var usersAfterDeletion = await _userService.GetAllUsersAsync();
         Assert.Equal(1, result);
         Assert.DoesNotContain(usersAfterDeletion, u => u.Email == "jane.doe@example.com");
     }
     
     [Fact]
-    public async Task UpdateUser_ShouldModifyUserInDatabase()
+    public async Task UpdateUser_ShouldModifyUserInDatabase_WhenEditsAreValid()
     {
+        // Arrange
         var user = new User
         {
             FirstName = "Mark",
@@ -88,14 +95,16 @@ public class ManageEmployeesTest : IDisposable
             Role = Role.Driver,
             CreatedAt = DateTime.UtcNow
         };
-
+    
         int userId = await _userService.AddUserAsync(user);
         var userToUpdate = await _userService.GetUserByIdAsync(userId);
         userToUpdate.LastName = "UpdatedSmith";
         
+        // Act
         int result = await _userService.UpdateUserAsync(userToUpdate);
-        var updatedUser = await _userService.GetUserByIdAsync(userId);
         
+        // Assert
+        var updatedUser = await _userService.GetUserByIdAsync(userId);
         Assert.Equal(1, result);
         Assert.Equal("UpdatedSmith", updatedUser.LastName);
     }

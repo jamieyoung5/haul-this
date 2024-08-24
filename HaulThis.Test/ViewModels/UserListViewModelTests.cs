@@ -35,8 +35,8 @@ public class UserListViewModelTests
         // Arrange
         var users = new List<User>
         {
-            new User { Id = 1, FirstName = "John", LastName = "Doe" },
-            new User { Id = 2, FirstName = "Jane", LastName = "Doe" }
+            new() { Id = 1, FirstName = "John", LastName = "Doe" },
+            new() { Id = 2, FirstName = "Jane", LastName = "Doe" }
         };
         _mockUserService.Setup(s => s.GetAllUsersAsync()).ReturnsAsync(users);
 
