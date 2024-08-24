@@ -4,7 +4,7 @@ namespace HaulThis.Views.Misc;
 
 public partial class EditUserPopup
 {
-    private User _user;
+    private readonly User _user;
     
     public EditUserPopup(User user)
     {

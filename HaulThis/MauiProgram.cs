@@ -40,7 +40,6 @@ public static class MauiProgram
         logger.LogInformation("Attempting to connect");
         IDatabaseService db = new DatabaseService(new SqlConnection(connectionString), logger);
         logger.LogInformation("Connected successfully");
-        logger.LogInformation("Attempting to ping");
         db.CreateConnection();
         if (db.Ping())
         {

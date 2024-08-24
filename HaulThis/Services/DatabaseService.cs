@@ -10,6 +10,7 @@ public class DatabaseService : IDatabaseService
 {
     private readonly IDbConnection _connection;
     private readonly ILogger<DatabaseService> _logger;
+    private bool _disposed = false;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DatabaseService"/> class with the specified connection string.
@@ -152,7 +153,25 @@ public class DatabaseService : IDatabaseService
 
     public void Dispose()
     {
-        _connection.Dispose();
+        Dispose(true);
         GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (_disposed)
+            return;
+
+        if (disposing)
+        {
+            _connection?.Dispose();
+        }
+
+        _disposed = true;
+    }
+    
+    ~DatabaseService()
+    {
+        Dispose(false);
     }
 }

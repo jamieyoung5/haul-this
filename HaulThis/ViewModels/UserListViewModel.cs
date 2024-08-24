@@ -17,7 +17,7 @@ public sealed class UserListViewModel : INotifyPropertyChanged
         LoadUsers();
     }
     
-    private async void LoadUsers()
+    private async Task LoadUsers()
     {
         var usersFromDb = await _userService.GetAllUsersAsync();
         Users.Clear();
