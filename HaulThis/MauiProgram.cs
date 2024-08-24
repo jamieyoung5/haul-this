@@ -1,12 +1,12 @@
-﻿using HaulThis.Services;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using System.Reflection;
-using Microsoft.Extensions.Options;
+using System.Text.Json;
+using HaulThis.Services;
+using Microsoft.Extensions.Logging;
+using CommunityToolkit.Maui;
+using HaulThis.Views.Admin;
+using Microsoft.Data.SqlClient;
 using HaulThis.ViewModels;
 using HaulThis.Views.Customer;
-using Microsoft.Data.SqlClient;
 
 namespace HaulThis;
 
@@ -17,6 +17,7 @@ public static class MauiProgram
         var builder = MauiApp.CreateBuilder();
         builder
             .UseMauiApp<App>()
+            .UseMauiCommunityToolkit()
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -26,42 +27,47 @@ public static class MauiProgram
 #if DEBUG
         builder.Logging.AddDebug();
 #endif
-        var configBuilder = new ConfigurationBuilder();
-        configBuilder.SetBasePath(Directory.GetCurrentDirectory())
-               .AddJsonFile("HaulThis/appsettings.json", optional: false, reloadOnChange: true);
 
-        IConfiguration config = configBuilder.Build();
-
-        string connectionString = config.GetConnectionString("DevelopmentConnection");
-        var loggerFactory = LoggerFactory.Create(builder =>
+        var config = LoadConfiguration();
+        string connectionString = config.ConnectionStrings.DevelopmentConnection;
+        var loggerFactory = LoggerFactory.Create(loggerBuilder =>
         {
-            builder.AddConsole();
-            builder.AddDebug();
+            loggerBuilder.AddConsole();
+            loggerBuilder.AddDebug();
         });
 
-        ILogger<DatabaseService> _logger = loggerFactory.CreateLogger<DatabaseService>();
-        _logger.LogInformation("Attempting to connect");
-        IDatabaseService db = new DatabaseService(new SqlConnection(connectionString), _logger);
-        _logger.LogInformation("Connected successfully");
-        _logger.LogInformation("Attempting to ping");
+        ILogger<DatabaseService> logger = loggerFactory.CreateLogger<DatabaseService>();
+        logger.LogInformation("Attempting to connect");
+        IDatabaseService db = new DatabaseService(new SqlConnection(connectionString), logger);
+        logger.LogInformation("Connected successfully");
         db.CreateConnection();
         if (db.Ping())
         {
-            _logger.LogInformation("pinged successfully");
+            logger.LogInformation("pinged successfully");
         } else
         {
-            _logger.LogInformation("pinged unsuccessfully");
+            logger.LogInformation("pinged unsuccessfully");
         }
 
-         // Register services and ViewModel
-        ITrackingService trackingService = new TrackingService(db);
-        builder.Services.AddSingleton(trackingService);
-       
 
-        // Register the pages
-        builder.Services.AddTransient<TrackItem>(_ => new TrackItem(trackingService));
+        ITrackingService trackingService = new TrackingService(db);
+        IUserService userService = new UserService(db);
         
+        builder.Services.AddSingleton(trackingService);
+        builder.Services.AddTransient<TrackItem>(_ => new TrackItem(trackingService));
+        builder.Services.AddSingleton(db);
+        builder.Services.AddSingleton(userService);
+        builder.Services.AddTransient<ManageEmployees>(_ => new ManageEmployees(userService));
 
         return builder.Build();
+    }
+    
+    private static AppSettings LoadConfiguration()
+    {
+        var assembly = Assembly.GetExecutingAssembly();
+        using Stream stream = assembly.GetManifestResourceStream("HaulThis.appsettings.json");
+        using StreamReader reader = new StreamReader(stream);
+        string json = reader.ReadToEnd();
+        return JsonSerializer.Deserialize<AppSettings>(json);
     }
 }

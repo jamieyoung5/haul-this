@@ -3,7 +3,7 @@ using HaulThis.ViewModels;
 
 namespace HaulThis.Views.Customer;
 
-public partial class TrackItem : ContentPage
+public partial class TrackItem
 {
 	private readonly ITrackingService _trackingService;
     public TrackItem(ITrackingService trackingService)

@@ -1,0 +1,44 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: Jamie Young (40544666@live.napier.ac.uk)
+      labels: ht-25
+      comment: expand user table with user data
+      changes:
+        - addColumn:
+            tableName: users
+            columns: 
+              - column:
+                  name: firstName
+                  type: NVARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: lastName
+                  type: NVARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email
+                  type: NVARCHAR(100)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: phoneNumber
+                  type: NVARCHAR(15)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: address
+                  type: NVARCHAR(200)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: createdAt
+                  type: DATETIME
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updatedAt
+                  type: DATETIME

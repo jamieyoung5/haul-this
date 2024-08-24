@@ -1,6 +1,6 @@
 namespace HaulThis.Views.Driver;
 
-public partial class ReportDelays : ContentPage
+public partial class ReportDelays
 {
 	public ReportDelays()
 	{

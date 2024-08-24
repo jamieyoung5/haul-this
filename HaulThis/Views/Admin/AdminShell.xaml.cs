@@ -1,6 +1,6 @@
 namespace HaulThis.Views.Admin;
 
-public partial class AdminShell : Shell
+public partial class AdminShell
 {
 	public AdminShell()
 	{

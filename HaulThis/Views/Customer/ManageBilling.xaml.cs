@@ -1,6 +1,6 @@
 namespace HaulThis.Views.Customer;
 
-public partial class ManageBilling : ContentPage
+public partial class ManageBilling
 {
 	public ManageBilling()
 	{
