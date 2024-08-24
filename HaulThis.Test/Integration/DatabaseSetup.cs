@@ -4,7 +4,44 @@ namespace HaulThis.Test.Integration;
 
 public class DatabaseSetup
 {
-    public void InitializeDatabase(SqlConnection connection)
+    public const string LocalDbString = "Server=(localdb)\\MSSQLLocalDB;Database=master;Integrated Security=true;MultipleActiveResultSets=true;";
+
+    public SqlConnection DeployDatabase()
+    {
+        SqlConnection connection = new SqlConnection(LocalDbString);
+        connection.Open();
+        InitializeDatabase(connection);
+
+        return connection;
+    }
+    
+    public void TearDownDatabase(SqlConnection connection)
+    {
+        // Switch to the master database before dropping the test db
+        using (var switchCommand = new SqlCommand("USE master;", connection))
+        {
+            switchCommand.ExecuteNonQuery();
+        }
+
+        // Terminate all connections to the test db
+        using (var terminateConnectionsCommand = new SqlCommand(
+                   @"DECLARE @kill varchar(8000) = '';  
+          SELECT @kill = @kill + 'KILL ' + CONVERT(varchar(5), session_id) + ';'
+          FROM sys.dm_exec_sessions
+          WHERE database_id = DB_ID('TestDb');
+          EXEC(@kill);", connection))
+        {
+            terminateConnectionsCommand.ExecuteNonQuery();
+        }
+
+        // Drop the test database
+        using (var dropCommand = new SqlCommand("DROP DATABASE IF EXISTS TestDb;", connection))
+        {
+            dropCommand.ExecuteNonQuery();
+        }
+    }
+    
+    private void InitializeDatabase(SqlConnection connection)
     {
         TearDownDatabase(connection);
         
@@ -95,6 +132,7 @@ public class DatabaseSetup
                     tripId INT,
                     userId INT,
                     location VARCHAR(255) NOT NULL,
+                    arrivalTime DATETIME,
                     FOREIGN KEY (tripId) REFERENCES trip(Id),
                     FOREIGN KEY (userId) REFERENCES users(Id)
                 );
@@ -102,43 +140,4 @@ public class DatabaseSetup
             command.ExecuteNonQuery();
         }
     }
-
-    public void ApplyMigrationChangeSet(SqlConnection connection)
-    {
-        using (var command = connection.CreateCommand())
-        {
-            command.CommandText = @"
-                ALTER TABLE users 
-                ADD anotherColumn NVARCHAR(50) NULL; -- Example modification
-            ";
-            command.ExecuteNonQuery();
-        }
-    }
-
-    public void TearDownDatabase(SqlConnection connection)
-    {
-        // Switch to the master database before dropping the test db
-        using (var switchCommand = new SqlCommand("USE master;", connection))
-        {
-            switchCommand.ExecuteNonQuery();
-        }
-
-        // Terminate all connections to the test db
-        using (var terminateConnectionsCommand = new SqlCommand(
-                   @"DECLARE @kill varchar(8000) = '';  
-          SELECT @kill = @kill + 'KILL ' + CONVERT(varchar(5), session_id) + ';'
-          FROM sys.dm_exec_sessions
-          WHERE database_id = DB_ID('TestDb');
-          EXEC(@kill);", connection))
-        {
-            terminateConnectionsCommand.ExecuteNonQuery();
-        }
-
-        // Drop the test database
-        using (var dropCommand = new SqlCommand("DROP DATABASE IF EXISTS TestDb;", connection))
-        {
-            dropCommand.ExecuteNonQuery();
-        }
-    }
-
 }

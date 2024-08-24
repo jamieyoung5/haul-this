@@ -16,11 +16,8 @@ public class ManageEmployeesTest : IDisposable
     
     public ManageEmployeesTest()
     {
-        var connectionString = "Server=(localdb)\\MSSQLLocalDB;Database=master;Integrated Security=true;MultipleActiveResultSets=true;";
-
-
-        _connection = new SqlConnection(connectionString);
-        _connection.Open();
+        _databaseSetup = new DatabaseSetup();
+        _connection = _databaseSetup.DeployDatabase();
         
         var loggerFactory = LoggerFactory.Create(loggerBuilder =>
         {
@@ -30,10 +27,6 @@ public class ManageEmployeesTest : IDisposable
         ILogger<DatabaseService> logger = loggerFactory.CreateLogger<DatabaseService>();
         _databaseService = new DatabaseService(_connection, logger);
         _userService = new UserService(_databaseService);
-
-        _databaseSetup = new DatabaseSetup();
-        _databaseSetup.InitializeDatabase(_connection);
-        _databaseSetup.ApplyMigrationChangeSet(_connection);
     }
 
     [Fact]

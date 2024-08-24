@@ -50,17 +50,12 @@ public static class MauiProgram
             logger.LogInformation("pinged unsuccessfully");
         }
 
-         // Register services and ViewModel
+
         ITrackingService trackingService = new TrackingService(db);
-        builder.Services.AddSingleton(trackingService);
-       
-
-        // Register the pages
-        builder.Services.AddTransient<TrackItem>(_ => new TrackItem(trackingService));
-        
-
         IUserService userService = new UserService(db);
-
+        
+        builder.Services.AddSingleton(trackingService);
+        builder.Services.AddTransient<TrackItem>(_ => new TrackItem(trackingService));
         builder.Services.AddSingleton(db);
         builder.Services.AddSingleton(userService);
         builder.Services.AddTransient<ManageEmployees>(_ => new ManageEmployees(userService));
