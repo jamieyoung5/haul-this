@@ -52,12 +52,17 @@ public static class MauiProgram
 
         ITrackingService trackingService = new TrackingService(db);
         IUserService userService = new UserService(db);
+        IManageVehiclesService manageVehiclesService = new ManageVehiclesService(db);
         
         builder.Services.AddSingleton(trackingService);
         builder.Services.AddTransient<TrackItem>(_ => new TrackItem(trackingService));
         builder.Services.AddSingleton(db);
         builder.Services.AddSingleton(userService);
         builder.Services.AddTransient<ManageEmployees>(_ => new ManageEmployees(userService));
+        builder.Services.AddSingleton(manageVehiclesService);
+        builder.Services.AddTransient<ManageVehicles>(_ => new ManageVehicles(manageVehiclesService));
+
+
 
         return builder.Build();
     }

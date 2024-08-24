@@ -3,10 +3,90 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="HaulThis.Views.Admin.ManageVehicles"
              Title="ManageVehicles">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to ManageVehicles!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+    <ContentPage.Content>
+        <!-- Centering the collection view with margins -->
+        <Grid Margin="20,40,20,20">
+            <!-- Adding margin to provide spacing from the top -->
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Row="0" Grid.Column="1" Padding="10" BackgroundColor="LightGray">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="50" />
+                    <!-- ID -->
+                    <ColumnDefinition Width="100" />
+                    <!-- Make -->
+                    <ColumnDefinition Width="100" />
+                    <!-- Model -->
+                    <ColumnDefinition Width="200" />
+                    <!-- Year -->
+                    <ColumnDefinition Width="120" />
+                    <!-- License Plate -->
+                    <ColumnDefinition Width="100" />
+                    <!-- Status -->
+                    <ColumnDefinition Width="150" /> 
+                    <ColumnDefinition Width="Auto"/>
+                    <!-- Created At -->
+                </Grid.ColumnDefinitions>
+                
+                <!-- Table Headings -->
+                <Label Text="ID" FontAttributes="Bold" VerticalOptions="Center" Grid.Column="0" />
+                <Label Text="Make" FontAttributes="Bold" VerticalOptions="Center" Grid.Column="1" />
+                <Label Text="Model" FontAttributes="Bold" VerticalOptions="Center" Grid.Column="2" />
+                <Label Text="Year" FontAttributes="Bold" VerticalOptions="Center" Grid.Column="3" />
+                <Label Text="License Plate" FontAttributes="Bold" VerticalOptions="Center" Grid.Column="4" />
+                <Label Text="Status" FontAttributes="Bold" VerticalOptions="Center" Grid.Column="5" />
+                <Label Text="Created At" FontAttributes="Bold" VerticalOptions="Center" Grid.Column="6" />
+                <Button Text="Add" BackgroundColor="Green" TextColor="White" VerticalOptions="Center" Grid.Column="7" Clicked="OnAddButtonClicked" />
+            </Grid>
+
+            <CollectionView Grid.Row="1" Grid.Column="1"
+                            ItemsSource="{Binding Vehicles}"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Start">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="50" />
+                                <!-- ID -->
+                                <ColumnDefinition Width="100" />
+                                <!-- Make -->
+                                <ColumnDefinition Width="100" />
+                                <!-- Model -->
+                                <ColumnDefinition Width="200" />
+                                <!-- Year -->
+                                <ColumnDefinition Width="120" />
+                                <!-- License Plate -->
+                                <ColumnDefinition Width="100" />
+                                <!-- Status -->
+                                <ColumnDefinition Width="150" /> 
+                                <ColumnDefinition Width="Auto"/>
+                                <!-- Created At -->
+                            </Grid.ColumnDefinitions>
+                            <Label Text="{Binding Id}" Grid.Column="0" />
+                            <Label Text="{Binding Make}" Grid.Column="1" />
+                            <Label Text="{Binding Model}" Grid.Column="2" />
+                            <Label Text="{Binding Year}" Grid.Column="3" />
+                            <Label Text="{Binding LicensePlate}" Grid.Column="4" />
+                            <Label Text="{Binding Status}" Grid.Column="5" />
+                            <Label Text="{Binding CreatedAt}" Grid.Column="6" />
+                            
+                            <StackLayout Grid.Column="7" Orientation="Horizontal">
+                                <Button Text="Edit" BackgroundColor="Blue" TextColor="White" Clicked="OnEditButtonClicked" />
+                                <Button Text="Delete" BackgroundColor="Red" TextColor="White" Clicked="OnDeleteButtonClicked" />
+                            </StackLayout>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Grid>
+    </ContentPage.Content>
 </ContentPage>

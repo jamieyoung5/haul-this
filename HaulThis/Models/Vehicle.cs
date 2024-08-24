@@ -123,12 +123,13 @@ namespace HaulThis.Models
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public enum VehicleStatus
+   
+    }
+    public enum VehicleStatus
     {
         Available,       
         InUse,           
         InMaintenance,   
         Decommissioned   
-    }
     }
 }

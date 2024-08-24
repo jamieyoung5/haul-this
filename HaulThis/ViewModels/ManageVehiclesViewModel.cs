@@ -5,16 +5,18 @@ using HaulThis.Services;
 
 namespace HaulThis.ViewModels;
 
-public class ManageVehiclesViewModel
+public class ManageVehiclesViewModel : INotifyPropertyChanged
 {   
     IManageVehiclesService _ManageVehiclesService;
 
     public ObservableCollection<Vehicle> vehicles { get; private init; } = new();
-    public ManageVehiclesViewModel(ManageVehiclesService manageVehiclesService)
+    public ManageVehiclesViewModel(IManageVehiclesService manageVehiclesService)
     {
         _ManageVehiclesService = manageVehiclesService;
         LoadVehicles();
     }
+
+    
 
     private async Task LoadVehicles()
     {
@@ -29,7 +31,7 @@ public class ManageVehiclesViewModel
         OnPropertyChanged(nameof(vehicles));
     }
 
-    public event PropertyChangingEventHandler? PropertyChanged;
+    public event PropertyChangedEventHandler? PropertyChanged;    
 
     private void OnPropertyChanged(string propertyName)
     {

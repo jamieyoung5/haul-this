@@ -7,19 +7,19 @@ namespace HaulThis.Services;
 
 public class ManageVehiclesService(IDatabaseService databaseService) : IManageVehiclesService
 {
-    private const string GetAllVehiclesQuery = "SELECT v.Id, v.make, v.model, v.year, v.licensePlate, v.createdAt, v.updatedAt FROM vehicles v";
-    private const string GetAllVehiclesByIdQuery = "SELECT v.Id, v.make, v.model, v.year, v.licensePlate, v.createdAt, v.updatedAt FROM vehicles v WHERE v.Id = @p0";
+    private const string GetAllVehiclesQuery = "SELECT v.Id, v.make, v.model, v.year, v.licensePlate, v.createdAt, v.updatedAt FROM vehicle v";
+    private const string GetAllVehiclesByIdQuery = "SELECT v.Id, v.make, v.model, v.year, v.licensePlate, v.createdAt, v.updatedAt FROM vehicle v WHERE v.Id = @p0";
 
     private const string AddVehicleStmt = """
-                                        INSERT INTO vehicles (make, model, year, licensePlate, createdAt)
+                                        INSERT INTO vehicle (make, model, year, licensePlate, createdAt)
                                                               VALUES (@p0, @p1, @p2, @p3, @p4)
                                         """;
     private const string UpdateVehicleStmt = """
-                                           UPDATE vehicles 
+                                           UPDATE vehicle 
                                                                  SET make = @p0, model = @p1, year = @p2, licensePlate = @p3, updatedAt = @p4
                                                                  WHERE Id = @p5
                                            """;
-    private const string DeleteVehicleStmt = "DELETE FROM vehicles WHERE id = @p0";
+    private const string DeleteVehicleStmt = "DELETE FROM vehicle WHERE id = @p0";
 
     public async Task<IEnumerable<Vehicle>> GetAllVehiclesAsync()
     {
