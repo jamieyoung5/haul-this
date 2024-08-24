@@ -2,6 +2,9 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using HaulThis.Models;
 using HaulThis.Services;
+using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("HaulThis.Tests")]
 
 namespace HaulThis.ViewModels;
 
@@ -18,7 +21,7 @@ public class ManageVehiclesViewModel : INotifyPropertyChanged
 
     
 
-    private async Task LoadVehicles()
+    internal async Task LoadVehicles()
     {
         var vehiclesFromDb = await _ManageVehiclesService.GetAllVehiclesAsync();
         vehicles.Clear();
@@ -33,7 +36,7 @@ public class ManageVehiclesViewModel : INotifyPropertyChanged
 
     public event PropertyChangedEventHandler? PropertyChanged;    
 
-    private void OnPropertyChanged(string propertyName)
+    internal void OnPropertyChanged(string propertyName)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }

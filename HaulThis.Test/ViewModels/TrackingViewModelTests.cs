@@ -4,81 +4,84 @@ using HaulThis.ViewModels;
 using HaulThis.Services;
 using System.Threading.Tasks;
 
-public class TrackingViewModelTests
+namespace HaulThis.Tests.ViewModels
 {
-    private readonly Mock<ITrackingService> _trackingServiceMock;
-    private readonly TrackingViewModel _viewModel;
-
-    public TrackingViewModelTests()
+    public class TrackingViewModelTests
     {
-        _trackingServiceMock = new Mock<ITrackingService>();
-        _viewModel = new TrackingViewModel(_trackingServiceMock.Object);
-    }
+        private readonly Mock<ITrackingService> _trackingServiceMock;
+        private readonly TrackingViewModel _viewModel;
 
-    [Fact]
-    public async Task TrackItem_ValidTrackingId_ShouldUpdateTrackingData()
-    {
-        // Arrange
-        var trackingInfo = new TrackingInfo
+        public TrackingViewModelTests()
         {
-            CurrentLocation = "New York",
-            ETA = DateTime.UtcNow.AddHours(5),
-            Status = "In Transit"
-        };
-        
-        _trackingServiceMock
-            .Setup(service => service.GetTrackingInfo(It.IsAny<string>()))
-            .ReturnsAsync(trackingInfo);
+            _trackingServiceMock = new Mock<ITrackingService>();
+            _viewModel = new TrackingViewModel(_trackingServiceMock.Object);
+        }
 
-        _viewModel.TrackingId = "123";
+        [Fact]
+        public async Task TrackItem_ValidTrackingId_ShouldUpdateTrackingData()
+        {
+            // Arrange
+            var trackingInfo = new TrackingInfo
+            {
+                CurrentLocation = "New York",
+                ETA = DateTime.UtcNow.AddHours(5),
+                Status = "In Transit"
+            };
 
-        // Act
-         _viewModel.TrackItemCommand.Execute(null);
+            _trackingServiceMock
+                .Setup(service => service.GetTrackingInfo(It.IsAny<string>()))
+                .ReturnsAsync(trackingInfo);
 
-        // Assert
-        Assert.Equal("New York", _viewModel.CurrentLocation);
-        Assert.Equal("In Transit", _viewModel.Status);
-        Assert.True(_viewModel.ETA.HasValue);
-        Assert.Empty(_viewModel.ErrorMessage);
-    }
+            _viewModel.TrackingId = "123";
 
-    [Fact]
-    public async Task TrackItem_InvalidTrackingId_ShouldShowErrorMessage()
-    {
-        // Arrange
-        _trackingServiceMock
-            .Setup(service => service.GetTrackingInfo(It.IsAny<string>()))
-            .ReturnsAsync((TrackingInfo)null);
+            // Act
+            _viewModel.TrackItemCommand.Execute(null);
 
-        _viewModel.TrackingId = "invalid";
+            // Assert
+            Assert.Equal("New York", _viewModel.CurrentLocation);
+            Assert.Equal("In Transit", _viewModel.Status);
+            Assert.True(_viewModel.ETA.HasValue);
+            Assert.Empty(_viewModel.ErrorMessage);
+        }
 
-        // Act
-         _viewModel.TrackItemCommand.Execute(null);
+        [Fact]
+        public async Task TrackItem_InvalidTrackingId_ShouldShowErrorMessage()
+        {
+            // Arrange
+            _trackingServiceMock
+                .Setup(service => service.GetTrackingInfo(It.IsAny<string>()))
+                .ReturnsAsync((TrackingInfo)null);
 
-        // Assert
-        Assert.Empty(_viewModel.CurrentLocation);
-        Assert.Null(_viewModel.ETA);
-        Assert.Empty(_viewModel.Status);
-        Assert.Equal("Invalid tracking ID. Please try again.", _viewModel.ErrorMessage);
-    }
+            _viewModel.TrackingId = "invalid";
 
-    [Fact]
-    public async Task TrackItem_ServiceThrowsException_ShouldShowErrorMessage()
-    {
-        // Arrange
-        _trackingServiceMock
-            .Setup(service => service.GetTrackingInfo(It.IsAny<string>()))
-            .ThrowsAsync(new System.Exception("Service error"));
+            // Act
+            _viewModel.TrackItemCommand.Execute(null);
 
-        _viewModel.TrackingId = "123";
+            // Assert
+            Assert.Empty(_viewModel.CurrentLocation);
+            Assert.Null(_viewModel.ETA);
+            Assert.Empty(_viewModel.Status);
+            Assert.Equal("Invalid tracking ID. Please try again.", _viewModel.ErrorMessage);
+        }
 
-        // Act
-         _viewModel.TrackItemCommand.Execute(null);
+        [Fact]
+        public async Task TrackItem_ServiceThrowsException_ShouldShowErrorMessage()
+        {
+            // Arrange
+            _trackingServiceMock
+                .Setup(service => service.GetTrackingInfo(It.IsAny<string>()))
+                .ThrowsAsync(new System.Exception("Service error"));
 
-        // Assert
-        Assert.Empty(_viewModel.CurrentLocation);
-        Assert.Null(_viewModel.ETA);
-        Assert.Empty(_viewModel.Status);
-        Assert.Contains("An error occurred", _viewModel.ErrorMessage);
+            _viewModel.TrackingId = "123";
+
+            // Act
+            _viewModel.TrackItemCommand.Execute(null);
+
+            // Assert
+            Assert.Empty(_viewModel.CurrentLocation);
+            Assert.Null(_viewModel.ETA);
+            Assert.Empty(_viewModel.Status);
+            Assert.Contains("An error occurred", _viewModel.ErrorMessage);
+        }
     }
 }

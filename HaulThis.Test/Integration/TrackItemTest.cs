@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using HaulThis.Test.Integration;
 using Microsoft.Data.SqlClient;
 
+namespace HaulThis.Test.Integration;
 public class TrackingServiceIntegrationTests : IDisposable
 {
     private readonly ITrackingService _trackingService;
