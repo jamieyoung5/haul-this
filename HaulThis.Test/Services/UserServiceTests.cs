@@ -17,6 +17,7 @@ public class UserServiceTests
     [Fact]
     public async Task GetAllUsersAsync_WhenCalled_ShouldReturnAllUsers()
     {
+        // Arrange
         var mockReader = new Mock<IDataReader>();
 
         var users = new List<User>
@@ -29,8 +30,10 @@ public class UserServiceTests
         
         _mockDatabaseService.Setup(ds => ds.Query(It.IsAny<string>())).Returns(mockReader.Object);
 
+        // Act
         var result = await _subject.GetAllUsersAsync();
         
+        // Assert
         Assert.NotNull(result);
         Assert.Equal(users.Count, result.Count());
 
@@ -50,12 +53,15 @@ public class UserServiceTests
     [Fact]
     public async Task GetAllUsersAsync_WhenNoUsersExist_ShouldReturnEmptyList()
     {
+        // Arrange
         var mockReader = new Mock<IDataReader>();
         mockReader.Setup(r => r.Read()).Returns(false); // No data
         _mockDatabaseService.Setup(ds => ds.Query(It.IsAny<string>())).Returns(mockReader.Object);
         
+        // Act
         var result = await _subject.GetAllUsersAsync();
         
+        // Assert
         Assert.NotNull(result);
         Assert.Empty(result);
     }
@@ -63,6 +69,7 @@ public class UserServiceTests
     [Fact]
     public async Task GetUserByIdAsync_WhenUserExists_ShouldReturnUser()
     {
+        // Arrange
         var mockRecord = new Mock<IDataRecord>();
 
         var user = new User
@@ -82,8 +89,10 @@ public class UserServiceTests
 
         _mockDatabaseService.Setup(ds => ds.QueryRow(It.IsAny<string>(), It.IsAny<object[]>())).Returns(mockRecord.Object);
         
+        // Act
         var result = await _subject.GetUserByIdAsync(user.Id);
         
+        // Assert
         Assert.NotNull(result);
         Assert.Equal(user.FirstName, result.FirstName);
         Assert.Equal(user.LastName, result.LastName);
@@ -98,17 +107,20 @@ public class UserServiceTests
     [Fact]
     public async Task GetUserByIdAsync_WhenUserDoesNotExist_ShouldThrowException()
     {
+        // Arrange
         var mockRecord = new Mock<IDataRecord>();
         _mockDatabaseService.Setup(ds => ds.QueryRow(It.IsAny<string>(), It.IsAny<object[]>())).Returns(mockRecord.Object);
         
         mockRecord.Setup(r => r.GetInt32(0)).Throws(new InvalidOperationException("User not found"));
         
+        // Act / Assert
         await Assert.ThrowsAsync<InvalidOperationException>(() => _subject.GetUserByIdAsync(999));
     }
     
     [Fact]
     public async Task AddUserAsync_WhenCalled_ShouldReturnNumberOfRowsAffected()
     {
+        // Arrange
         var user = new User
         {
             FirstName = "John",
@@ -122,8 +134,10 @@ public class UserServiceTests
 
         _mockDatabaseService.Setup(ds => ds.Execute(It.IsAny<string>(), It.IsAny<object[]>())).Returns(1);
         
+        // Act
         int result = await _subject.AddUserAsync(user);
         
+        // Assert
         Assert.Equal(1, result);
     }
     
@@ -144,18 +158,23 @@ public class UserServiceTests
 
         _mockDatabaseService.Setup(ds => ds.Execute(It.IsAny<string>(), It.IsAny<object[]>())).Returns(1);
         
+        // Act
         int result = await _subject.UpdateUserAsync(user);
         
+        // Assert
         Assert.Equal(1, result);
     }
     
     [Fact]
     public async Task DeleteUserAsync_WhenCalled_ShouldReturnNumberOfRowsAffected()
     {
+        // Arrange
         _mockDatabaseService.Setup(ds => ds.Execute(It.IsAny<string>(), It.IsAny<object[]>())).Returns(1);
         
+        // Act
         int result = await _subject.DeleteUserAsync(1);
         
+        // Assert
         Assert.Equal(1, result);
     }
     
