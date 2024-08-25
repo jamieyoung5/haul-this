@@ -10,7 +10,7 @@ namespace HaulThis.ViewModels;
 
 public class ManageVehiclesViewModel : INotifyPropertyChanged
 {   
-    IManageVehiclesService _ManageVehiclesService;
+    readonly IManageVehiclesService _ManageVehiclesService;
 
     public ObservableCollection<Vehicle> Vehicles { get; private init; } = new();
     public ManageVehiclesViewModel(IManageVehiclesService manageVehiclesService)

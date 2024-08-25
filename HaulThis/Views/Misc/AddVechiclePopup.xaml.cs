@@ -20,7 +20,7 @@ public partial class AddVechiclePopup
 		var status = StatusPicker.SelectedItem.ToString();
 		status = status.Replace(" ", "");
 
-		var newVehicle = new Vehicle
+		var _newVehicle = new Vehicle
 		{
 			Make = MakeEntry.Text,
 			Model = ModelEntry.Text,
@@ -29,6 +29,6 @@ public partial class AddVechiclePopup
 			Status = (VehicleStatus)Enum.Parse(typeof(VehicleStatus), status)
 		};
 		
-		Close(newVehicle);
+		Close(_newVehicle);
 	}
 }

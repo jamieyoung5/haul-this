@@ -15,27 +15,27 @@ public partial class ManageVehicles : ContentPage
 		_manageVehiclesService = manageVehiclesService ?? throw new ArgumentNullException(nameof(manageVehiclesService));
 		BindingContext = new ManageVehiclesViewModel(_manageVehiclesService);
 	}
-	
+
 	private async void OnAddButtonClicked(object sender, EventArgs e)
 	{
 		var addVehiclePopup = new AddVechiclePopup();
 		object? result = await this.ShowPopupAsync(addVehiclePopup);
-		
+
 		if (result is not Vehicle newVehicle) return;
-		
+
 		await _manageVehiclesService.AddVehicleAsync(newVehicle);
-		
+
 		BindingContext = new ManageVehiclesViewModel(_manageVehiclesService);
 	}
 
 	private async void OnEditButtonClicked(object sender, EventArgs e)
 	{
 		var button = sender as Button;
-		
+
 		if (button?.CommandParameter is not Vehicle vehicleToEdit) return;
 		var editVehiclePopup = new EditVehiclePopup(vehicleToEdit);
 		object? result = await this.ShowPopupAsync(editVehiclePopup);
-		
+
 		if (result is true)
 		{
 			await _manageVehiclesService.UpdateVehicleAsync(vehicleToEdit);
@@ -45,19 +45,22 @@ public partial class ManageVehicles : ContentPage
 	private async void OnDeleteButtonClicked(object sender, EventArgs e)
 	{
 		var button = sender as Button;
-		
+
 		if (button?.CommandParameter is not Vehicle vehicleToDelete) return;
 		int result = await _manageVehiclesService.DeleteVehicleAsync(vehicleToDelete.Id);
-		
+
 		if (result <= 0) return;
 		var viewModel = BindingContext as ManageVehiclesViewModel;
-		
+
 		viewModel?.Vehicles.Remove(vehicleToDelete);
 	}
 
 	private async void OnRefreshButtonClicked(object sender, EventArgs e)
 	{
 		var viewModel = BindingContext as ManageVehiclesViewModel;
-		await viewModel?.RefreshVehicles();
+		if (viewModel != null)
+		{
+			await viewModel.RefreshVehicles();
+		}
 	}
 }
