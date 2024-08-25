@@ -1,6 +1,6 @@
 namespace HaulThis.Views.Driver;
 
-public partial class ManageTrips : ContentPage
+public partial class ManageTrips
 {
 	public ManageTrips()
 	{

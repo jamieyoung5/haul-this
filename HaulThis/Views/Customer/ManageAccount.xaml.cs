@@ -1,6 +1,6 @@
 namespace HaulThis.Views.Customer;
 
-public partial class ManageAccount : ContentPage
+public partial class ManageAccount
 {
 	public ManageAccount()
 	{

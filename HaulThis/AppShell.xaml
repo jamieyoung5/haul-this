@@ -3,28 +3,27 @@
     x:Class="HaulThis.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:HaulThis"
-    xmlns:CustomerViews="clr-namespace:HaulThis.Views.Customer"
-    xmlns:DriverViews="clr-namespace:HaulThis.Views.Driver"
-    xmlns:AdminViews="clr-namespace:HaulThis.Views.Admin"
-    Shell.FlyoutBehavior="Disabled"
+    xmlns:customerViews="clr-namespace:HaulThis.Views.Customer"
+    xmlns:driverViews="clr-namespace:HaulThis.Views.Driver"
+    xmlns:adminViews="clr-namespace:HaulThis.Views.Admin"
+    FlyoutBehavior="Disabled"
     Title="HaulThis">
 
     <TabBar>
 
         <ShellContent
             Title="Customer"
-            ContentTemplate="{DataTemplate CustomerViews:CustomerShell}"
+            ContentTemplate="{DataTemplate customerViews:CustomerShell}"
             Icon="{OnPlatform 'customer.png', iOS='customer.png', MacCatalyst='customer.png'}"/>
         
         <ShellContent
             Title="Driver"
-            ContentTemplate="{DataTemplate DriverViews:DriverShell}"
+            ContentTemplate="{DataTemplate driverViews:DriverShell}"
             Icon="{OnPlatform 'driver.png', iOS='driver.png', MacCatalyst='driver.png'}"/>
         
         <ShellContent
             Title="Admin"
-            ContentTemplate="{DataTemplate AdminViews:AdminShell}"
+            ContentTemplate="{DataTemplate adminViews:AdminShell}"
             Icon="{OnPlatform 'admin.png', iOS='admin.png', MacCatalyst='admin.png'}"/>
     </TabBar>
 

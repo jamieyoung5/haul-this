@@ -1,6 +1,6 @@
 namespace HaulThis.Views.Customer;
 
-public partial class CustomerShell : Shell
+public partial class CustomerShell
 {
 	public CustomerShell()
 	{

@@ -1,6 +1,6 @@
 namespace HaulThis.Views.Admin;
 
-public partial class ResourceTrips : ContentPage
+public partial class ResourceTrips
 {
 	public ResourceTrips()
 	{

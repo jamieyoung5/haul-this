@@ -3,6 +3,7 @@ using Microsoft.Maui.Controls;
 using HaulThis.ViewModels;
 using HaulThis.Services;
 using HaulThis.Models;
+using HaulThis.Views.Customer;
 
 namespace HaulThis.Views.Customer
 {
