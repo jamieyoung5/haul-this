@@ -2,17 +2,11 @@ databaseChangeLog:
   - changeSet:
       id: 1
       author: Conor Nash
+      comment: expand vehicle table with user data
       changes:
-        - createTable:
+        - addColumn:
             tableName: vehicle
             columns:
-              - column:
-                  name: id
-                  type: int
-                  autoIncrement: true
-                  constraints:
-                    primaryKey: true
-                    nullable: false
               - column:
                   name: make
                   type: varchar(255)

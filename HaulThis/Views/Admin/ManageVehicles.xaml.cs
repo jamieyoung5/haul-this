@@ -52,6 +52,12 @@ public partial class ManageVehicles : ContentPage
 		if (result <= 0) return;
 		var viewModel = BindingContext as ManageVehiclesViewModel;
 		
-		viewModel?.vehicles.Remove(vehicleToDelete);
+		viewModel?.Vehicles.Remove(vehicleToDelete);
+	}
+
+	private async void OnRefreshButtonClicked(object sender, EventArgs e)
+	{
+		var viewModel = BindingContext as ManageVehiclesViewModel;
+		await viewModel?.RefreshVehicles();
 	}
 }

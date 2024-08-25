@@ -1,0 +1,97 @@
+databaseChangeLog:
+  - changeSet:
+      id: 3
+      author: Conor Nash
+      comment: Rename uniqueId to Id in vehicle table, update trip and waypoint tables, add tripManifest table
+      changes:
+        # Rename uniqueId to Id in vehicle table
+        - renameColumn:
+            tableName: vehicle
+            oldColumnName: uniqueId
+            newColumnName: Id
+            columnDataType: int
+
+        # Add new columns to the trip table and ensure foreign key constraints
+        - addColumn:
+            tableName: trip
+            columns:
+              - column:
+                  name: start_date
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: end_date
+                  type: datetime
+                  constraints:
+                    nullable: true
+              - column:
+                  name: status
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: trip
+            baseColumnNames: vehicleId
+            constraintName: fk_trip_vehicle
+            referencedTableName: vehicle
+            referencedColumnNames: Id
+
+        - addForeignKeyConstraint:
+            baseTableName: trip
+            baseColumnNames: driverId
+            constraintName: fk_trip_driver
+            referencedTableName: users
+            referencedColumnNames: Id
+
+        # Add new columns to the waypoint table
+        - addColumn:
+            tableName: waypoint
+            columns:
+              - column:
+                  name: arrival_time
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: departure_time
+                  type: datetime
+                  constraints:
+                    nullable: false
+
+        # Create the tripManifest table
+        - createTable:
+            tableName: tripManifest
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: trip_id
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: item_id
+                  type: int
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: tripManifest
+            baseColumnNames: trip_id
+            constraintName: fk_tripManifest_trip
+            referencedTableName: trip
+            referencedColumnNames: Id
+
+        - addForeignKeyConstraint:
+            baseTableName: tripManifest
+            baseColumnNames: item_id
+            constraintName: fk_tripManifest_item
+            referencedTableName: item
+            referencedColumnNames: Id

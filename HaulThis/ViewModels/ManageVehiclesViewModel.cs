@@ -12,7 +12,7 @@ public class ManageVehiclesViewModel : INotifyPropertyChanged
 {   
     IManageVehiclesService _ManageVehiclesService;
 
-    public ObservableCollection<Vehicle> vehicles { get; private init; } = new();
+    public ObservableCollection<Vehicle> Vehicles { get; private init; } = new();
     public ManageVehiclesViewModel(IManageVehiclesService manageVehiclesService)
     {
         _ManageVehiclesService = manageVehiclesService;
@@ -24,14 +24,18 @@ public class ManageVehiclesViewModel : INotifyPropertyChanged
     internal async Task LoadVehicles()
     {
         var vehiclesFromDb = await _ManageVehiclesService.GetAllVehiclesAsync();
-        vehicles.Clear();
+        Vehicles.Clear();
 
         foreach (var vehicle in vehiclesFromDb)
         {
-            vehicles.Add(vehicle);
+            Vehicles.Add(vehicle);
         }
 
-        OnPropertyChanged(nameof(vehicles));
+        OnPropertyChanged(nameof(Vehicles));
+    }
+     public async Task RefreshVehicles()
+    {
+        await LoadVehicles();
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;    

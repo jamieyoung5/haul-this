@@ -33,7 +33,7 @@ public partial class EditVehiclePopup
 		_vehicle.Year = int.Parse(YearEntry.Text);
 		_vehicle.LicensePlate = LicensePlateEntry.Text;
 		_vehicle.Status = (VehicleStatus)Enum.Parse(typeof(VehicleStatus), status);
-
+		
 		Close(true);
 	}
 
