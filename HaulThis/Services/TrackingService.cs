@@ -11,20 +11,19 @@ namespace HaulThis.Services
         private readonly ILogger<TrackingService> _logger;
         private IDatabaseService db;
         private const string GetTrackingInfoQuery = @"
-            SELECT 
-                wp.Location, 
-                wp.ArrivalTime, 
-                tm.ItemId, 
-                tm.TripId 
-            FROM 
-                Waypoint wp
-            INNER JOIN 
-                TripManifest tm ON tm.TripId = wp.TripId
-            WHERE 
-                tm.ItemId = @p0
-            ORDER BY 
-                wp.ArrivalTime DESC
-            LIMIT 1";
+        SELECT TOP 1
+            wp.location, 
+            wp.arrivalTime, 
+            tm.Id AS TripManifestId, 
+            tm.tripId 
+        FROM 
+            waypoint wp
+        INNER JOIN 
+            tripManifest tm ON tm.tripId = wp.tripId
+        WHERE 
+            tm.id = @p0
+        ORDER BY 
+            wp.arrivalTime DESC";
 
         public TrackingService(IDatabaseService databaseService)
         {
