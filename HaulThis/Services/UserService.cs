@@ -87,7 +87,7 @@ public class UserService(IDatabaseService databaseService) : IUserService
     {
       List<User> users = [];
 
-      using (var reader = databaseService.Query(GetAllCustomersQuery))
+      using (var reader = databaseService.Query(GetAllEmployeesQuery))
       {
         while (reader.Read())
         {
