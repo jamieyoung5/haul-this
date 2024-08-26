@@ -62,6 +62,7 @@ public class ManageCustomersServiceTests
   {
     // Arrange
     var dataTable = new DataTable();
+
     dataTable.Columns.Add("Id", typeof(int));
     dataTable.Columns.Add("FirstName", typeof(string));
     dataTable.Columns.Add("LastName", typeof(string));
@@ -90,12 +91,16 @@ public class ManageCustomersServiceTests
     row["IsActive"] = true;
     dataTable.Rows.Add(row);
 
-    _mockDatabaseService.Setup(d => d.QueryRow(It.IsAny<string>(), It.IsAny<int>())).Returns(dataTable.CreateDataReader());
+    var dataReader = dataTable.CreateDataReader();
+
+    _mockDatabaseService.Setup(d => d.QueryRow(It.IsAny<string>(), It.IsAny<int>()))
+        .Returns(dataReader);
 
     // Act
     var customer = await _customerService.GetCustomerByIdAsync(1);
 
     // Assert
+    Assert.NotNull(customer);
     Assert.Equal(1, customer.Id);
     Assert.Equal("John", customer.FirstName);
   }

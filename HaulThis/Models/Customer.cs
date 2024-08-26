@@ -1,12 +1,8 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HaulThis.Models
 {
-  /// <summary>
-  /// Represents a customer in the system.
-  /// </summary>
   public class Customer : DataModel
   {
     private int _id;
@@ -33,9 +29,6 @@ namespace HaulThis.Models
       init => SetProperty(ref _id, value);
     }
 
-    /// <summary>
-    /// Gets or sets the customer's first name.
-    /// </summary>
     [Required]
     [MaxLength(50)]
     public string FirstName
@@ -44,9 +37,6 @@ namespace HaulThis.Models
       set => SetProperty(ref _firstName, value);
     }
 
-    /// <summary>
-    /// Gets or sets the customer's last name.
-    /// </summary>
     [Required]
     [MaxLength(50)]
     public string LastName
@@ -55,9 +45,6 @@ namespace HaulThis.Models
       set => SetProperty(ref _lastName, value);
     }
 
-    /// <summary>
-    /// Gets or sets the customer's email address.
-    /// </summary>
     [Required]
     [MaxLength(100)]
     [EmailAddress]
@@ -67,9 +54,6 @@ namespace HaulThis.Models
       set => SetProperty(ref _email, value);
     }
 
-    /// <summary>
-    /// Gets or sets the customer's phone number.
-    /// </summary>
     [Required]
     [Phone]
     [MaxLength(15)]
@@ -79,9 +63,6 @@ namespace HaulThis.Models
       set => SetProperty(ref _phoneNumber, value);
     }
 
-    /// <summary>
-    /// Gets or sets the customer's address.
-    /// </summary>
     [Required]
     [MaxLength(200)]
     public string Address
@@ -90,9 +71,6 @@ namespace HaulThis.Models
       set => SetProperty(ref _address, value);
     }
 
-    /// <summary>
-    /// Gets or sets the city where the customer is located.
-    /// </summary>
     [Required]
     [MaxLength(100)]
     public string City
@@ -101,9 +79,6 @@ namespace HaulThis.Models
       set => SetProperty(ref _city, value);
     }
 
-    /// <summary>
-    /// Gets or sets the postal code for the customer's address.
-    /// </summary>
     [Required]
     [MaxLength(20)]
     public string PostalCode
@@ -112,9 +87,6 @@ namespace HaulThis.Models
       set => SetProperty(ref _postalCode, value);
     }
 
-    /// <summary>
-    /// Gets or sets the country where the customer resides.
-    /// </summary>
     [Required]
     [MaxLength(100)]
     public string Country
@@ -123,9 +95,6 @@ namespace HaulThis.Models
       set => SetProperty(ref _country, value);
     }
 
-    /// <summary>
-    /// Gets or sets the date and time when the customer was created in the system.
-    /// </summary>
     [Required]
     public DateTime CreatedAt
     {
@@ -133,18 +102,12 @@ namespace HaulThis.Models
       set => SetProperty(ref _createdAt, value);
     }
 
-    /// <summary>
-    /// Gets or sets the date and time when the customer's details were last updated.
-    /// </summary>
     public DateTime? UpdatedAt
     {
       get => _updatedAt;
       set => SetProperty(ref _updatedAt, value);
     }
 
-    /// <summary>
-    /// Gets or sets a value indicating whether the customer is active.
-    /// </summary>
     [Required]
     public bool IsActive
     {
