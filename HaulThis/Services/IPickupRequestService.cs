@@ -5,6 +5,11 @@ namespace HaulThis.Services
 {
   public interface IPickupRequestService
   {
-    Task<bool> RequestPickup(PickupRequest pickupRequest);
+    /// <summary>
+    /// Retrieves a PickupDeliveryRequest by its ID.
+    /// </summary>
+    /// <param name="id">The unique identifier of the pickup/delivery request.</param>
+    /// <returns>A task representing the asynchronous operation, containing the PickupDeliveryRequest object if found, otherwise null.</returns>
+    Task<PickupDeliveryRequest?> GetPickupRequestInfo(int id);
   }
 }

@@ -1,94 +1,92 @@
 using System;
 using System.Threading.Tasks;
-using Moq;
-using Xunit;
 using HaulThis.Models;
 using HaulThis.Services;
 using Microsoft.Extensions.Logging;
 
-namespace HaulThis.Tests
+namespace HaulThis.Tests.Services
 {
   public class PickupRequestServiceTests
   {
-    // Test successful pickup request
-    [Fact]
-    public async Task RequestPickup_SuccessfulInsertion_ReturnsTrue()
+    private readonly Mock<IDatabaseService> _databaseServiceMock;
+    private readonly Mock<ILogger<PickupRequestService>> _loggerMock;
+    private readonly PickupRequestService _pickupRequestService;
+
+    public PickupRequestServiceTests()
     {
-      var mockDatabaseService = new Mock<IDatabaseService>();
-      mockDatabaseService.Setup(db => db.Execute(It.IsAny<string>(), It.IsAny<object>()))
-        .Returns(1); 
-
-      var mockLogger = new Mock<ILogger<PickupRequestService>>();
-      var service = new PickupRequestService(mockDatabaseService.Object);
-
-      var pickupRequest = new PickupRequest
-      {
-        PickupLocation = "Location",
-        Destination = "Destination",
-        RequestedTime = DateTime.Now,
-        CustomerName = "Customer",
-        CustomerContact = "Contact",
-        Status = "Status"
-      };
-
-      var result = await service.RequestPickup(pickupRequest);
-
-      Assert.True(result);
-      mockDatabaseService.Verify(db => db.Execute(It.IsAny<string>(), It.IsAny<object>()), Times.Once);
+      _databaseServiceMock = new Mock<IDatabaseService>();
+      _loggerMock = new Mock<ILogger<PickupRequestService>>();
+      _pickupRequestService = new PickupRequestService(_databaseServiceMock.Object);
     }
 
-    // Test unsuccessful pickup request
     [Fact]
-    public async Task RequestPickup_UnsuccessfulInsertion_ReturnsFalse()
+    public async Task GetPickupRequestInfo_ReturnsRequest_WhenDataIsFound()
     {
-      var mockDatabaseService = new Mock<IDatabaseService>();
-      mockDatabaseService.Setup(db => db.Execute(It.IsAny<string>(), It.IsAny<object>()))
-          .Returns(0); 
+      // Arrange
+      var mockDataReader = new Mock<IDataReader>();
+      mockDataReader.SetupSequence(r => r.Read())
+          .Returns(true)
+          .Returns(false);
+      mockDataReader.Setup(r => r.GetInt32(0)).Returns(1);
+      mockDataReader.Setup(r => r.GetInt32(1)).Returns(123);
+      mockDataReader.Setup(r => r.GetString(2)).Returns("123 Main St");
+      mockDataReader.Setup(r => r.GetString(3)).Returns("456 Elm St");
+      mockDataReader.Setup(r => r.GetDateTime(4)).Returns(DateTime.Now.AddDays(1));
+      mockDataReader.Setup(r => r.GetDateTime(5)).Returns(DateTime.Now.AddDays(2));
+      mockDataReader.Setup(r => r.GetString(6)).Returns("Pending");
 
-      var mockLogger = new Mock<ILogger<PickupRequestService>>();
-      var service = new PickupRequestService(mockDatabaseService.Object);
+      _databaseServiceMock.Setup(db => db.Query(It.IsAny<string>(), It.IsAny<object[]>()))
+          .Returns(mockDataReader.Object);
 
-      var pickupRequest = new PickupRequest
-      {
-        PickupLocation = "Location",
-        Destination = "Destination",
-        RequestedTime = DateTime.Now,
-        CustomerName = "Customer",
-        CustomerContact = "Contact",
-        Status = "Status"
-      };
+      // Act
+      var result = await _pickupRequestService.GetPickupRequestInfo(1);
 
-      var result = await service.RequestPickup(pickupRequest);
-
-      Assert.False(result);
-      mockDatabaseService.Verify(db => db.Execute(It.IsAny<string>(), It.IsAny<object>()), Times.Once);
+      // Assert
+      Assert.NotNull(result);
+      Assert.Equal(1, result.Id);
+      Assert.Equal(123, result.CustomerId);
+      Assert.Equal("123 Main St", result.PickupLocation);
+      Assert.Equal("456 Elm St", result.DeliveryLocation);
+      Assert.Equal("Pending", result.Status);
     }
 
-    // Test exception handling in pickup request
     [Fact]
-    public async Task RequestPickup_ExceptionThrown_ReturnsFalse()
+    public async Task GetPickupRequestInfo_ReturnsNull_WhenNoDataIsFound()
     {
-      var mockDatabaseService = new Mock<IDatabaseService>();
-      mockDatabaseService.Setup(db => db.Execute(It.IsAny<string>(), It.IsAny<object>()))
-        .Throws(new Exception("Database error")); 
+      // Arrange
+      var mockDataReader = new Mock<IDataReader>();
+      mockDataReader.Setup(r => r.Read()).Returns(false);
 
-      var mockLogger = new Mock<ILogger<PickupRequestService>>();
-      var service = new PickupRequestService(mockDatabaseService.Object);
+      _databaseServiceMock.Setup(db => db.Query(It.IsAny<string>(), It.IsAny<object[]>()))
+          .Returns(mockDataReader.Object);
 
-      var pickupRequest = new PickupRequest
-      {
-        PickupLocation = "Location",
-        Destination = "Destination",
-        RequestedTime = DateTime.Now,
-        CustomerName = "Customer",
-        CustomerContact = "Contact",
-        Status = "Status"
-      };
+      // Act
+      var result = await _pickupRequestService.GetPickupRequestInfo(1);
 
-      var result = await service.RequestPickup(pickupRequest);
+      // Assert
+      Assert.Null(result);
+    }
 
-      Assert.False(result);
-      mockDatabaseService.Verify(db => db.Execute(It.IsAny<string>(), It.IsAny<object>()), Times.Once);
+    [Fact]
+    public async Task GetPickupRequestInfo_LogsError_WhenExceptionIsThrown()
+    {
+      // Arrange
+      _databaseServiceMock.Setup(db => db.Query(It.IsAny<string>(), It.IsAny<object[]>()))
+          .Throws(new Exception("Database error"));
+
+      // Act
+      var result = await _pickupRequestService.GetPickupRequestInfo(1);
+
+      // Assert
+      Assert.Null(result);
+      _loggerMock.Verify(
+          x => x.Log(
+              LogLevel.Error,
+              It.IsAny<EventId>(),
+              It.IsAny<It.IsAnyType>(),
+              It.IsAny<Exception>(),
+              (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()),
+          Times.Once);
     }
   }
 }

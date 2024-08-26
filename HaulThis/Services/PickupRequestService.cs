@@ -10,13 +10,23 @@ namespace HaulThis.Services
     private readonly IDatabaseService _databaseService;
     private readonly ILogger<PickupRequestService> _logger;
 
-    private const string InsertPickupRequestQuery = @"
-            INSERT INTO PickupRequests (PickupLocation, Destination, RequestedTime, CustomerName, CustomerContact, Status)
-            VALUES (@PickupLocation, @Destination, @RequestedTime, @CustomerName, @CustomerContact, @Status)";
+    private const string GetPickupDeliveryRequestQuery = @"
+            SELECT 
+                Id,
+                CustomerId,
+                PickupLocation,
+                DeliveryLocation,
+                RequestedPickupDate,
+                RequestedDeliveryDate,
+                Status
+            FROM 
+                PickupDeliveryRequests
+            WHERE 
+                Id = @p0";
 
     public PickupRequestService(IDatabaseService databaseService)
     {
-      _databaseService = databaseService;
+      _databaseService = databaseService ?? throw new ArgumentNullException(nameof(databaseService));
 
       using var loggerFactory = LoggerFactory.Create(builder =>
       {
@@ -26,39 +36,41 @@ namespace HaulThis.Services
       _logger = loggerFactory.CreateLogger<PickupRequestService>();
     }
 
-    public async Task<bool> RequestPickup(PickupRequest pickupRequest)
+    public async Task<PickupDeliveryRequest?> GetPickupRequestInfo(int id)
     {
       try
       {
-        _logger.LogInformation("Starting RequestPickup for PickupRequest: {PickupRequest}", pickupRequest);
+        _logger.LogInformation("Starting GetPickupRequestInfo for ID: {Id}", id);
 
-        var parameters = new
+        using var reader = _databaseService.Query(GetPickupDeliveryRequestQuery, id);
+
+        if (reader.Read())
         {
-          pickupRequest.PickupLocation,
-          pickupRequest.Destination,
-          pickupRequest.RequestedTime,
-          pickupRequest.CustomerName,
-          pickupRequest.CustomerContact,
-          pickupRequest.Status
-        };
+          _logger.LogInformation("Query returned data for Request ID: {Id}", id);
 
-        int rowsAffected = await Task.Run(() => _databaseService.Execute(InsertPickupRequestQuery, parameters));
+          var request = new PickupDeliveryRequest
+          {
+            Id = reader.GetInt32(0),
+            CustomerId = reader.GetInt32(1),
+            PickupLocation = reader.GetString(2),
+            DeliveryLocation = reader.GetString(3),
+            RequestedPickupDate = reader.GetDateTime(4),
+            RequestedDeliveryDate = reader.GetDateTime(5),
+            Status = reader.GetString(6)
+          };
 
-        if (rowsAffected > 0)
-        {
-          _logger.LogInformation("Pickup request inserted successfully for PickupRequest: {PickupRequest}", pickupRequest);
-          return true;
+          return request;
         }
         else
         {
-          _logger.LogWarning("No rows affected while inserting pickup request for PickupRequest: {PickupRequest}", pickupRequest);
-          return false;
+          _logger.LogWarning("Query did not return any rows for Request ID: {Id}", id);
+          return null;
         }
       }
       catch (Exception ex)
       {
-        _logger.LogError(ex, "An error occurred while inserting pickup request for PickupRequest: {PickupRequest}", pickupRequest);
-        return false;
+        _logger.LogError(ex, "An error occurred while retrieving pickup/delivery request for ID: {Id}", id);
+        return null;
       }
     }
   }

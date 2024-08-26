@@ -5,88 +5,65 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using HaulThis.Models;
 using HaulThis.Services;
-using Microsoft.Extensions.Logging;
+using Microsoft.Maui.Controls;
 
 namespace HaulThis.ViewModels
 {
   public class PickupRequestModel : INotifyPropertyChanged
   {
     private readonly IPickupRequestService _pickupRequestService;
+    private int _requestId;
+    private PickupDeliveryRequest _pickupRequest;
+    private bool _isRequestInfoVisible;
+    private bool _isErrorVisible;
+    private string _errorMessage;
 
     public PickupRequestModel(IPickupRequestService pickupRequestService)
     {
-      _pickupRequestService = pickupRequestService;
-      SubmitPickupRequestCommand = new Command(async () => await SubmitPickupRequest());
-      RequestedTime = DateTime.Now;
+      _pickupRequestService = pickupRequestService ?? throw new ArgumentNullException(nameof(pickupRequestService));
+      GetPickupRequestInfoCommand = new Command(async () => await GetPickupRequestInfo());
     }
 
-    private string _pickupLocation;
-    public string PickupLocation
+    public int RequestId
     {
-      get => _pickupLocation;
+      get => _requestId;
       set
       {
-        _pickupLocation = value;
+        _requestId = value;
         OnPropertyChanged();
       }
     }
 
-    private string _destination;
-    public string Destination
+    public PickupDeliveryRequest PickupDeliveryRequest
     {
-      get => _destination;
+      get => _pickupRequest;
       set
       {
-        _destination = value;
+        _pickupRequest = value;
         OnPropertyChanged();
       }
     }
 
-    private DateTime _requestedTime;
-    public DateTime RequestedTime
+    public bool IsRequestInfoVisible
     {
-      get => _requestedTime;
+      get => _isRequestInfoVisible;
       set
       {
-        _requestedTime = value;
+        _isRequestInfoVisible = value;
         OnPropertyChanged();
       }
     }
 
-    private string _customerName;
-    public string CustomerName
+    public bool IsErrorVisible
     {
-      get => _customerName;
+      get => _isErrorVisible;
       set
       {
-        _customerName = value;
+        _isErrorVisible = value;
         OnPropertyChanged();
       }
     }
 
-    private string _customerContact;
-    public string CustomerContact
-    {
-      get => _customerContact;
-      set
-      {
-        _customerContact = value;
-        OnPropertyChanged();
-      }
-    }
-
-    private string _status;
-    public string Status
-    {
-      get => _status;
-      set
-      {
-        _status = value;
-        OnPropertyChanged();
-      }
-    }
-
-    private string _errorMessage;
     public string ErrorMessage
     {
       get => _errorMessage;
@@ -97,48 +74,33 @@ namespace HaulThis.ViewModels
       }
     }
 
-    public ICommand SubmitPickupRequestCommand { get; }
+    public ICommand GetPickupRequestInfoCommand { get; }
 
-    private async Task SubmitPickupRequest()
+    private async Task GetPickupRequestInfo()
     {
+      IsErrorVisible = false;
+      IsRequestInfoVisible = false;
+
       try
       {
-        var request = new PickupRequest
-        {
-          PickupLocation = PickupLocation,
-          Destination = Destination,
-          RequestedTime = RequestedTime,
-          CustomerName = CustomerName,
-          CustomerContact = CustomerContact,
-          Status = Status
-        };
+        var request = await _pickupRequestService.GetPickupRequestInfo(RequestId);
 
-        bool isSuccess = await _pickupRequestService.RequestPickup(request);
-
-        if (isSuccess)
+        if (request != null)
         {
-          ErrorMessage = "Pickup request submitted successfully!";
-          ClearForm();
+          PickupDeliveryRequest = request;
+          IsRequestInfoVisible = true;
         }
         else
         {
-          ErrorMessage = "Failed to submit pickup request, all fields are required.";
+          ErrorMessage = "Pickup request not found.";
+          IsErrorVisible = true;
         }
       }
       catch (Exception ex)
       {
         ErrorMessage = $"An error occurred: {ex.Message}";
+        IsErrorVisible = true;
       }
-    }
-
-    private void ClearForm()
-    {
-      PickupLocation = string.Empty;
-      Destination = string.Empty;
-      RequestedTime = DateTime.Now;
-      CustomerName = string.Empty;
-      CustomerContact = string.Empty;
-      Status = string.Empty;
     }
 
     public event PropertyChangedEventHandler PropertyChanged;

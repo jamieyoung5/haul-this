@@ -1,103 +1,85 @@
 using HaulThis.Models;
 using HaulThis.Services;
 using HaulThis.ViewModels;
-using System.Windows.Input;
 
 namespace HaulThis.Tests
 {
   public class PickupRequestModelTests
   {
-    [Fact]
-    public void PropertyChanged_Event_Fires_When_Property_Changes()
+    private readonly Mock<IPickupRequestService> _mockPickupRequestService;
+    private readonly PickupRequestModel _viewModel;
+
+    public PickupRequestModelTests()
     {
-      var mockService = new Mock<IPickupRequestService>();
-      var viewModel = new PickupRequestModel(mockService.Object);
-      bool eventFired = false;
-
-      viewModel.PropertyChanged += (sender, args) =>
-      {
-        if (args.PropertyName == nameof(PickupRequestModel.PickupLocation))
-        {
-          eventFired = true;
-        }
-      };
-
-      viewModel.PickupLocation = "New Location";
-
-      Assert.True(eventFired);
+      _mockPickupRequestService = new Mock<IPickupRequestService>();
+      _viewModel = new PickupRequestModel(_mockPickupRequestService.Object);
     }
 
-    // Test Command Execution for Successful Request
     [Fact]
-    public async Task SubmitPickupRequestCommand_Successful_Request_Sets_ErrorMessage_Correctly()
+    public async Task GetPickupRequestInfo_ShouldSetPickupRequest_WhenRequestIsFound()
     {
-      var mockService = new Mock<IPickupRequestService>();
-      mockService.Setup(service => service.RequestPickup(It.IsAny<PickupRequest>()))
-                 .ReturnsAsync(true);
-
-      var viewModel = new PickupRequestModel(mockService.Object)
+      // Arrange
+      var expectedRequest = new PickupDeliveryRequest
       {
-        PickupLocation = "Location",
-        Destination = "Destination",
-        RequestedTime = DateTime.Now,
-        CustomerName = "Customer",
-        CustomerContact = "Contact",
-        Status = "Status"
+        Id = 1,
+        PickupLocation = "Location A",
+        DeliveryLocation = "Location B",
+        RequestedPickupDate = DateTime.Now,
+        RequestedDeliveryDate = DateTime.Now.AddDays(1),
+        Status = "Pending"
       };
+      _mockPickupRequestService
+          .Setup(service => service.GetPickupRequestInfo(It.IsAny<int>()))
+          .ReturnsAsync(expectedRequest);
 
-      ((ICommand)viewModel.SubmitPickupRequestCommand).Execute(null);
-      await Task.Delay(100);
+      _viewModel.RequestId = 1;
+
+      // Act
+      _viewModel.GetPickupRequestInfoCommand.Execute(null);
 
       // Assert
-      Assert.Equal("Pickup request submitted successfully!", viewModel.ErrorMessage);
+      Assert.NotNull(_viewModel.PickupDeliveryRequest);
+      Assert.Equal(expectedRequest.Id, _viewModel.PickupDeliveryRequest.Id);
+      Assert.True(_viewModel.IsRequestInfoVisible);
+      Assert.False(_viewModel.IsErrorVisible);
+      Assert.Null(_viewModel.ErrorMessage);
     }
 
-    // Test Command Execution for failed pickup request
     [Fact]
-    public async Task SubmitPickupRequestCommand_Failed_Request_Sets_ErrorMessage_Correctly()
+    public async Task GetPickupRequestInfo_ShouldSetError_WhenRequestIsNotFound()
     {
-      var mockService = new Mock<IPickupRequestService>();
-      mockService.Setup(service => service.RequestPickup(It.IsAny<PickupRequest>()))
-           .ReturnsAsync(false);
+      // Arrange
+      _mockPickupRequestService
+          .Setup(service => service.GetPickupRequestInfo(It.IsAny<int>()))
+          .ReturnsAsync((PickupDeliveryRequest)null);
 
-      var viewModel = new PickupRequestModel(mockService.Object)
-      {
-        PickupLocation = "Location",
-        Destination = "Destination",
-        RequestedTime = DateTime.Now,
-        CustomerName = "Customer",
-        CustomerContact = "Contact",
-        Status = "Status"
-      };
+      _viewModel.RequestId = 1;
 
-      ((ICommand)viewModel.SubmitPickupRequestCommand).Execute(null);
-      await Task.Delay(100);
+      // Act
+      _viewModel.GetPickupRequestInfoCommand.Execute(null);
 
-      Assert.Equal("Failed to submit pickup request.", viewModel.ErrorMessage);
+      // Assert
+      Assert.Null(_viewModel.PickupDeliveryRequest);
+      Assert.True(_viewModel.IsErrorVisible);
+      Assert.Equal("Pickup request not found.", _viewModel.ErrorMessage);
     }
 
-    // Test Command Execution for Exception Handling
     [Fact]
-    public async Task SubmitPickupRequestCommand_Exception_Handled_Correctly()
+    public async Task GetPickupRequestInfo_ShouldSetError_WhenExceptionOccurs()
     {
-      var mockService = new Mock<IPickupRequestService>();
-      mockService.Setup(service => service.RequestPickup(It.IsAny<PickupRequest>()))
-                 .ThrowsAsync(new Exception("Test exception"));
+      // Arrange
+      _mockPickupRequestService
+          .Setup(service => service.GetPickupRequestInfo(It.IsAny<int>()))
+          .ThrowsAsync(new Exception("Database error"));
 
-      var viewModel = new PickupRequestModel(mockService.Object)
-      {
-        PickupLocation = "Location",
-        Destination = "Destination",
-        RequestedTime = DateTime.Now,
-        CustomerName = "Customer",
-        CustomerContact = "Contact",
-        Status = "Status"
-      };
+      _viewModel.RequestId = 1;
 
-      ((ICommand)viewModel.SubmitPickupRequestCommand).Execute(null);
-      await Task.Delay(100);
+      // Act
+      _viewModel.GetPickupRequestInfoCommand.Execute(null);
 
-      Assert.StartsWith("An error occurred: Test exception", viewModel.ErrorMessage);
+      // Assert
+      Assert.True(_viewModel.IsErrorVisible);
+      Assert.StartsWith("An error occurred:", _viewModel.ErrorMessage);
     }
   }
 }
