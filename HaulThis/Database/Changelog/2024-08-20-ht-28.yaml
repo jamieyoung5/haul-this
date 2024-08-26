@@ -1,0 +1,48 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: your_name
+      changes:
+        - createTable:
+            tableName: expense
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_expense
+              - column:
+                  name: trip_id
+                  type: int
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_expense_trip
+                    references: trip(id)
+              - column:
+                  name: amount
+                  type: decimal(10, 2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: date
+                  type: datetime
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 2
+      author: your_name
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: expense
+            baseColumnNames: trip_id
+            constraintName: fk_expense_trip
+            referencedTableName: trip
+            referencedColumnNames: id

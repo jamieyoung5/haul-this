@@ -7,6 +7,7 @@ using HaulThis.Views.Admin;
 using Microsoft.Data.SqlClient;
 using HaulThis.ViewModels;
 using HaulThis.Views.Customer;
+using HaulThis.Views.Driver;
 
 namespace HaulThis;
 
@@ -52,12 +53,19 @@ public static class MauiProgram
 
         ITrackingService trackingService = new TrackingService(db);
         IUserService userService = new UserService(db);
-        
+        IManageExpensesService manageExpensesService = new ManageExpensesService(db);
+
+
         builder.Services.AddSingleton(trackingService);
         builder.Services.AddTransient<TrackItem>(_ => new TrackItem(trackingService));
         builder.Services.AddSingleton(db);
         builder.Services.AddSingleton(userService);
-        builder.Services.AddTransient<ManageEmployees>(_ => new ManageEmployees(userService));
+        builder.Services.AddTransient<ManageEmployees>(_ => new ManageEmployees(userService));     
+        builder.Services.AddSingleton(manageExpensesService);
+        builder.Services.AddTransient<RecordExpenses>(_ => new RecordExpenses(manageExpensesService));
+
+
+
 
         return builder.Build();
     }

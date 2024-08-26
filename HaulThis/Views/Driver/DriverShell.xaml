@@ -10,7 +10,8 @@
     <FlyoutItem FlyoutDisplayOptions="AsMultipleItems">
         <ShellContent Title="Confirm Pickup" ContentTemplate="{DataTemplate local:DriverConfirmPickup}" />
         <ShellContent Title="Manage Trips" ContentTemplate="{DataTemplate local:ManageTrips}" />
-        <ShellContent Title="Report Delays" ContentTemplate="{DataTemplate local:RecordExpenses}" />
+        <ShellContent Title="Report Delays" ContentTemplate="{DataTemplate local:ReportDelays}" />
+        <ShellContent Title="Record expenses" ContentTemplate="{DataTemplate local:RecordExpenses}" />
     </FlyoutItem>
 
 </Shell>

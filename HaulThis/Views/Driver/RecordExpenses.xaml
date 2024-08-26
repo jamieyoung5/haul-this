@@ -2,11 +2,154 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="HaulThis.Views.Driver.RecordExpenses"
-             Title="RecordExpenses">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to RecordExpenses!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             Title="Record Expenses">
+    <ContentPage.Content>
+        <StackLayout>
+            <Label Text="Enter Your Driver ID:"
+                   FontSize="Medium"/>
+            <Entry Text="{Binding DriverId}"
+                   Placeholder="Driver Id"/>
+            <Button Text="Load Trips"
+                    Command="{Binding UpdateTripTableCommand}"/>
+
+            <!--Table for trip ids to select-->
+            <Grid Grid.Row="0"
+                  Grid.Column="1"
+                  Padding="10"
+                  BackgroundColor="LightGray">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100"/>
+                    <!-- ID -->
+                    <ColumnDefinition Width="Auto"/>
+                    <!-- select -->
+                </Grid.ColumnDefinitions>
+
+                <!-- Table Headings -->
+                <Label Text="Trip Id"
+                       FontAttributes="Bold"
+                       VerticalOptions="Center"
+                       Grid.Column="0"/>
+                <Label Text="Select"
+                       FontAttributes="Bold"
+                       VerticalOptions="Center"
+                       Grid.Column="1"/>
+
+            </Grid>
+            <CollectionView Grid.Row="1"
+                            Grid.Column="1"
+                            ItemsSource="{Binding Trips}"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Start">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="50"/>
+                                <!-- ID -->
+                                <ColumnDefinition Width="100"/>
+                                <!-- Select -->
+                            </Grid.ColumnDefinitions>
+                            <Label Text="{Binding Id}"
+                                   Grid.Column="0"/>
+                            <Button Text="Select"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.SelectTripCommand}"
+                                    CommandParameter="{Binding .}"
+                                    Grid.Column="1"/>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!--Table for expenses to record-->
+            <Grid Grid.Row="0"
+                  Grid.Column="1"
+                  Padding="10"
+                  BackgroundColor="LightGray">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="50"/>
+                    <!-- ID -->
+                    <ColumnDefinition Width="100"/>
+                    <!-- Amount -->
+                    <ColumnDefinition Width="100"/>
+                    <!-- Description -->
+                    <ColumnDefinition Width="100"/>
+                    <!-- Date -->
+                    <ColumnDefinition Width="200"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Table Headings -->
+                <Label Text="ID"
+                       FontAttributes="Bold"
+                       VerticalOptions="Center"
+                       Grid.Column="0"/>
+                <Label Text="Amount"
+                       FontAttributes="Bold"
+                       VerticalOptions="Center"
+                       Grid.Column="1"/>
+                <Label Text="Description"
+                       FontAttributes="Bold"
+                       VerticalOptions="Center"
+                       Grid.Column="2"/>
+                <Label Text="Date"
+                       FontAttributes="Bold"
+                       VerticalOptions="Center"
+                       Grid.Column="3"/>
+                <StackLayout Grid.Column="8"
+                             Orientation="Horizontal"
+                             HorizontalOptions="End">
+                    <Button Text="Add"
+                            BackgroundColor="Green"
+                            TextColor="White"
+                            VerticalOptions="Center"
+                            Grid.Column="8"
+                            Clicked="OnAddButtonClicked"/>
+                    <Button Text="Refresh"
+                            BackgroundColor="teal"
+                            TextColor="White"
+                            Clicked="OnRefreshButtonClicked"/>
+                </StackLayout>
+            </Grid>
+
+            <CollectionView Grid.Row="1"
+                            Grid.Column="1"
+                            ItemsSource="{Binding Expenses}"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Start">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="50"/>
+                                <!-- ID -->
+                                <ColumnDefinition Width="100"/>
+                                <!-- Amount -->
+                                <ColumnDefinition Width="100"/>
+                                <!-- Description -->
+                                <ColumnDefinition Width="100"/>
+                                <!-- Date -->
+                                <ColumnDefinition Width="200"/>
+                            </Grid.ColumnDefinitions>
+                            <Label Text="{Binding Id}"
+                                   Grid.Column="0"/>
+                            <Label Text="{Binding Amount}"
+                                   Grid.Column="1"/>
+                            <Label Text="{Binding Description}"
+                                   Grid.Column="2"/>
+                            <Label Text="{Binding Date}"
+                                   Grid.Column="3"/>
+                            <StackLayout Grid.Column="4"
+                                         Orientation="Horizontal"
+                                         HorizontalOptions="End">
+                                <Button Text="Delete"
+                                        BackgroundColor="Red"
+                                        TextColor="White"
+                                        Clicked="OnDeleteButtonClicked"
+                                        CommandParameter="{Binding}"/>
+                            </StackLayout>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </StackLayout>
+    </ContentPage.Content>
 </ContentPage>
