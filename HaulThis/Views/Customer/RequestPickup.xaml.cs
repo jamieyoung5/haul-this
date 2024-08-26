@@ -1,6 +1,6 @@
 using System;
 using Microsoft.Maui.Controls;
-using HaulThis.ViewModels;
+using HaulThis.Models;
 using HaulThis.Services;
 
 namespace HaulThis.Views.Customer

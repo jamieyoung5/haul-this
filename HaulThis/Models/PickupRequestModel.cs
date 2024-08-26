@@ -7,7 +7,7 @@ using HaulThis.Models;
 using HaulThis.Services;
 using Microsoft.Maui.Controls;
 
-namespace HaulThis.ViewModels
+namespace HaulThis.Models
 {
   public class PickupRequestModel : INotifyPropertyChanged
   {
@@ -17,11 +17,13 @@ namespace HaulThis.ViewModels
     private bool _isRequestInfoVisible;
     private bool _isErrorVisible;
     private string _errorMessage;
+    private int _createdRequestId; // New property to store the created request ID
 
     public PickupRequestModel(IPickupRequestService pickupRequestService)
     {
       _pickupRequestService = pickupRequestService ?? throw new ArgumentNullException(nameof(pickupRequestService));
       GetPickupRequestInfoCommand = new Command(async () => await GetPickupRequestInfo());
+      CreatePickupRequestCommand = new Command(async () => await CreatePickupRequest()); // Add command for creating request
     }
 
     public int RequestId
@@ -74,7 +76,55 @@ namespace HaulThis.ViewModels
       }
     }
 
+    public int CreatedRequestId // Property for displaying created request ID
+    {
+      get => _createdRequestId;
+      set
+      {
+        _createdRequestId = value;
+        OnPropertyChanged();
+      }
+    }
+
     public ICommand GetPickupRequestInfoCommand { get; }
+    public ICommand CreatePickupRequestCommand { get; } // Command for creating request
+
+    private async Task CreatePickupRequest()
+    {
+      IsErrorVisible = false;
+
+      try
+      {
+        var request = new PickupDeliveryRequest
+        {
+          CustomerId = 1, // Set appropriate value
+          PickupLocation = "Sample Pickup Location",
+          DeliveryLocation = "Sample Delivery Location",
+          RequestedPickupDate = DateTime.UtcNow,
+          RequestedDeliveryDate = DateTime.UtcNow.AddDays(1),
+          Status = "Pending"
+        };
+
+        // Call the service to create the pickup request
+        int requestId = await _pickupRequestService.CreatePickupRequest(request);
+
+        if (requestId > 0) // Assuming the result indicates success
+        {
+          CreatedRequestId = requestId; // Set the created request ID
+          ErrorMessage = $"Pickup request created successfully. Your Request ID is {requestId}.";
+        }
+        else
+        {
+          ErrorMessage = "Failed to create pickup request.";
+          IsErrorVisible = true;
+        }
+      }
+      catch (Exception ex)
+      {
+        ErrorMessage = $"An error occurred: {ex.Message}";
+        IsErrorVisible = true;
+      }
+    }
 
     private async Task GetPickupRequestInfo()
     {

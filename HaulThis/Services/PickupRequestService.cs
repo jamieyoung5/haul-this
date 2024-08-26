@@ -10,7 +10,7 @@ namespace HaulThis.Services
     private readonly IDatabaseService _databaseService;
     private readonly ILogger<PickupRequestService> _logger;
 
-    private const string GetPickupDeliveryRequestQuery = @"
+    private const string GetPickupRequestQuery = @"
             SELECT 
                 Id,
                 CustomerId,
@@ -24,16 +24,17 @@ namespace HaulThis.Services
             WHERE 
                 Id = @p0";
 
-    public PickupRequestService(IDatabaseService databaseService)
+    private const string CreatePickupRequestQuery = @"
+            INSERT INTO 
+                PickupDeliveryRequests (CustomerId, PickupLocation, DeliveryLocation, RequestedPickupDate, RequestedDeliveryDate, Status)
+            VALUES 
+                (@p0, @p1, @p2, @p3, @p4, @p5);
+            SELECT LAST_INSERT_ID();";
+
+    public PickupRequestService(IDatabaseService databaseService, ILoggerFactory loggerFactory)
     {
       _databaseService = databaseService ?? throw new ArgumentNullException(nameof(databaseService));
-
-      using var loggerFactory = LoggerFactory.Create(builder =>
-      {
-        builder.AddConsole();
-        builder.AddDebug();
-      });
-      _logger = loggerFactory.CreateLogger<PickupRequestService>();
+      _logger = loggerFactory?.CreateLogger<PickupRequestService>() ?? throw new ArgumentNullException(nameof(loggerFactory));
     }
 
     public async Task<PickupDeliveryRequest?> GetPickupRequestInfo(int id)
@@ -42,7 +43,7 @@ namespace HaulThis.Services
       {
         _logger.LogInformation("Starting GetPickupRequestInfo for ID: {Id}", id);
 
-        using var reader = _databaseService.Query(GetPickupDeliveryRequestQuery, id);
+        using var reader = _databaseService.Query(GetPickupRequestQuery, id);
 
         if (reader.Read())
         {
@@ -71,6 +72,30 @@ namespace HaulThis.Services
       {
         _logger.LogError(ex, "An error occurred while retrieving pickup/delivery request for ID: {Id}", id);
         return null;
+      }
+    }
+
+    public async Task<int> CreatePickupRequest(PickupDeliveryRequest request)
+    {
+      try
+      {
+        _logger.LogInformation("Starting CreatePickupRequest for CustomerId: {CustomerId}", request.CustomerId);
+
+        var result = _databaseService.Execute(CreatePickupRequestQuery,
+            request.CustomerId,
+            request.PickupLocation,
+            request.DeliveryLocation,
+            request.RequestedPickupDate,
+            request.RequestedDeliveryDate,
+            request.Status);
+
+        _logger.LogInformation("Created pickup request with CustomerId: {CustomerId}", request.CustomerId);
+        return result;
+      }
+      catch (Exception ex)
+      {
+        _logger.LogError(ex, "An error occurred while creating pickup request for CustomerId: {CustomerId}", request.CustomerId);
+        throw;
       }
     }
   }

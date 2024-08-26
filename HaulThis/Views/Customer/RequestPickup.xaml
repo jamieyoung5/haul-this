@@ -5,23 +5,24 @@
              Title="Request a Pickup/Delivery">
 
     <StackLayout Padding="20" Spacing="15">
-        <!-- Entry for Pickup Request ID -->
-        <Entry x:Name="RequestIdEntry"
-               Placeholder="Enter Request ID"
-               Keyboard="Numeric"
-               Text="{Binding RequestId, Mode=TwoWay}" />
+        <Button Text="Request a Delivery/Pickup" 
+                Command="{Binding CreatePickupRequestCommand}" />
 
-        <!-- Button to fetch request info -->
-        <Button Text="Request a Pickup/Delivery"
-                Command="{Binding GetPickupRequestInfoCommand}" />
+        <Label Text="Created Request ID:"
+               FontAttributes="Bold"
+               FontSize="Large"
+               IsVisible="{Binding IsCreatedRequestIdVisible}" />
 
-        <!-- Display fetched data -->
+        <Label Text="{Binding CreatedRequestId}"
+               FontSize="Medium"
+               TextColor="Green"
+               IsVisible="{Binding IsCreatedRequestIdVisible}" />
+
         <Label Text="Pickup Request Information"
                FontAttributes="Bold"
                FontSize="Large"
                IsVisible="{Binding IsRequestInfoVisible}" />
 
-        <!-- Details of the request -->
         <Label Text="Pickup Location:" 
                IsVisible="{Binding IsRequestInfoVisible}" />
         <Label Text="{Binding PickupRequest.PickupLocation}" 
@@ -47,10 +48,17 @@
         <Label Text="{Binding PickupRequest.Status}" 
                IsVisible="{Binding IsRequestInfoVisible}" />
 
-        <!-- Display error message -->
         <Label Text="{Binding ErrorMessage}"
                TextColor="Red"
                IsVisible="{Binding IsErrorVisible}" />
-    </StackLayout>
 
+        <Entry x:Name="RequestIdEntry"
+               Placeholder="Enter Request ID"
+               Keyboard="Numeric"
+               Text="{Binding RequestId, Mode=TwoWay}" />
+
+        <Button Text="Get Pickup/Delivery Info"
+                Command="{Binding GetPickupRequestInfoCommand}" />
+
+    </StackLayout>
 </ContentPage>

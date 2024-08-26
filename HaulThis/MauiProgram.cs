@@ -53,7 +53,7 @@ public static class MauiProgram
         ITrackingService trackingService = new TrackingService(db);
         IUserService userService = new UserService(db);
         
-        IPickupRequestService pickupRequestService = new PickupRequestService(db);
+        IPickupRequestService pickupRequestService = new PickupRequestService(db, loggerFactory);
         builder.Services.AddSingleton(pickupRequestService);
 
         builder.Services.AddSingleton(trackingService);
