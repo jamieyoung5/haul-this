@@ -1,0 +1,74 @@
+databaseChangeLog:
+  - changeSet:
+      id: 11
+      author: Stewart Bebbington (40544627@live.napier.ac.uk)
+      labels: ht-33
+      comment: customer table
+      changes:
+        - addColumn:
+            tableName: customers
+            columns:
+            - column:
+                name: Id
+                type: INT
+                constraints:
+                  primaryKey: true
+                  nullable: false
+                  unique: true
+            - column:
+                  name: firstName
+                  type: NVARCHAR(50)
+                  constraints:
+                    nullable: false
+            - column:
+                  name: lastName
+                  type: NVARCHAR(50)
+                  constraints:
+                    nullable: false
+            - column:
+                  name: email
+                  type: NVARCHAR(100)
+                  constraints:
+                    nullable: false
+                    unique: true
+            - column:
+                  name: phoneNumber
+                  type: NVARCHAR(15)
+                  constraints:
+                    nullable: false
+            - column:
+                  name: address
+                  type: NVARCHAR(200)
+                  constraints:
+                    nullable: false
+            - column:
+                  name: city
+                  type: NVARCHAR(100)
+                  constraints:
+                    nullable: false
+            - column:
+                  name: postalCode
+                  type: NVARCHAR(20)
+                  constraints:
+                    nullable: false
+            - column:  
+                  name: country
+                  type: NVARCHAR(100)
+                  constraints:
+                    nullable: false
+            - column: 
+                  name: createdAt
+                  type: DATETIME
+                  constraints:
+                    nullable: false
+            - column: 
+                  name: updatedAt
+                  type: DATETIME
+                  constraints:
+                    nullable: true
+            - column: 
+                  name: active
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false

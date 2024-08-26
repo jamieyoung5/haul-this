@@ -1,8 +1,5 @@
 ﻿using HaulThis.Models;
 using HaulThis.Services;
-using Moq;
-using System.Data;
-using Xunit;
 
 namespace HaulThis.Test.Services
 {

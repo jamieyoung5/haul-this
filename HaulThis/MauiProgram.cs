@@ -47,19 +47,21 @@ public static class MauiProgram
         ITrackingService trackingService = new TrackingService(db);
         IUserService userService = new UserService(db);
         ITripService tripService = new TripService(db);
-        
+        IManageCustomersService customerService = new ManageCustomersService(db);
         IPickupRequestService pickupRequestService = new PickupRequestService(db, loggerFactory);
-        builder.Services.AddSingleton(pickupRequestService);
 
+        builder.Services.AddSingleton(pickupRequestService);
+        builder.Services.AddTransient<RequestPickup>(_ => new RequestPickup(pickupRequestService));
         builder.Services.AddSingleton(trackingService);
         builder.Services.AddTransient<TrackItem>(_ => new TrackItem(trackingService));
-        builder.Services.AddTransient<RequestPickup>(_ => new RequestPickup(pickupRequestService));
         builder.Services.AddSingleton(db);
         builder.Services.AddSingleton(userService);
         builder.Services.AddTransient<ManageEmployees>(_ => new ManageEmployees(userService));
         builder.Services.AddSingleton(tripService);
         builder.Services.AddTransient<ManageTrips>(_ => new ManageTrips(tripService));
-        
+        builder.Services.AddSingleton(customerService);
+        builder.Services.AddTransient<ManageCustomers>(_ => new ManageCustomers(customerService));
+
         return builder.Build();
     }
     

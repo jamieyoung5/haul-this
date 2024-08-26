@@ -1,9 +1,5 @@
 ﻿using HaulThis.Models;
 using HaulThis.Services;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 
 namespace HaulThis.Test.Integration;
 
