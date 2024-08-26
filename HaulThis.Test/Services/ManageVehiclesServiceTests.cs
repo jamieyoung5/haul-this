@@ -24,6 +24,7 @@ namespace HaulThis.Tests.Services
         {
             // Arrange
             var mockDataReader = new Mock<IDataReader>();
+            var status = VehicleStatus.Available;
             mockDataReader.SetupSequence(x => x.Read())
                 .Returns(true)
                 .Returns(false);
@@ -32,8 +33,9 @@ namespace HaulThis.Tests.Services
             mockDataReader.Setup(x => x.GetString(2)).Returns("Mini");
             mockDataReader.Setup(x => x.GetInt32(3)).Returns(1980);
             mockDataReader.Setup(x => x.GetString(4)).Returns("ABC123");
-            mockDataReader.Setup(x => x.GetDateTime(5)).Returns(System.DateTime.UtcNow);
-            mockDataReader.Setup(x => x.IsDBNull(6)).Returns(true);
+            mockDataReader.Setup(x => x.GetString(5)).Returns(status.ToString());
+            mockDataReader.Setup(x => x.GetDateTime(6)).Returns(System.DateTime.UtcNow);
+            mockDataReader.Setup(x => x.IsDBNull(7)).Returns(true);
 
             _mockDatabaseService.Setup(db => db.Query(It.IsAny<string>())).Returns(mockDataReader.Object);
 
@@ -51,14 +53,16 @@ namespace HaulThis.Tests.Services
         {
             // Arrange
             var mockDataReader = new Mock<IDataReader>();
+            var status = VehicleStatus.Available;
             mockDataReader.Setup(x => x.IsDBNull(0)).Returns(false);
             mockDataReader.Setup(x => x.GetInt32(0)).Returns(1);
             mockDataReader.Setup(x => x.GetString(1)).Returns("Austin");
             mockDataReader.Setup(x => x.GetString(2)).Returns("Mini");
             mockDataReader.Setup(x => x.GetInt32(3)).Returns(1980);
             mockDataReader.Setup(x => x.GetString(4)).Returns("ABC123");
-            mockDataReader.Setup(x => x.GetDateTime(5)).Returns(System.DateTime.UtcNow);
-            mockDataReader.Setup(x => x.IsDBNull(6)).Returns(true);
+             mockDataReader.Setup(x => x.GetString(5)).Returns(status.ToString());
+            mockDataReader.Setup(x => x.GetDateTime(6)).Returns(System.DateTime.UtcNow);
+            mockDataReader.Setup(x => x.IsDBNull(7)).Returns(true);
 
             _mockDatabaseService.Setup(db => db.QueryRow(It.IsAny<string>(), It.IsAny<object[]>())).Returns(mockDataReader.Object);
 

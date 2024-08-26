@@ -37,9 +37,9 @@ namespace HaulThis.Tests.ViewModels
             await _viewModel.LoadVehicles();
 
             // Assert
-            Assert.Equal(2, _viewModel.vehicles.Count);
-            Assert.Equal("Austin", _viewModel.vehicles[0].Make);
-            Assert.Equal("Porsche", _viewModel.vehicles[1].Make);
+            Assert.Equal(2, _viewModel.Vehicles.Count);
+            Assert.Equal("Austin", _viewModel.Vehicles[0].Make);
+            Assert.Equal("Porsche", _viewModel.Vehicles[1].Make);
         }
 
         [Fact]
@@ -61,15 +61,15 @@ namespace HaulThis.Tests.ViewModels
             // Simulate initial state
             foreach (var vehicle in initialVehicles)
             {
-                _viewModel.vehicles.Add(vehicle);
+                _viewModel.Vehicles.Add(vehicle);
             }
 
             // Act
             await _viewModel.LoadVehicles();
 
             // Assert
-            Assert.Equal(1, _viewModel.vehicles.Count);
-            Assert.Equal("Austin", _viewModel.vehicles[0].Make);
+            Assert.Equal(1, _viewModel.Vehicles.Count);
+            Assert.Equal("Austin", _viewModel.Vehicles[0].Make);
         }
 
         [Fact]
@@ -79,14 +79,14 @@ namespace HaulThis.Tests.ViewModels
             bool eventRaised = false;
             _viewModel.PropertyChanged += (sender, e) =>
             {
-                if (e.PropertyName == nameof(_viewModel.vehicles))
+                if (e.PropertyName == nameof(_viewModel.Vehicles))
                 {
                     eventRaised = true;
                 }
             };
 
             // Act
-            _viewModel.OnPropertyChanged(nameof(_viewModel.vehicles));
+            _viewModel.OnPropertyChanged(nameof(_viewModel.Vehicles));
 
             // Assert
             Assert.True(eventRaised);

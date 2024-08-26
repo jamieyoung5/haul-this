@@ -27,7 +27,7 @@ namespace HaulThis.Test.Services
                 new Trip
                 {
                     Id = 1,
-                    Vehicle = new Vehicle { VehicleName = "Truck A" },
+                    Vehicle = new Vehicle { LicensePlate = "Truck A" },
                     Driver = new User { FirstName = "John Doe" },
                     TripManifest = new List<Delivery>
                     {
@@ -61,7 +61,7 @@ namespace HaulThis.Test.Services
             
             var trip = result.First();
             Assert.Equal(1, trip.Id);
-            Assert.Equal("Truck A", trip.Vehicle.VehicleName);
+            Assert.Equal("Truck A", trip.Vehicle.LicensePlate);
             Assert.Equal("John Doe", trip.Driver.FirstName);
 
             Assert.NotNull(trip.TripManifest);
@@ -101,7 +101,7 @@ namespace HaulThis.Test.Services
             var trip = new Trip
             {
                 Id = 1,
-                Vehicle = new Vehicle { VehicleName = "Truck A" },
+                Vehicle = new Vehicle { LicensePlate = "Truck A" },
                 Driver = new User { FirstName = "John Doe" },
                 TripManifest = new List<Delivery>
                 {
@@ -196,7 +196,7 @@ namespace HaulThis.Test.Services
             });
 
             mockReader.Setup(r => r.GetInt32(0)).Returns(() => deliveries[currentIndex].Trip.Id);
-            mockReader.Setup(r => r.GetString(1)).Returns(() => deliveries[currentIndex].Trip.Vehicle.VehicleName);
+            mockReader.Setup(r => r.GetString(1)).Returns(() => deliveries[currentIndex].Trip.Vehicle.LicensePlate);
             mockReader.Setup(r => r.GetString(2)).Returns(() => deliveries[currentIndex].Trip.Driver.FirstName);
             mockReader.Setup(r => r.GetString(3)).Returns(() => deliveries[currentIndex].Manifest.Waypoint.Location);
             mockReader.Setup(r => r.GetDateTime(4)).Returns(() => deliveries[currentIndex].Manifest.Waypoint.EstimatedTime);
