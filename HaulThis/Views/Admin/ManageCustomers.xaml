@@ -3,10 +3,89 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="HaulThis.Views.Admin.ManageCustomers"
              Title="ManageCustomers">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to ManageCustomers!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+    <ContentPage.Content>
+        <Grid Margin="20,40,20,20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            
+            <Grid Grid.Row="0" Grid.Column="1" Padding="10" BackgroundColor="LightGray">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="50" />
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="200" />
+                    <ColumnDefinition Width="120" />
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <Label Text="ID" FontAttributes="Bold" VerticalOptions="Center" Grid.Column="0" />
+                <Label Text="First Name" FontAttributes="Bold" VerticalOptions="Center" Grid.Column="1" />
+                <Label Text="Last Name" FontAttributes="Bold" VerticalOptions="Center" Grid.Column="2" />
+                <Label Text="Email" FontAttributes="Bold" VerticalOptions="Center" Grid.Column="3" />
+                <Label Text="Phone" FontAttributes="Bold" VerticalOptions="Center" Grid.Column="4" />
+                <Label Text="Role" FontAttributes="Bold" VerticalOptions="Center" Grid.Column="5" />
+                <Label Text="Created At" FontAttributes="Bold" VerticalOptions="Center" Grid.Column="6" />
+
+                <Button Text="Add" BackgroundColor="Green" TextColor="White" VerticalOptions="Center" Grid.Column="7" Clicked="OnAddButtonClicked" />
+            </Grid>
+            
+            <CollectionView Grid.Row="1" Grid.Column="1"
+                            ItemsSource="{Binding Customers}"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Start">
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="10" BackgroundColor="White">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="50" />
+                                <!-- ID -->
+                                <ColumnDefinition Width="100" />
+                                <!-- First Name -->
+                                <ColumnDefinition Width="100" />
+                                <!-- Last Name -->
+                                <ColumnDefinition Width="200" />
+                                <!-- Email -->
+                                <ColumnDefinition Width="120" />
+                                <!-- Phone -->
+                                <ColumnDefinition Width="100" />
+                                <!-- Role -->
+                                <ColumnDefinition Width="150" />
+                                <!-- Created At -->
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Data Binding -->
+                            <Label Text="{Binding Id}" Grid.Column="0" VerticalOptions="Center" />
+                            <Label Text="{Binding FirstName}" Grid.Column="1" VerticalOptions="Center" />
+                            <Label Text="{Binding LastName}" Grid.Column="2" VerticalOptions="Center" />
+                            <Label Text="{Binding Email}" Grid.Column="3" VerticalOptions="Center" />
+                            <Label Text="{Binding PhoneNumber}" Grid.Column="4" VerticalOptions="Center" />
+                            <Label Text="{Binding Role}" Grid.Column="5" VerticalOptions="Center" />
+                            <Label Text="{Binding CreatedAt}" Grid.Column="6" VerticalOptions="Center" />
+
+                            <StackLayout Orientation="Horizontal" HorizontalOptions="End" Grid.Column="7">
+                                <Button Text="Edit" BackgroundColor="Blue" TextColor="White" WidthRequest="60" Margin="5,0"
+                                        Clicked="OnEditButtonClicked" 
+                                        CommandParameter="{Binding}" />
+                                <Button Text="Delete" BackgroundColor="Red" TextColor="White" WidthRequest="60" 
+                                        Clicked="OnDeleteButtonClicked" 
+                                        CommandParameter="{Binding}" />
+                            </StackLayout>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Grid>
+    </ContentPage.Content>
 </ContentPage>

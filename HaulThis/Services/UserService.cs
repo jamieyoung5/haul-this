@@ -9,7 +9,15 @@ public class UserService(IDatabaseService databaseService) : IUserService
 {
     private const string GetAllUsersQuery =  "SELECT u.Id, u.firstName, u.lastName, u.email, u.phoneNumber, u.address, u.createdAt, u.updatedAt, r.roleName FROM users u JOIN role r ON u.roleId = r.Id";
     private const string GetAllUsersByIdQuery = "SELECT u.Id, u.firstName, u.lastName, u.email, u.phoneNumber, u.address, u.createdAt, u.updatedAt, r.roleName FROM users u JOIN role r ON u.roleId = r.Id WHERE u.Id = @p0";
-    
+    private const string GetAllCustomersQuery = "SELECT u.Id, u.firstName, u.lastName, u.email, u.phoneNumber, u.address, u.createdAt, u.updatedAt, r.roleName " +
+        "FROM users u " +
+        "JOIN role r ON u.roleId = r.Id " +
+        "WHERE r.roleName = 'Customer'";
+
+    private const string GetAllEmployeesQuery = "SELECT u.Id, u.firstName, u.lastName, u.email, u.phoneNumber, u.address, u.createdAt, u.updatedAt, r.roleName " +
+        "FROM users u " +
+        "JOIN role r ON u.roleId = r.Id " +
+        "WHERE r.roleName IN ('Administrator', 'Driver')";
     private const string AddUserStmt = """
                                        INSERT INTO users (firstName, lastName, email, phoneNumber, address, roleId, createdAt)
                                                              VALUES (@p0, @p1, @p2, @p3, @p4, (SELECT Id FROM role WHERE roleName = @p5), @p6)
@@ -48,7 +56,59 @@ public class UserService(IDatabaseService databaseService) : IUserService
 
         return await Task.FromResult(users);
     }
-    
+
+    public async Task<IEnumerable<User>> GetAllCustomersAsync()
+    {
+      List<User> users = [];
+
+      using (var reader = databaseService.Query(GetAllCustomersQuery))
+      {
+        while (reader.Read())
+        {
+          users.Add(new User
+          {
+            Id = reader.GetInt32(0),
+            FirstName = reader.GetString(1),
+            LastName = reader.GetString(2),
+            Email = reader.GetString(3),
+            PhoneNumber = reader.GetString(4),
+            Address = reader.GetString(5),
+            CreatedAt = reader.GetDateTime(6),
+            UpdatedAt = reader.IsDBNull(7) ? null : reader.GetDateTime(7),
+            Role = Enum.Parse<Role>(reader.GetString(8))
+          });
+        }
+      }
+
+      return await Task.FromResult(users);
+    }
+
+    public async Task<IEnumerable<User>> GetAllEmployeesAsync()
+    {
+      List<User> users = [];
+
+      using (var reader = databaseService.Query(GetAllCustomersQuery))
+      {
+        while (reader.Read())
+        {
+          users.Add(new User
+          {
+            Id = reader.GetInt32(0),
+            FirstName = reader.GetString(1),
+            LastName = reader.GetString(2),
+            Email = reader.GetString(3),
+            PhoneNumber = reader.GetString(4),
+            Address = reader.GetString(5),
+            CreatedAt = reader.GetDateTime(6),
+            UpdatedAt = reader.IsDBNull(7) ? null : reader.GetDateTime(7),
+            Role = Enum.Parse<Role>(reader.GetString(8))
+          });
+        }
+      }
+
+      return await Task.FromResult(users);
+    }
+
     /// <inheritdoc />
     public async Task<User> GetUserByIdAsync(int userId)
     {

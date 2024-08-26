@@ -40,7 +40,7 @@
             </Grid>
             
             <CollectionView Grid.Row="1" Grid.Column="1"
-                            ItemsSource="{Binding Users}"
+                            ItemsSource="{Binding Employees}"
                             HorizontalOptions="Center"
                             VerticalOptions="Start">
 

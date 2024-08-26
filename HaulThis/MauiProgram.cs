@@ -57,6 +57,7 @@ public static class MauiProgram
         builder.Services.AddSingleton(db);
         builder.Services.AddSingleton(userService);
         builder.Services.AddTransient<ManageEmployees>(_ => new ManageEmployees(userService));
+        builder.Services.AddTransient<ManageCustomers>(_ => new ManageCustomers(userService));
         builder.Services.AddSingleton(tripService);
         builder.Services.AddTransient<ManageTrips>(_ => new ManageTrips(tripService));
         
