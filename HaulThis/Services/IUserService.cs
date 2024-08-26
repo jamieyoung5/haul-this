@@ -12,7 +12,17 @@ public interface IUserService
     /// </summary>
     /// <returns>A collection of all users.</returns>
     Task<IEnumerable<User>> GetAllUsersAsync();
-    
+    /// <summary>
+    /// Retrieves all users asynchronously.
+    /// </summary>
+    /// <returns>A collection of all users.</returns>
+    Task<IEnumerable<User>> GetAllCustomersAsync();
+    /// <summary>
+    /// Retrieves all users asynchronously.
+    /// </summary>
+    /// <returns>A collection of all users.</returns>
+    Task<IEnumerable<User>> GetAllEmployeesAsync();
+
     /// <summary>
     /// Retrieves a specific user by their ID asynchronously.
     /// </summary>

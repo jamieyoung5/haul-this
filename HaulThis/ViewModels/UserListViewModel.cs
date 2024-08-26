@@ -14,6 +14,8 @@ public sealed class UserListViewModel : ViewModelEvent
     {
         _userService = userService;
         LoadUsers();
+        LoadCustomers();
+        LoadEmployees();
     }
     
     private async Task LoadUsers()
@@ -27,5 +29,31 @@ public sealed class UserListViewModel : ViewModelEvent
         }
 
         OnPropertyChanged(nameof(Users));
+    }
+
+    private async Task LoadEmployees()
+    {
+      IEnumerable<User> usersFromDb = await _userService.GetAllEmployeesAsync();
+      Users.Clear();
+
+      foreach (var user in usersFromDb)
+      {
+        Users.Add(user);
+      }
+
+      OnPropertyChanged(nameof(Users));
+    }
+
+    private async Task LoadCustomers()
+    {
+      IEnumerable<User> usersFromDb = await _userService.GetAllCustomersAsync();
+      Users.Clear();
+
+      foreach (var user in usersFromDb)
+      {
+        Users.Add(user);
+      }
+
+      OnPropertyChanged(nameof(Users));
     }
 }
