@@ -104,6 +104,7 @@ public class DatabaseSetup
                     Id INT PRIMARY KEY IDENTITY(1,1),
                     vehicleId INT,
                     driverId INT,
+                    date DATETIME NOT NULL,
                     FOREIGN KEY (vehicleId) REFERENCES vehicle(uniqueId),
                     FOREIGN KEY (driverId) REFERENCES users(Id)
                 );
@@ -114,6 +115,8 @@ public class DatabaseSetup
                     billId INT,
                     pickedUpBy INT,
                     deliveredBy INT,
+                    itemWeight DECIMAL(10, 2),
+                    delivered BIT NOT NULL,
                     FOREIGN KEY (tripId) REFERENCES trip(Id),
                     FOREIGN KEY (billId) REFERENCES bill(Id),
                     FOREIGN KEY (pickedUpBy) REFERENCES users(Id),
@@ -132,7 +135,7 @@ public class DatabaseSetup
                     tripId INT,
                     userId INT,
                     location VARCHAR(255) NOT NULL,
-                    arrivalTime DATETIME,
+                    estimatedTime DATETIME,
                     FOREIGN KEY (tripId) REFERENCES trip(Id),
                     FOREIGN KEY (userId) REFERENCES users(Id)
                 );

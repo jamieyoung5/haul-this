@@ -1,117 +1,106 @@
-using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 using System.Windows.Input;
-using HaulThis.Models;
 using HaulThis.Services;
 
-namespace HaulThis.ViewModels
+namespace HaulThis.ViewModels;
+
+public class TrackingViewModel : INotifyPropertyChanged
 {
-    public class TrackingViewModel : INotifyPropertyChanged
+    private readonly ITrackingService _trackingService;
+
+    public TrackingViewModel(ITrackingService trackingService)
     {
-        private readonly ITrackingService _trackingService;
+        _trackingService = trackingService;
+        TrackItemCommand = new Command(async () => await TrackItem());
+    }
 
-        public TrackingViewModel(ITrackingService trackingService)
+    private int _trackingId;
+    public int TrackingId
+    {
+        get => _trackingId;
+        set
         {
-            _trackingService = trackingService;
-            TrackItemCommand = new Command(async () => await TrackItem());
+            _trackingId = value;
+            OnPropertyChanged();
         }
+    }
 
-        private string _trackingId;
-        public string TrackingId
+    private string _currentLocation;
+    public string CurrentLocation
+    {
+        get => _currentLocation;
+        set
         {
-            get => _trackingId;
-            set
-            {
-                _trackingId = value;
-                OnPropertyChanged();
-            }
+            _currentLocation = value;
+            OnPropertyChanged();
         }
+    }
 
-        private string _currentLocation;
-        public string CurrentLocation
+    private DateTime? _eta;
+    public DateTime? ETA
+    {
+        get => _eta;
+        set
         {
-            get => _currentLocation;
-            set
-            {
-                _currentLocation = value;
-                OnPropertyChanged();
-            }
+            _eta = value;
+            OnPropertyChanged();
         }
+    }
 
-        private DateTime? _eta;
-        public DateTime? ETA
+    private string _status;
+    public string Status
+    {
+        get => _status;
+        set
         {
-            get => _eta;
-            set
-            {
-                _eta = value;
-                OnPropertyChanged();
-            }
+            _status = value;
+            OnPropertyChanged();
         }
+    }
 
-        private string _status;
-        public string Status
+    private string _errorMessage;
+    public string ErrorMessage
+    {
+        get => _errorMessage;
+        set
         {
-            get => _status;
-            set
-            {
-                _status = value;
-                OnPropertyChanged();
-            }
+            _errorMessage = value;
+            OnPropertyChanged();
         }
+    }
 
-        private string _errorMessage;
-        public string ErrorMessage
+    public ICommand TrackItemCommand { get; }
+
+    private async Task TrackItem()
+    {
+        try
         {
-            get => _errorMessage;
-            set
-            {
-                _errorMessage = value;
-                OnPropertyChanged();
-            }
+            var trackingInfo = await _trackingService.GetTrackingInfo(TrackingId);
+
+            CurrentLocation = trackingInfo.CurrentLocation;
+            ETA = trackingInfo.ETA;
+            Status = trackingInfo.Status;
+            ErrorMessage = string.Empty;
         }
-
-        public ICommand TrackItemCommand { get; }
-
-        private async Task TrackItem()
+        catch (Exception ex)
         {
-            try
-            {
-                var trackingInfo = await _trackingService.GetTrackingInfo(TrackingId);
-
-                if (trackingInfo == null)
-                {
-                    ErrorMessage = "Invalid tracking ID. Please try again.";
-                    ClearTrackingData();
-                    return;
-                }
-
-                CurrentLocation = trackingInfo.CurrentLocation;
-                ETA = trackingInfo.ETA;
-                Status = trackingInfo.Status;
-                ErrorMessage = string.Empty;
-            }
-            catch (Exception ex)
-            {
-                ErrorMessage = $"An error occurred: {ex.Message}";
-                ClearTrackingData();
-            }
+            ErrorMessage = $"An error occurred: {ex.Message}";
+            ClearTrackingData();
         }
+    }
 
-        private void ClearTrackingData()
-        {
-            CurrentLocation = string.Empty;
-            ETA = null;
-            Status = string.Empty;
-        }
+    private void ClearTrackingData()
+    {
+        CurrentLocation = string.Empty;
+        ETA = null;
+        Status = string.Empty;
+    }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+    public event PropertyChangedEventHandler PropertyChanged;
 
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+    private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+    {
+        PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

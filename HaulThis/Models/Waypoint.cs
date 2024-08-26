@@ -1,46 +1,46 @@
-using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace HaulThis.Models
+namespace HaulThis.Models;
+
+/// <summary>
+/// Represents a waypoint in a trip.
+/// </summary>
+public class Waypoint : DataModel
 {
+    private readonly int _id;
+    private string _location = string.Empty;
+    private DateTime _estimatedTime;
+
     /// <summary>
-    /// Represents a waypoint in the haul-this system
+    /// Gets or sets the unique identifier for the waypoint.
     /// </summary>
-    public class Waypoint
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public int Id
     {
-        /// <summary>
-        /// Gets or sets the unique identifier for the waypoint.
-        /// </summary>
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        get => _id;
+        init => SetProperty(ref _id, value);
+    }
 
-        /// <summary>
-        /// Gets or sets the trip ID associated with the waypoint.
-        /// </summary>
-        [ForeignKey("Trip")]
-        public int TripId { get; set; }
+    /// <summary>
+    /// Gets or sets the location of the waypoint.
+    /// </summary>
+    [Required]
+    [MaxLength(255)]
+    public string Location
+    {
+        get => _location;
+        set => SetProperty(ref _location, value);
+    }
 
-        /// <summary>
-        /// Gets or sets the location of the waypoint.
-        /// </summary>
-        [MaxLength(255)]
-        public string Location { get; set; } = string.Empty;
-
-        /// <summary>
-        /// Gets or sets the arrival time at the waypoint.
-        /// </summary>
-        public DateTime ArrivalTime { get; set; }
-
-        /// <summary>
-        /// Gets or sets the departure time from the waypoint.
-        /// </summary>
-        public DateTime DepartureTime { get; set; }
-
-        /// <summary>
-        /// Navigation property for the trip associated with the waypoint.
-        /// </summary>
-        public Trip Trip { get; set; }
+    /// <summary>
+    /// Gets or sets the estimated time of arrival at this waypoint.
+    /// </summary>
+    [Required]
+    public DateTime EstimatedTime
+    {
+        get => _estimatedTime;
+        set => SetProperty(ref _estimatedTime, value);
     }
 }

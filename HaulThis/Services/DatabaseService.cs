@@ -6,11 +6,11 @@ namespace HaulThis.Services;
 /// <summary>
 /// Provides a common service for connecting and performing basic operations with a database
 /// </summary>
-public class DatabaseService : IDatabaseService
+public sealed class DatabaseService : IDatabaseService
 {
     private readonly IDbConnection _connection;
     private readonly ILogger<DatabaseService> _logger;
-    private bool _disposed = false;
+    private bool _disposed;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DatabaseService"/> class with the specified connection string.
@@ -157,14 +157,14 @@ public class DatabaseService : IDatabaseService
         GC.SuppressFinalize(this);
     }
 
-    protected virtual void Dispose(bool disposing)
+    private void Dispose(bool disposing)
     {
         if (_disposed)
             return;
 
         if (disposing)
         {
-            _connection?.Dispose();
+            _connection.Dispose();
         }
 
         _disposed = true;

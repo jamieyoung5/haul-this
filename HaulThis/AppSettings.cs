@@ -1,7 +1,4 @@
-﻿using System.Reflection;
-using System.Text.Json;
-
-namespace HaulThis;
+﻿namespace HaulThis;
 
 public class AppSettings
 {

@@ -5,8 +5,8 @@ using Microsoft.Extensions.Logging;
 using CommunityToolkit.Maui;
 using HaulThis.Views.Admin;
 using Microsoft.Data.SqlClient;
-using HaulThis.ViewModels;
 using HaulThis.Views.Customer;
+using HaulThis.Views.Driver;
 
 namespace HaulThis;
 
@@ -41,24 +41,21 @@ public static class MauiProgram
         IDatabaseService db = new DatabaseService(new SqlConnection(connectionString), logger);
         logger.LogInformation("Connected successfully");
         db.CreateConnection();
-        if (db.Ping())
-        {
-            logger.LogInformation("pinged successfully");
-        } else
-        {
-            logger.LogInformation("pinged unsuccessfully");
-        }
+        logger.LogInformation(db.Ping() ? "pinged successfully" : "pinged unsuccessfully");
 
 
         ITrackingService trackingService = new TrackingService(db);
         IUserService userService = new UserService(db);
+        ITripService tripService = new TripService(db);
         
         builder.Services.AddSingleton(trackingService);
         builder.Services.AddTransient<TrackItem>(_ => new TrackItem(trackingService));
         builder.Services.AddSingleton(db);
         builder.Services.AddSingleton(userService);
         builder.Services.AddTransient<ManageEmployees>(_ => new ManageEmployees(userService));
-
+        builder.Services.AddSingleton(tripService);
+        builder.Services.AddTransient<ManageTrips>(_ => new ManageTrips(tripService));
+        
         return builder.Build();
     }
     

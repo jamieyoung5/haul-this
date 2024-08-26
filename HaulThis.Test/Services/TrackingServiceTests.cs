@@ -6,6 +6,8 @@ using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using System;
 
+namespace HaulThis.Test.Services;
+
 public class TrackingServiceTests
 {
     private readonly Mock<IDatabaseService> _databaseServiceMock;
@@ -14,7 +16,6 @@ public class TrackingServiceTests
     public TrackingServiceTests()
     {
         _databaseServiceMock = new Mock<IDatabaseService>();
-        var loggerMock = new Mock<ILogger<TrackingService>>();
         _trackingService = new TrackingService(_databaseServiceMock.Object);
     }
 
@@ -36,7 +37,7 @@ public class TrackingServiceTests
             .Returns(readerMock.Object);
 
         // Act
-        var trackingInfo = await _trackingService.GetTrackingInfo("123");
+        var trackingInfo = await _trackingService.GetTrackingInfo(1);
 
         // Assert
         Assert.NotNull(trackingInfo);
@@ -55,7 +56,7 @@ public class TrackingServiceTests
             .Returns(readerMock.Object);
 
         // Act
-        var trackingInfo = await _trackingService.GetTrackingInfo("invalid");
+        var trackingInfo = await _trackingService.GetTrackingInfo(-1);
 
         // Assert
         Assert.Null(trackingInfo);
@@ -68,7 +69,7 @@ public class TrackingServiceTests
         _databaseServiceMock.Setup(db => db.CreateConnection()).Returns(false);
 
         // Act
-        var trackingInfo = await _trackingService.GetTrackingInfo("123");
+        var trackingInfo = await _trackingService.GetTrackingInfo(1);
 
         // Assert
         Assert.Null(trackingInfo);

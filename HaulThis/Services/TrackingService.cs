@@ -1,6 +1,3 @@
-using System;
-using System.Threading.Tasks;
-using HaulThis.Models;
 using Microsoft.Extensions.Logging;
 
 namespace HaulThis.Services
@@ -9,22 +6,22 @@ namespace HaulThis.Services
     {
         private readonly IDatabaseService _databaseService;
         private readonly ILogger<TrackingService> _logger;
-        private IDatabaseService db;
         private const string GetTrackingInfoQuery = @"
-            SELECT 
-                wp.Location, 
-                wp.ArrivalTime, 
-                tm.ItemId, 
-                tm.TripId 
+            SELECT TOP 1
+                wp.location, 
+                wp.estimatedTime, 
+                itm.Id, 
+                tm.Id 
             FROM 
-                Waypoint wp
+                waypoint wp
             INNER JOIN 
-                TripManifest tm ON tm.TripId = wp.TripId
+                trip tm ON tm.Id = wp.Id
+			INNER JOIN 
+				item itm ON itm.tripId = wp.tripId
             WHERE 
-                tm.ItemId = @p0
+                tm.Id = @p0
             ORDER BY 
-                wp.ArrivalTime DESC
-            LIMIT 1";
+                wp.estimatedTime DESC;";
 
         public TrackingService(IDatabaseService databaseService)
         {
@@ -38,7 +35,7 @@ namespace HaulThis.Services
             _logger = loggerFactory.CreateLogger<TrackingService>();
         }
 
-        public async Task<TrackingInfo> GetTrackingInfo(string trackingId)
+        public async Task<TrackingInfo> GetTrackingInfo(int trackingId)
         {
             try
             {
@@ -57,6 +54,7 @@ namespace HaulThis.Services
 
                     _logger.LogInformation("Tracking Info - Location: {Location}, Arrival Time: {ArrivalTime}, ETA: {ETA}", location, arrivalTime, eta);
 
+                    reader.Close();
                     return new TrackingInfo
                     {
                         CurrentLocation = location,
@@ -69,7 +67,7 @@ namespace HaulThis.Services
                     _logger.LogWarning("Query did not return any rows for Tracking ID: {TrackingId}", trackingId);
                 }
 
-                reader.Close(); // Explicitly close the reader after reading
+                reader.Close();
                 return null;
             }
             catch (Exception ex)
