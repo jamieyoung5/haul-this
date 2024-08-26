@@ -5,6 +5,7 @@ namespace HaulThis.Views.Misc;
 public partial class AddExpensePopup 
 {
 	private Expense CreatedExpense { get; set; }
+
 	public AddExpensePopup()
 	{
 		InitializeComponent();
