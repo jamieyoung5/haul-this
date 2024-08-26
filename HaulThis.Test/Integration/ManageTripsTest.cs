@@ -18,11 +18,11 @@ public class ManageTripsTest : DisposableIntegrationTest
         var itemId = 1;
         var currentDate = DateTime.UtcNow;
         
-        _databaseService.Execute("INSERT INTO vehicle (vehicleName) VALUES (@p0)", "Truck A");
+        _databaseService.Execute("INSERT INTO vehicle (licensePlate) VALUES (@p0)", "Truck A");
         _databaseService.Execute("INSERT INTO users (roleId, firstName, lastName, email, phoneNumber, address, createdAt) VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6)",
             3, "John", "Doe", "john.doe@example.com", "1234567890", "123 Main St", currentDate);
     
-        var vehicleId = _databaseService.QueryRow("SELECT uniqueId FROM vehicle WHERE vehicleName = @p0", "Truck A").GetInt32(0);
+        var vehicleId = _databaseService.QueryRow("SELECT uniqueId FROM vehicle WHERE licensePlate = @p0", "Truck A").GetInt32(0);
         var userId = _databaseService.QueryRow("SELECT Id FROM users WHERE email = @p0", "john.doe@example.com").GetInt32(0);
 
         _databaseService.Execute("INSERT INTO bill (userId) VALUES (@p0)", userId);
@@ -53,8 +53,8 @@ public async Task GetTripByDateAsync_ShouldReturnTrips_WhenTripsExistForDate()
     // Arrange
     var date = DateTime.UtcNow;
     
-    _databaseService.Execute("INSERT INTO vehicle (vehicleName) VALUES (@p0)", "Truck A");
-    var vehicleId = _databaseService.QueryRow("SELECT uniqueId FROM vehicle WHERE vehicleName = @p0", "Truck A").GetInt32(0);
+    _databaseService.Execute("INSERT INTO vehicle (licensePlate) VALUES (@p0)", "Truck A");
+    var vehicleId = _databaseService.QueryRow("SELECT uniqueId FROM vehicle WHERE licensePlate = @p0", "Truck A").GetInt32(0);
 
     _databaseService.Execute("INSERT INTO users (roleId, firstName, lastName, email, phoneNumber, address, createdAt) VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6)",
         3, "John", "Doe", "john.doe@example.com", "1234567890", "123 Main St", date);
@@ -79,7 +79,7 @@ public async Task GetTripByDateAsync_ShouldReturnTrips_WhenTripsExistForDate()
     var tripList = trips.ToList();
     Assert.Single(tripList);
     Assert.Equal(tripId, tripList[0].Id);
-    Assert.Equal("Truck A", tripList[0].Vehicle.VehicleName);
+    Assert.Equal("Truck A", tripList[0].Vehicle.LicensePlate);
     Assert.Equal("John Doe", tripList[0].Driver.FirstName);
     Assert.Single(tripList[0].TripManifest);
     Assert.Equal(100, tripList[0].TripManifest[0].ItemWeight);

@@ -50,6 +50,7 @@ namespace HaulThis.Models
         [MaxLength(255)]
         public string Status { get; set; } = string.Empty;
 
+        
     }
 
    
