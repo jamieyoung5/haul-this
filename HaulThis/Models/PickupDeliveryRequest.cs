@@ -49,12 +49,5 @@ namespace HaulThis.Models
         /// </summary>
         [MaxLength(255)]
         public string Status { get; set; } = string.Empty;
-
-        /// <summary>
-        /// Navigation property for the customer associated with the request.
-        /// </summary>
-        public Customer Customer { get; set; }
     }
-
-   
 }

@@ -1,0 +1,56 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="HaulThis.Views.Driver.ReportDelaysAndEmergencies"
+             Title="Report Delays and Emergencies">
+
+    <ContentPage.Content>
+        <Grid Padding="10" RowSpacing="10" ColumnSpacing="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Label Grid.Row="0" Grid.Column="0" Text="Driver ID:" FontSize="Medium" VerticalOptions="Center" />
+            <Entry Grid.Row="0" Grid.Column="1" Text="{Binding DriverId}" Placeholder="Enter Driver ID" />
+
+            <Button Grid.Row="1" Grid.Column="0" Text="Load Trips" Command="{Binding UpdateTripTableCommand}" />
+
+            <Label Grid.Row="2" Grid.Column="0" Text="Select Trip:" Margin="0,10,0,0" VerticalOptions="Center" />
+            <Picker Grid.Row="2" Grid.Column="1" x:Name="TripPicker" SelectedIndexChanged="OnTripSelected" />
+
+            <Button Grid.Row="3" Grid.Column="0" Text="Add Report" Command="{Binding AddReportCommand}" BackgroundColor="Green" TextColor="White" />
+
+            <Button Grid.Row="3" Grid.Column="1" Text="Refresh Reports" Command="{Binding RefreshReportsCommand}" BackgroundColor="Teal" TextColor="White" />
+
+            <CollectionView Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" ItemsSource="{Binding Reports}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <Label Grid.Column="0" Text="{Binding Id}" VerticalOptions="Center" />
+                            <Label Grid.Column="1" Text="{Binding ReportType}" VerticalOptions="Center" />
+                            <Label Grid.Column="2" Text="{Binding Description}" VerticalOptions="Center" />
+                            <Label Grid.Column="3" Text="{Binding ReportDateTime}" VerticalOptions="Center" />
+                            <Button Grid.Column="4" Text="Delete" BackgroundColor="Red" TextColor="White" Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteReportCommand}" CommandParameter="{Binding}" />
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

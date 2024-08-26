@@ -1,6 +1,5 @@
 ﻿using HaulThis.Models;
 
-
 namespace HaulThis.Views.Misc;
 
 public partial class AddUserPopup
