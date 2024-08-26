@@ -43,6 +43,8 @@ namespace HaulThis.ViewModels
 
       await _customerService.AddCustomerAsync(customer);
       Customers.Add(customer);
+
+      await LoadCustomers();
     }
 
     public async Task UpdateCustomerAsync(Customer customer)
@@ -57,6 +59,8 @@ namespace HaulThis.ViewModels
         var index = Customers.IndexOf(existingCustomer);
         Customers[index] = customer;
       }
+
+      await LoadCustomers();
     }
 
     public async Task DeleteCustomerAsync(Customer customer)
@@ -68,6 +72,8 @@ namespace HaulThis.ViewModels
       {
         Customers.Remove(customer);
       }
+
+      await LoadCustomers();
     }
   }
 }
