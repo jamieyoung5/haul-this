@@ -5,6 +5,8 @@ using Microsoft.Extensions.Logging;
 using HaulThis.Models;
 using HaulThis.Services;
 
+namespace HaulThis.Test.Services;
+
 public class PickupRequestServiceTests
 {
   private readonly Mock<IDatabaseService> _mockDatabaseService;

@@ -1,6 +1,8 @@
 using HaulThis.Models;
 using HaulThis.Services;
 
+namespace HaulThis.Test.ViewModels;
+
 public class PickupRequestModelTests
 {
   private readonly Mock<IPickupRequestService> _mockPickupRequestService;
