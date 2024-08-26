@@ -20,10 +20,32 @@ public class ManageExpensesViewModelTests
     public async Task LoadTripsFromDriver_LoadsTrips()
     {
         // Arrange
-        var trips = new List<Trip>
+        var driver = new User
         {
-            new Trip { Id = 1, DriverId = 123, VehicleId = 456, Status = "Completed" }
+            Id = 123,
+            FirstName = "John",
+            LastName = "Doe",
+            Email = "john.doe@example.com",
+            PhoneNumber = "123-456-7890",
+            Address = "123 Main St"
         };
+
+        var vehicle = new Vehicle
+        {
+            Id = 456,
+            // Add other necessary properties for Vehicle
+        };
+
+        var trips = new List<Trip>
+    {
+        new Trip
+        {
+            Id = 1,
+            Driver = driver,
+            Vehicle = vehicle,
+            TripManifest = new List<Delivery>(),
+        }
+    };
 
         _mockService.Setup(s => s.GetTripsByDriverIdAsync(It.IsAny<int>())).ReturnsAsync(trips);
 
@@ -35,9 +57,11 @@ public class ManageExpensesViewModelTests
         // Assert
         Assert.Single(_viewModel.Trips);
         var trip = _viewModel.Trips[0];
-        Assert.Equal(123, trip.DriverId);
-        Assert.Equal("Completed", trip.Status);
+        Assert.Equal(1, trip.Id);
+        Assert.Equal(123, trip.Driver.Id);
+        Assert.Equal(456, trip.Vehicle.Id);
     }
+
 
     [Fact]
     public async Task LoadTripExpenses_LoadsExpenses()
@@ -79,12 +103,37 @@ public class ManageExpensesViewModelTests
     public void SelectedTrip_SetProperty_UpdatesSelectedTrip()
     {
         // Arrange
-        var trip = new Trip { Id = 1, DriverId = 123, VehicleId = 456 };
+        var driver = new User
+        {
+            Id = 123,
+            FirstName = "John",
+            LastName = "Doe",
+            Email = "john.doe@example.com",
+            PhoneNumber = "123-456-7890",
+            Address = "123 Main St"
+        };
+
+        var vehicle = new Vehicle
+        {
+            Id = 456,
+            // Add other necessary properties for Vehicle
+        };
+
+        var trip = new Trip
+        {
+            Id = 1,
+            Driver = driver,
+            Vehicle = vehicle,
+            TripManifest = new List<Delivery>()
+        };
 
         // Act
         _viewModel.SelectedTrip = trip;
 
         // Assert
         Assert.Equal(trip, _viewModel.SelectedTrip);
+        Assert.Equal(123, _viewModel.SelectedTrip.Driver.Id);
+        Assert.Equal(456, _viewModel.SelectedTrip.Vehicle.Id);
     }
+
 }

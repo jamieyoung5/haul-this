@@ -53,8 +53,6 @@ public static class MauiProgram
         builder.Services.AddSingleton(pickupRequestService);
 
         IManageExpensesService manageExpensesService = new ManageExpensesService(db);
-
-
         IManageVehiclesService manageVehiclesService = new ManageVehiclesService(db);
         
         builder.Services.AddSingleton(trackingService);
@@ -65,10 +63,6 @@ public static class MauiProgram
         builder.Services.AddTransient<ManageEmployees>(_ => new ManageEmployees(userService));     
         builder.Services.AddSingleton(manageExpensesService);
         builder.Services.AddTransient<RecordExpenses>(_ => new RecordExpenses(manageExpensesService));
-
-
-
-
         builder.Services.AddTransient<ManageEmployees>(_ => new ManageEmployees(userService));
         builder.Services.AddSingleton(tripService);
         builder.Services.AddTransient<ManageTrips>(_ => new ManageTrips(tripService));  

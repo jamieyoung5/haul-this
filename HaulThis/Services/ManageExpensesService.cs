@@ -5,7 +5,7 @@ namespace HaulThis.Services;
 
 public class ManageExpensesService(IDatabaseService databaseService) : IManageExpensesService
 {
-    private const string GetAllTripsByDriverIdQuery = "SELECT t.Id, t.DriverId, t.VehicleId, t.StartDate, t.EndDate, t.Status FROM trip t WHERE t.DriverId = @p0";
+    private const string GetAllTripsByDriverIdQuery = "SELECT t.Id AS TripId, t.Vehicle AS Vehicle, t.TripManifest AS TripManifest, d.Id AS DriverId, d.FirstName AS DriverFirstName, d.LastName AS DriverLastName, d.Email AS DriverEmail, d.PhoneNumber AS DriverPhoneNumber, d.Address AS DriverAddress, d.CreatedAt AS DriverCreatedAt, d.UpdatedAt AS DriverUpdatedAt FROM Trip t JOIN [User] d ON t.Driver_Id = d.Id WHERE d.Id = @DriverId;";
     private const string GetAllExpensesByTripIdQuery = "SELECT e.Id, e.TripId, e.Amount, e.Description, e.Date FROM expense e WHERE e.TripId = @p0";
 
     private const string GetExpenseByIdQuery = "SELECT e.Id, e.TripId, e.Amount, e.Description, e.Date FROM expense e WHERE e.Id = @p0";
@@ -33,12 +33,10 @@ public class ManageExpensesService(IDatabaseService databaseService) : IManageEx
             {
                 trips.Add(new Trip
                 {
-                    Id = reader.GetInt32(0),
-                    DriverId = reader.GetInt32(1),
-                    VehicleId = reader.GetInt32(2),
-                    StartDate = reader.GetDateTime(5),
-                    EndDate = reader.GetDateTime(6),
-                    Status = reader.GetString(7),
+                    Id = reader.GetInt32(reader.GetOrdinal("TripId")),
+                    Vehicle = reader["Vehicle"] as Vehicle, 
+                    Driver = reader["Driver"] as User, 
+                    TripManifest = reader["TripManifest"] as List<Delivery>
                     
                 });
             }
