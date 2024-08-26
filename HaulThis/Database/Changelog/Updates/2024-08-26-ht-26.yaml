@@ -2,7 +2,7 @@
   - changeSet:
       id: 2
       author: Jamie Young (40544666@live.napier.ac.uk)
-      labels: ht-28
+      labels: ht-26
       comment: add item-weight column to item table
       changes:
         - addColumn:
@@ -21,7 +21,7 @@
   - changeSet:
       id: 3
       author: Jamie Young (40544666@live.napier.ac.uk)
-      labels: ht-28
+      labels: ht-26
       comment: add estimated delivery time column to waypoint table
       changes:
         - addColumn:
@@ -34,7 +34,7 @@
   - changeSet:
       id: 4
       author: Jamie Young (40544666@live.napier.ac.uk)
-      labels: ht-28
+      labels: ht-26
       comment: add trip date column to trip table
       changes:
         - addColumn:
