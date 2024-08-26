@@ -2,11 +2,63 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="HaulThis.Views.Customer.RequestPickup"
-             Title="RequestPickup">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to Request Pickup!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             Title="Request a Pickup/Delivery">
+
+    <StackLayout Padding="20" Spacing="15">
+        <Button Text="Request a Delivery/Pickup" 
+                Command="{Binding CreatePickupRequestCommand}" />
+
+        <Label Text="Created Request ID:"
+               FontAttributes="Bold"
+               FontSize="Large"
+               IsVisible="{Binding IsCreatedRequestIdVisible}" />
+
+        <Label Text="{Binding CreatedRequestId}"
+               FontSize="Medium"
+               TextColor="Green"
+               IsVisible="{Binding IsCreatedRequestIdVisible}" />
+
+        <Label Text="Pickup Request Information"
+               FontAttributes="Bold"
+               FontSize="Large"
+               IsVisible="{Binding IsRequestInfoVisible}" />
+
+        <Label Text="Pickup Location:" 
+               IsVisible="{Binding IsRequestInfoVisible}" />
+        <Label Text="{Binding PickupRequest.PickupLocation}" 
+               IsVisible="{Binding IsRequestInfoVisible}" />
+
+        <Label Text="Delivery Location:"
+               IsVisible="{Binding IsRequestInfoVisible}" />
+        <Label Text="{Binding PickupRequest.DeliveryLocation}" 
+               IsVisible="{Binding IsRequestInfoVisible}" />
+
+        <Label Text="Requested Pickup Date:"
+               IsVisible="{Binding IsRequestInfoVisible}" />
+        <Label Text="{Binding PickupRequest.RequestedPickupDate, StringFormat='{}{0:MM/dd/yyyy}'}" 
+               IsVisible="{Binding IsRequestInfoVisible}" />
+
+        <Label Text="Requested Delivery Date:"
+               IsVisible="{Binding IsRequestInfoVisible}" />
+        <Label Text="{Binding PickupRequest.RequestedDeliveryDate, StringFormat='{}{0:MM/dd/yyyy}'}" 
+               IsVisible="{Binding IsRequestInfoVisible}" />
+
+        <Label Text="Status:"
+               IsVisible="{Binding IsRequestInfoVisible}" />
+        <Label Text="{Binding PickupRequest.Status}" 
+               IsVisible="{Binding IsRequestInfoVisible}" />
+
+        <Label Text="{Binding ErrorMessage}"
+               TextColor="Red"
+               IsVisible="{Binding IsErrorVisible}" />
+
+        <Entry x:Name="RequestIdEntry"
+               Placeholder="Enter Request ID"
+               Keyboard="Numeric"
+               Text="{Binding RequestId, Mode=TwoWay}" />
+
+        <Button Text="Get Pickup/Delivery Info"
+                Command="{Binding GetPickupRequestInfoCommand}" />
+
+    </StackLayout>
 </ContentPage>
