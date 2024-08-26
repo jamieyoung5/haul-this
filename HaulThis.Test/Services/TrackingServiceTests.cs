@@ -26,8 +26,7 @@ public class TrackingServiceTests
         _databaseServiceMock.Setup(db => db.CreateConnection()).Returns(true);
         _databaseServiceMock.Setup(db => db.Query(It.IsAny<string>(), It.IsAny<string>()))
             .Returns(new Mock<IDataReader>().Object);
-
-        // Mock the data reader behavior
+        
         var readerMock = new Mock<IDataReader>();
         readerMock.Setup(reader => reader.Read()).Returns(true);
         readerMock.Setup(reader => reader.GetString(0)).Returns("Gondor");

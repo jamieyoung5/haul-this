@@ -17,8 +17,7 @@ public class ManageTripsTest : DisposableIntegrationTest
         // Arrange
         var itemId = 1;
         var currentDate = DateTime.UtcNow;
-
-        // Simulate inserting a vehicle, user, bill, trip, and item into the database
+        
         _databaseService.Execute("INSERT INTO vehicle (vehicleName) VALUES (@p0)", "Truck A");
         _databaseService.Execute("INSERT INTO users (roleId, firstName, lastName, email, phoneNumber, address, createdAt) VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6)",
             3, "John", "Doe", "john.doe@example.com", "1234567890", "123 Main St", currentDate);
@@ -53,8 +52,7 @@ public async Task GetTripByDateAsync_ShouldReturnTrips_WhenTripsExistForDate()
 {
     // Arrange
     var date = DateTime.UtcNow;
-
-    // Insert necessary data into the database
+    
     _databaseService.Execute("INSERT INTO vehicle (vehicleName) VALUES (@p0)", "Truck A");
     var vehicleId = _databaseService.QueryRow("SELECT uniqueId FROM vehicle WHERE vehicleName = @p0", "Truck A").GetInt32(0);
 

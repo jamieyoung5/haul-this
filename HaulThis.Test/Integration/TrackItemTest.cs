@@ -24,8 +24,7 @@ public class TrackItemTest : DisposableIntegrationTest
     public async Task GetTrackingInfo_ValidTrackingId_ShouldReturnTrackingInfo()
     {
         var date = DateTime.UtcNow;
-
-        // Insert necessary data into the database
+        
         _databaseService.Execute("INSERT INTO vehicle (vehicleName) VALUES (@p0)", "Truck A");
         var vehicleId = _databaseService.QueryRow("SELECT uniqueId FROM vehicle WHERE vehicleName = @p0", "Truck A").GetInt32(0);
 

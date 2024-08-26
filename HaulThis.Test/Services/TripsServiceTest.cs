@@ -57,6 +57,24 @@ namespace HaulThis.Test.Services
 
             // Assert
             Assert.NotNull(result);
+            Assert.Single(result);
+            
+            var trip = result.First();
+            Assert.Equal(1, trip.Id);
+            Assert.Equal("Truck A", trip.Vehicle.VehicleName);
+            Assert.Equal("John Doe", trip.Driver.FirstName);
+
+            Assert.NotNull(trip.TripManifest);
+            Assert.Single(trip.TripManifest);
+
+            var delivery = trip.TripManifest.First();
+            Assert.Equal(1, delivery.Id);
+            Assert.Equal(100, delivery.ItemWeight);
+            Assert.Equal("Jane Smith", delivery.CustomerName);
+            Assert.Equal("1234567890", delivery.CustomerPhone);
+            Assert.NotNull(delivery.Waypoint);
+            Assert.Equal("Location A", delivery.Waypoint.Location);
+            Assert.Equal(DateTime.UtcNow.AddHours(2).Hour, delivery.Waypoint.EstimatedTime.Hour);
         }
 
         [Fact]
@@ -64,7 +82,7 @@ namespace HaulThis.Test.Services
         {
             // Arrange
             var mockReader = new Mock<IDataReader>();
-            mockReader.Setup(r => r.Read()).Returns(false); // No data
+            mockReader.Setup(r => r.Read()).Returns(false);
             _mockDatabaseService.Setup(ds => ds.Query(It.IsAny<string>(), It.IsAny<object[]>())).Returns(mockReader.Object);
 
             // Act
@@ -177,15 +195,15 @@ namespace HaulThis.Test.Services
                 return currentIndex < deliveries.Count;
             });
 
-            mockReader.Setup(r => r.GetInt32(0)).Returns(() => deliveries[currentIndex].Trip.Id); // TripId
-            mockReader.Setup(r => r.GetString(1)).Returns(() => deliveries[currentIndex].Trip.Vehicle.VehicleName); // VehicleName
-            mockReader.Setup(r => r.GetString(2)).Returns(() => deliveries[currentIndex].Trip.Driver.FirstName); // DriverName
-            mockReader.Setup(r => r.GetString(3)).Returns(() => deliveries[currentIndex].Manifest.Waypoint.Location); // WaypointLocation
-            mockReader.Setup(r => r.GetDateTime(4)).Returns(() => deliveries[currentIndex].Manifest.Waypoint.EstimatedTime); // EstimatedTime
-            mockReader.Setup(r => r.GetInt32(5)).Returns(() => deliveries[currentIndex].Manifest.Id); // ItemId
-            mockReader.Setup(r => r.GetDecimal(6)).Returns(() => deliveries[currentIndex].Manifest.ItemWeight); // ItemWeight
-            mockReader.Setup(r => r.GetString(7)).Returns(() => deliveries[currentIndex].Manifest.CustomerName); // CustomerName
-            mockReader.Setup(r => r.GetString(8)).Returns(() => deliveries[currentIndex].Manifest.CustomerPhone); // CustomerPhone
+            mockReader.Setup(r => r.GetInt32(0)).Returns(() => deliveries[currentIndex].Trip.Id);
+            mockReader.Setup(r => r.GetString(1)).Returns(() => deliveries[currentIndex].Trip.Vehicle.VehicleName);
+            mockReader.Setup(r => r.GetString(2)).Returns(() => deliveries[currentIndex].Trip.Driver.FirstName);
+            mockReader.Setup(r => r.GetString(3)).Returns(() => deliveries[currentIndex].Manifest.Waypoint.Location);
+            mockReader.Setup(r => r.GetDateTime(4)).Returns(() => deliveries[currentIndex].Manifest.Waypoint.EstimatedTime);
+            mockReader.Setup(r => r.GetInt32(5)).Returns(() => deliveries[currentIndex].Manifest.Id);
+            mockReader.Setup(r => r.GetDecimal(6)).Returns(() => deliveries[currentIndex].Manifest.ItemWeight);
+            mockReader.Setup(r => r.GetString(7)).Returns(() => deliveries[currentIndex].Manifest.CustomerName);
+            mockReader.Setup(r => r.GetString(8)).Returns(() => deliveries[currentIndex].Manifest.CustomerPhone);
         }
     }
 }
