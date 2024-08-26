@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 1
+      id: 11
       author: Conor Nash
       comment: expand vehicle table with user data
       changes:
