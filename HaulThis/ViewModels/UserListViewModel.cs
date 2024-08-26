@@ -1,15 +1,14 @@
 ﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
 using HaulThis.Models;
 using HaulThis.Services;
 
 namespace HaulThis.ViewModels;
 
-public sealed class UserListViewModel : INotifyPropertyChanged
+public sealed class UserListViewModel : ViewModelEvent
 {
     private readonly IUserService _userService;
 
-    public ObservableCollection<User> Users { get; private init; } = new();
+    public ObservableCollection<User> Users { get; private init; } = [];
 
     public UserListViewModel(IUserService userService)
     {
@@ -19,7 +18,7 @@ public sealed class UserListViewModel : INotifyPropertyChanged
     
     private async Task LoadUsers()
     {
-        var usersFromDb = await _userService.GetAllUsersAsync();
+        IEnumerable<User> usersFromDb = await _userService.GetAllUsersAsync();
         Users.Clear();
 
         foreach (var user in usersFromDb)
@@ -28,12 +27,5 @@ public sealed class UserListViewModel : INotifyPropertyChanged
         }
 
         OnPropertyChanged(nameof(Users));
-    }
-
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    private void OnPropertyChanged(string propertyName)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

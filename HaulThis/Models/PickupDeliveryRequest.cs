@@ -54,5 +54,7 @@ namespace HaulThis.Models
         /// Navigation property for the customer associated with the request.
         /// </summary>
         public Customer Customer { get; set; }
-  }
+    }
+
+   
 }

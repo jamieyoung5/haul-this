@@ -1,4 +1,3 @@
-using System.ComponentModel.Design.Serialization;
 using CommunityToolkit.Maui.Views;
 using HaulThis.Models;
 using HaulThis.Services;

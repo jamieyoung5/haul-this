@@ -1,16 +1,14 @@
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Runtime.CompilerServices;
 
 namespace HaulThis.Models;
 
 /// <summary>
 /// Represents a user in the haul-this system
 /// </summary>
-public class User : INotifyPropertyChanged
+public class User : DataModel
 {
-    private int _id;
+    private readonly int _id;
     private string _firstName = string.Empty;
     private string _lastName = string.Empty;
     private string _email = string.Empty;
@@ -28,7 +26,7 @@ public class User : INotifyPropertyChanged
     public int Id
     {
         get => _id;
-        set => SetProperty(ref _id, value);
+        init => SetProperty(ref _id, value);
     }
 
     /// <summary>
@@ -116,23 +114,6 @@ public class User : INotifyPropertyChanged
     {
         get => _updatedAt;
         set => SetProperty(ref _updatedAt, value);
-    }
-
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    private bool SetProperty<T>(ref T backingStore, T value, [CallerMemberName] string propertyName = "")
-    {
-        if (EqualityComparer<T>.Default.Equals(backingStore, value))
-            return false;
-
-        backingStore = value;
-        OnPropertyChanged(propertyName);
-        return true;
-    }
-
-    private void OnPropertyChanged([CallerMemberName] string propertyName = "")
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }
 

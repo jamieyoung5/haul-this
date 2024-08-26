@@ -4,9 +4,7 @@
              x:Class="HaulThis.Views.Admin.ManageEmployees"
              Title="ManageEmployees">
     <ContentPage.Content>
-        <!-- Centering the collection view with margins -->
         <Grid Margin="20,40,20,20">
-            <!-- Adding margin to provide spacing from the top -->
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
@@ -17,28 +15,19 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-
-            <!-- Header Grid -->
+            
             <Grid Grid.Row="0" Grid.Column="1" Padding="10" BackgroundColor="LightGray">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="50" />
-                    <!-- ID -->
                     <ColumnDefinition Width="100" />
-                    <!-- First Name -->
                     <ColumnDefinition Width="100" />
-                    <!-- Last Name -->
                     <ColumnDefinition Width="200" />
-                    <!-- Email -->
                     <ColumnDefinition Width="120" />
-                    <!-- Phone -->
                     <ColumnDefinition Width="100" />
-                    <!-- Role -->
                     <ColumnDefinition Width="150" />
                     <ColumnDefinition Width="Auto"/>
-                    <!-- Created At -->
                 </Grid.ColumnDefinitions>
-
-                <!-- Headers -->
+                
                 <Label Text="ID" FontAttributes="Bold" VerticalOptions="Center" Grid.Column="0" />
                 <Label Text="First Name" FontAttributes="Bold" VerticalOptions="Center" Grid.Column="1" />
                 <Label Text="Last Name" FontAttributes="Bold" VerticalOptions="Center" Grid.Column="2" />
@@ -49,13 +38,11 @@
 
                 <Button Text="Add" BackgroundColor="Green" TextColor="White" VerticalOptions="Center" Grid.Column="7" Clicked="OnAddButtonClicked" />
             </Grid>
-
-            <!-- CollectionView for Data -->
+            
             <CollectionView Grid.Row="1" Grid.Column="1"
                             ItemsSource="{Binding Users}"
                             HorizontalOptions="Center"
                             VerticalOptions="Start">
-                <!-- Align data to the top -->
 
                 <CollectionView.ItemTemplate>
                     <DataTemplate>

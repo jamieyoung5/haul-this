@@ -6,6 +6,8 @@ using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using System;
 
+namespace HaulThis.Test.Services;
+
 public class TrackingServiceTests
 {
     private readonly Mock<IDatabaseService> _databaseServiceMock;
@@ -14,7 +16,6 @@ public class TrackingServiceTests
     public TrackingServiceTests()
     {
         _databaseServiceMock = new Mock<IDatabaseService>();
-        var loggerMock = new Mock<ILogger<TrackingService>>();
         _trackingService = new TrackingService(_databaseServiceMock.Object);
     }
 
@@ -25,8 +26,7 @@ public class TrackingServiceTests
         _databaseServiceMock.Setup(db => db.CreateConnection()).Returns(true);
         _databaseServiceMock.Setup(db => db.Query(It.IsAny<string>(), It.IsAny<string>()))
             .Returns(new Mock<IDataReader>().Object);
-
-        // Mock the data reader behavior
+        
         var readerMock = new Mock<IDataReader>();
         readerMock.Setup(reader => reader.Read()).Returns(true);
         readerMock.Setup(reader => reader.GetString(0)).Returns("Gondor");
@@ -36,7 +36,7 @@ public class TrackingServiceTests
             .Returns(readerMock.Object);
 
         // Act
-        var trackingInfo = await _trackingService.GetTrackingInfo("123");
+        var trackingInfo = await _trackingService.GetTrackingInfo(1);
 
         // Assert
         Assert.NotNull(trackingInfo);
@@ -55,7 +55,7 @@ public class TrackingServiceTests
             .Returns(readerMock.Object);
 
         // Act
-        var trackingInfo = await _trackingService.GetTrackingInfo("invalid");
+        var trackingInfo = await _trackingService.GetTrackingInfo(-1);
 
         // Assert
         Assert.Null(trackingInfo);
@@ -68,7 +68,7 @@ public class TrackingServiceTests
         _databaseServiceMock.Setup(db => db.CreateConnection()).Returns(false);
 
         // Act
-        var trackingInfo = await _trackingService.GetTrackingInfo("123");
+        var trackingInfo = await _trackingService.GetTrackingInfo(1);
 
         // Assert
         Assert.Null(trackingInfo);
