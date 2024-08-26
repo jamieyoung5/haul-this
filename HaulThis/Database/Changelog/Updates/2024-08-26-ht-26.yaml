@@ -1,0 +1,47 @@
+﻿databaseChangeLog:
+  - changeSet:
+      id: 2
+      author: Jamie Young (40544666@live.napier.ac.uk)
+      labels: ht-26
+      comment: add item-weight column to item table
+      changes:
+        - addColumn:
+            tableName: item
+            columns:
+              - column:
+                  name: itemWeight
+                  type: DECIMAL(10, 2)
+              - column:
+                  name: delivered
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+                  
+  - changeSet:
+      id: 3
+      author: Jamie Young (40544666@live.napier.ac.uk)
+      labels: ht-26
+      comment: add estimated delivery time column to waypoint table
+      changes:
+        - addColumn:
+            tableName: waypoint
+            columns:
+              - column:
+                  name: estimatedTime
+                  type: DATETIME
+                  
+  - changeSet:
+      id: 4
+      author: Jamie Young (40544666@live.napier.ac.uk)
+      labels: ht-26
+      comment: add trip date column to trip table
+      changes:
+        - addColumn:
+            tableName: trip
+            columns:
+              - column:
+                  name: date
+                  type: DATETIME
+                  constraints:
+                    nullable: false

@@ -7,25 +7,12 @@ using Microsoft.Extensions.Logging;
 
 namespace HaulThis.Test.Integration;
 
-public class ManageEmployeesTest : IDisposable
+public class ManageEmployeesTest : DisposableIntegrationTest
 {
     private readonly IUserService _userService;
-    private readonly IDatabaseService _databaseService;
-    private readonly SqlConnection _connection;
-    private readonly DatabaseSetup _databaseSetup;
     
     public ManageEmployeesTest()
     {
-        _databaseSetup = new DatabaseSetup();
-        _connection = _databaseSetup.DeployDatabase();
-        
-        var loggerFactory = LoggerFactory.Create(loggerBuilder =>
-        {
-            loggerBuilder.AddConsole();
-            loggerBuilder.AddDebug();
-        });
-        ILogger<DatabaseService> logger = loggerFactory.CreateLogger<DatabaseService>();
-        _databaseService = new DatabaseService(_connection, logger);
         _userService = new UserService(_databaseService);
     }
 
@@ -107,11 +94,5 @@ public class ManageEmployeesTest : IDisposable
         var updatedUser = await _userService.GetUserByIdAsync(userId);
         Assert.Equal(1, result);
         Assert.Equal("UpdatedSmith", updatedUser.LastName);
-    }
-
-    public void Dispose()
-    {
-        _databaseSetup.TearDownDatabase(_connection);
-        _databaseService.CloseConnection(); 
     }
 }

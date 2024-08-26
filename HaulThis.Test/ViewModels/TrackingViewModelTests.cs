@@ -4,6 +4,8 @@ using HaulThis.ViewModels;
 using HaulThis.Services;
 using System.Threading.Tasks;
 
+namespace HaulThis.Test.ViewModels;
+
 public class TrackingViewModelTests
 {
     private readonly Mock<ITrackingService> _trackingServiceMock;
@@ -27,10 +29,10 @@ public class TrackingViewModelTests
         };
         
         _trackingServiceMock
-            .Setup(service => service.GetTrackingInfo(It.IsAny<string>()))
+            .Setup(service => service.GetTrackingInfo(It.IsAny<int>()))
             .ReturnsAsync(trackingInfo);
 
-        _viewModel.TrackingId = "123";
+        _viewModel.TrackingId = 1;
 
         // Act
          _viewModel.TrackItemCommand.Execute(null);
@@ -47,10 +49,10 @@ public class TrackingViewModelTests
     {
         // Arrange
         _trackingServiceMock
-            .Setup(service => service.GetTrackingInfo(It.IsAny<string>()))
+            .Setup(service => service.GetTrackingInfo(It.IsAny<int>()))
             .ReturnsAsync((TrackingInfo)null);
 
-        _viewModel.TrackingId = "invalid";
+        _viewModel.TrackingId = -1;
 
         // Act
          _viewModel.TrackItemCommand.Execute(null);
@@ -67,10 +69,10 @@ public class TrackingViewModelTests
     {
         // Arrange
         _trackingServiceMock
-            .Setup(service => service.GetTrackingInfo(It.IsAny<string>()))
+            .Setup(service => service.GetTrackingInfo(It.IsAny<int>()))
             .ThrowsAsync(new System.Exception("Service error"));
 
-        _viewModel.TrackingId = "123";
+        _viewModel.TrackingId = 1;
 
         // Act
          _viewModel.TrackItemCommand.Execute(null);
