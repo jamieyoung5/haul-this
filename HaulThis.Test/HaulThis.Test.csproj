@@ -33,4 +33,7 @@
     <ProjectReference Include="../HaulThis/HaulThis.csproj" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <AssemblyName>HaulThis.Tests</AssemblyName>
+  </PropertyGroup>
 </Project>

@@ -27,7 +27,7 @@ public class TrackingViewModelTests
             ETA = DateTime.UtcNow.AddHours(5),
             Status = "In Transit"
         };
-        
+
         _trackingServiceMock
             .Setup(service => service.GetTrackingInfo(It.IsAny<int>()))
             .ReturnsAsync(trackingInfo);
@@ -35,7 +35,7 @@ public class TrackingViewModelTests
         _viewModel.TrackingId = 1;
 
         // Act
-         _viewModel.TrackItemCommand.Execute(null);
+        _viewModel.TrackItemCommand.Execute(null);
 
         // Assert
         Assert.Equal("New York", _viewModel.CurrentLocation);
@@ -55,7 +55,7 @@ public class TrackingViewModelTests
         _viewModel.TrackingId = -1;
 
         // Act
-         _viewModel.TrackItemCommand.Execute(null);
+        _viewModel.TrackItemCommand.Execute(null);
 
         // Assert
         Assert.Empty(_viewModel.CurrentLocation);
@@ -75,7 +75,7 @@ public class TrackingViewModelTests
         _viewModel.TrackingId = 1;
 
         // Act
-         _viewModel.TrackItemCommand.Execute(null);
+        _viewModel.TrackItemCommand.Execute(null);
 
         // Assert
         Assert.Empty(_viewModel.CurrentLocation);

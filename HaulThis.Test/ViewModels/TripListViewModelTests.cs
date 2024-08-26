@@ -35,8 +35,8 @@ public class TripListViewModelTests
         // Arrange
         var trips = new List<Trip>
         {
-            new Trip { Id = 1, Vehicle = new Vehicle { VehicleName = "Truck A" }, Driver = new User { FirstName = "John" } },
-            new Trip { Id = 2, Vehicle = new Vehicle { VehicleName = "Truck B" }, Driver = new User { FirstName = "Jane" } }
+            new Trip { Id = 1, Vehicle = new Vehicle { LicensePlate = "Truck A" }, Driver = new User { FirstName = "John" } },
+            new Trip { Id = 2, Vehicle = new Vehicle { LicensePlate = "Truck B" }, Driver = new User { FirstName = "Jane" } }
         };
         _mockTripService.Setup(s => s.GetTripByDateAsync(It.IsAny<DateTime>())).ReturnsAsync(trips);
         
@@ -48,7 +48,7 @@ public class TripListViewModelTests
         for (int i = 0; i < trips.Count; i++)
         {
             Assert.Equal(trips[i].Id, result.Trips[i].Id);
-            Assert.Equal(trips[i].Vehicle.VehicleName, result.Trips[i].Vehicle.VehicleName);
+            Assert.Equal(trips[i].Vehicle.LicensePlate, result.Trips[i].Vehicle.LicensePlate);
             Assert.Equal(trips[i].Driver.FirstName, result.Trips[i].Driver.FirstName);
         }
     }
