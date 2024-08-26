@@ -19,8 +19,6 @@ public class ManageVehiclesViewModel : INotifyPropertyChanged
         LoadVehicles();
     }
 
-    
-
     internal async Task LoadVehicles()
     {
         var vehiclesFromDb = await _ManageVehiclesService.GetAllVehiclesAsync();

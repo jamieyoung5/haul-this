@@ -5,8 +5,7 @@ namespace HaulThis.Test.Integration;
 public class DatabaseSetup
 {
     public const string LocalDbString = "Server=(localdb)\\MSSQLLocalDB;Database=master;Integrated Security=true;MultipleActiveResultSets=true;";
-    // public const string LocalDbString = "Server=localhost,1433;Database=master;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=True;MultipleActiveResultSets=True;";
-
+   
     public SqlConnection DeployDatabase()
     {
         SqlConnection connection = null;

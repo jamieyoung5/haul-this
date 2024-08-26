@@ -5,25 +5,12 @@ using Microsoft.Extensions.Logging;
 
 namespace HaulThis.Test.Integration;
 
-public class ManageVehiclesTest : IDisposable
+public class ManageVehiclesTest : DisposableIntegrationTest
 {
     private readonly IManageVehiclesService _manageVehiclesService;
-    private readonly IDatabaseService _databaseService;
-    private readonly SqlConnection _connection;
-    private readonly DatabaseSetup _databaseSetup;
-    
+        
     public ManageVehiclesTest()
     {
-        _databaseSetup = new DatabaseSetup();
-        _connection = _databaseSetup.DeployDatabase();
-        
-        var loggerFactory = LoggerFactory.Create(loggerBuilder =>
-        {
-            loggerBuilder.AddConsole();
-            loggerBuilder.AddDebug();
-        });
-        ILogger<DatabaseService> logger = loggerFactory.CreateLogger<DatabaseService>();
-        _databaseService = new DatabaseService(_connection, logger);
         _manageVehiclesService = new ManageVehiclesService(_databaseService);
     }
 
@@ -101,9 +88,5 @@ public class ManageVehiclesTest : IDisposable
         Assert.Equal("Focus ST", updatedVehicle.Model);
     }
 
-    public void Dispose()
-    {
-        _databaseSetup.TearDownDatabase(_connection);
-        _databaseService.CloseConnection(); 
-    }
+   
 }
