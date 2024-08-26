@@ -17,7 +17,7 @@ namespace HaulThis.ViewModels
       LoadCustomers();
     }
 
-    public async void LoadCustomers()
+    public async Task LoadCustomers()
     {
       try
       {
