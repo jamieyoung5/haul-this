@@ -25,7 +25,7 @@ public class UserService(IDatabaseService databaseService) : IUserService
     /// <inheritdoc />
     public async Task<IEnumerable<User>> GetAllUsersAsync()
     {
-        var users = new List<User>();
+        List<User> users = [];
 
         using (var reader = databaseService.Query(GetAllUsersQuery))
         {
@@ -68,7 +68,7 @@ public class UserService(IDatabaseService databaseService) : IUserService
             PhoneNumber = reader.GetString(4),
             Address = reader.GetString(5),
             CreatedAt = reader.GetDateTime(6),
-            UpdatedAt = reader.IsDBNull(7) ? (DateTime?)null : reader.GetDateTime(7),
+            UpdatedAt = reader.IsDBNull(7) ? null : reader.GetDateTime(7),
             Role = Enum.Parse<Role>(reader.GetString(8))
         });
     }

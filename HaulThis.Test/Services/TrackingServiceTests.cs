@@ -6,39 +6,37 @@ using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using System;
 
-namespace HaulThis.Tests.Services
+namespace HaulThis.Test.Services;
+
+public class TrackingServiceTests
 {
-    public class TrackingServiceTests
+    private readonly Mock<IDatabaseService> _databaseServiceMock;
+    private readonly TrackingService _trackingService;
+
+    public TrackingServiceTests()
     {
-        private readonly Mock<IDatabaseService> _databaseServiceMock;
-        private readonly TrackingService _trackingService;
+        _databaseServiceMock = new Mock<IDatabaseService>();
+        _trackingService = new TrackingService(_databaseServiceMock.Object);
+    }
 
-        public TrackingServiceTests()
-        {
-            _databaseServiceMock = new Mock<IDatabaseService>();
-            var loggerMock = new Mock<ILogger<TrackingService>>();
-            _trackingService = new TrackingService(_databaseServiceMock.Object);
-        }
-
-        [Fact]
-        public async Task GetTrackingInfo_ValidTrackingId_ShouldReturnTrackingInfo()
-        {
-            // Arrange
-            _databaseServiceMock.Setup(db => db.CreateConnection()).Returns(true);
-            _databaseServiceMock.Setup(db => db.Query(It.IsAny<string>(), It.IsAny<string>()))
-                .Returns(new Mock<IDataReader>().Object);
-
-            // Mock the data reader behavior
-            var readerMock = new Mock<IDataReader>();
-            readerMock.Setup(reader => reader.Read()).Returns(true);
-            readerMock.Setup(reader => reader.GetString(0)).Returns("Gondor");
-            readerMock.Setup(reader => reader.GetDateTime(1)).Returns(DateTime.UtcNow);
+    [Fact]
+    public async Task GetTrackingInfo_ValidTrackingId_ShouldReturnTrackingInfo()
+    {
+        // Arrange
+        _databaseServiceMock.Setup(db => db.CreateConnection()).Returns(true);
+        _databaseServiceMock.Setup(db => db.Query(It.IsAny<string>(), It.IsAny<string>()))
+            .Returns(new Mock<IDataReader>().Object);
+        
+        var readerMock = new Mock<IDataReader>();
+        readerMock.Setup(reader => reader.Read()).Returns(true);
+        readerMock.Setup(reader => reader.GetString(0)).Returns("Gondor");
+        readerMock.Setup(reader => reader.GetDateTime(1)).Returns(DateTime.UtcNow);
 
             _databaseServiceMock.Setup(db => db.Query(It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(readerMock.Object);
 
-            // Act
-            var trackingInfo = await _trackingService.GetTrackingInfo("123");
+        // Act
+        var trackingInfo = await _trackingService.GetTrackingInfo(1);
 
             // Assert
             Assert.NotNull(trackingInfo);
@@ -56,8 +54,8 @@ namespace HaulThis.Tests.Services
             _databaseServiceMock.Setup(db => db.Query(It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(readerMock.Object);
 
-            // Act
-            var trackingInfo = await _trackingService.GetTrackingInfo("invalid");
+        // Act
+        var trackingInfo = await _trackingService.GetTrackingInfo(-1);
 
             // Assert
             Assert.Null(trackingInfo);
@@ -69,8 +67,8 @@ namespace HaulThis.Tests.Services
             // Arrange
             _databaseServiceMock.Setup(db => db.CreateConnection()).Returns(false);
 
-            // Act
-            var trackingInfo = await _trackingService.GetTrackingInfo("123");
+        // Act
+        var trackingInfo = await _trackingService.GetTrackingInfo(1);
 
             // Assert
             Assert.Null(trackingInfo);

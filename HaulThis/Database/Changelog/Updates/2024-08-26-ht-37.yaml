@@ -1,0 +1,45 @@
+databaseChangeLog:
+  - changeSet:
+      id: 10
+      author: Stewart Bebbington (40544627@live.napier.ac.uk)
+      changes:
+        createTable:
+          tableName: PickupRequest
+          columns:
+            - column:
+                name: Id
+                type: INT
+                constraints:
+                  primaryKey: true
+                  nullable: false
+                  unique: true
+            - column:
+                name: CustomerId
+                type: INT
+                constraints:
+                  nullable: false
+            - column:
+                name: PickupLocation
+                type: VARCHAR(255)
+                constraints:
+                  nullable: false
+            - column:
+                  name: DeliveryLocation
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+            - column:
+                name: RequestedPickupDate
+                type: DATETIME
+                constraints:
+                  nullable: false
+            - column:
+                name: RequestedDeliveryDate
+                type: DATETIME
+                constraints:
+                  nullable: false
+            - column:
+                name: Status
+                type: VARCHAR(50)
+                constraints:
+                  nullable: false

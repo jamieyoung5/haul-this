@@ -137,32 +137,28 @@ public class DatabaseSetup
                         UpdatedAt DATETIME NULL
                     );
 
-                    CREATE TABLE trip (
-                        Id INT PRIMARY KEY IDENTITY(1,1),
-                        vehicleId INT,
-                        driverId INT,
-                        startDate DATETIME,
-                        endDate DATETIME,
-                        tripStatus NVARCHAR(50),
-                        FOREIGN KEY (vehicleId) REFERENCES vehicle(Id),
-                        FOREIGN KEY (driverId) REFERENCES users(Id)
-                    );
+                CREATE TABLE trip (
+                    Id INT PRIMARY KEY IDENTITY(1,1),
+                    vehicleId INT,
+                    driverId INT,
+                    date DATETIME NOT NULL,
+                    FOREIGN KEY (vehicleId) REFERENCES vehicle(uniqueId),
+                    FOREIGN KEY (driverId) REFERENCES users(Id)
+                );
 
-                    CREATE TABLE item (
-                        Id INT PRIMARY KEY IDENTITY(1,1),
-                        tripId INT,
-                        billId INT,
-                        goodsCategoryId INT,
-                        pickedUpBy INT,
-                        deliveredBy INT,
-                        pickupDate DATETIME,
-                        deliveryDate DATETIME,
-                        FOREIGN KEY (tripId) REFERENCES trip(Id),
-                        FOREIGN KEY (billId) REFERENCES bill(Id),
-                        FOREIGN KEY (goodsCategoryId) REFERENCES goodsCategory(Id),
-                        FOREIGN KEY (pickedUpBy) REFERENCES users(Id),
-                        FOREIGN KEY (deliveredBy) REFERENCES users(Id)
-                    );
+                CREATE TABLE item (
+                    Id INT PRIMARY KEY IDENTITY(1,1),
+                    tripId INT,
+                    billId INT,
+                    pickedUpBy INT,
+                    deliveredBy INT,
+                    itemWeight DECIMAL(10, 2),
+                    delivered BIT NOT NULL,
+                    FOREIGN KEY (tripId) REFERENCES trip(Id),
+                    FOREIGN KEY (billId) REFERENCES bill(Id),
+                    FOREIGN KEY (pickedUpBy) REFERENCES users(Id),
+                    FOREIGN KEY (deliveredBy) REFERENCES users(Id)
+                );
 
                     CREATE TABLE event (
                         Id INT PRIMARY KEY IDENTITY(1,1),
@@ -171,42 +167,15 @@ public class DatabaseSetup
                         FOREIGN KEY (tripId) REFERENCES trip(Id)
                     );
 
-                    CREATE TABLE waypoint (
-                        Id INT PRIMARY KEY IDENTITY(1,1),
-                        tripId INT,
-                        userId INT,
-                        location VARCHAR(255),
-                        arrivalTime DATETIME,
-                        departureTime DATETIME,
-                        FOREIGN KEY (tripId) REFERENCES trip(Id),
-                        FOREIGN KEY (userId) REFERENCES users(Id)
-                    );
-
-                    CREATE TABLE pickupDeliveryRequest (
-                        Id INT PRIMARY KEY IDENTITY(1,1),
-                        requestorName NVARCHAR(255),
-                        pickupLocation NVARCHAR(255),
-                        deliveryLocation NVARCHAR(255),
-                        pickupDate DATETIME,
-                        deliveryDate DATETIME,
-                        itemId INT,
-                        FOREIGN KEY (itemId) REFERENCES item(Id)
-                    );
-
-                    CREATE TABLE tripManifest (
-                        Id INT PRIMARY KEY IDENTITY(1,1),
-                        tripId INT,
-                        itemId INT,
-                        pickupRequestId INT,
-                        deliveryRequestId INT,
-                        FOREIGN KEY (tripId) REFERENCES trip(Id),
-                        FOREIGN KEY (itemId) REFERENCES item(Id),
-                        FOREIGN KEY (pickupRequestId) REFERENCES pickupDeliveryRequest(Id),
-                        FOREIGN KEY (deliveryRequestId) REFERENCES pickupDeliveryRequest(Id)
-                    );
-
-
-
+                CREATE TABLE waypoint (
+                    Id INT PRIMARY KEY IDENTITY(1,1),
+                    tripId INT,
+                    userId INT,
+                    location VARCHAR(255) NOT NULL,
+                    estimatedTime DATETIME,
+                    FOREIGN KEY (tripId) REFERENCES trip(Id),
+                    FOREIGN KEY (userId) REFERENCES users(Id)
+                );
             ";
             command.ExecuteNonQuery();
         }
