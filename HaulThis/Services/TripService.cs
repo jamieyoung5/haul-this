@@ -7,7 +7,7 @@ public class TripService(IDatabaseService databaseService) : ITripService
     private const string GetTripByDateQuery = """
                                          SELECT 
                                              t.Id AS TripId,
-                                             v.vehicleName AS VehicleName,
+                                             v.licensePlate AS LicensePlate,
                                              d.firstName + ' ' + d.lastName AS DriverName,
                                              w.location AS WaypointLocation,
                                              w.estimatedTime AS EstimatedTime,
@@ -60,7 +60,7 @@ public class TripService(IDatabaseService databaseService) : ITripService
                         Id = tripId,
                         Vehicle = new Vehicle
                         {
-                            VehicleName = reader.GetString(1)
+                            LicensePlate = reader.GetString(1)
                         },
                         Driver = new User
                         {

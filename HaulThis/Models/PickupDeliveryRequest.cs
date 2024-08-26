@@ -48,6 +48,6 @@ namespace HaulThis.Models
         /// Gets or sets the status of the request.
         /// </summary>
         [MaxLength(255)]
-        public string Status { get; set; } = string.Empty;
+        public string Status { get; set; } = string.Empty;    
     }
 }

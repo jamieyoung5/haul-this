@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="HaulThis.Views.Misc.EditVehiclePopup">
+    
+        <Grid Padding="10" BackgroundColor="White" WidthRequest="250">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Button Text="X" BackgroundColor="Red" TextColor="White" WidthRequest="25" HeightRequest="25"
+                HorizontalOptions="End" Clicked="OnCloseButtonClicked" Grid.Row="0" />
+        
+        <StackLayout Grid.Row="1" Spacing="8">
+            <Label Text="Make" />
+            <Entry x:Name="MakeEntry" Placeholder="Enter make" />
+
+            <Label Text="Model" />
+            <Entry x:Name="ModelEntry" Placeholder="Enter model" />
+
+            <Label Text="Year" />
+            <Entry x:Name="YearEntry" Placeholder="Enter Vehicles Year" />
+            
+            <Label Text="License Plate" />
+            <Entry x:Name="LicensePlateEntry" Placeholder="Enter Vehicles LicensePlate" />
+            
+            <Label Text="Status" />
+            <Picker x:Name="StatusPicker">
+                <Picker.ItemsSource>
+                    <x:Array Type="{x:Type x:String}">
+                        <x:String>Available</x:String>
+                        <x:String>In Use</x:String>
+                        <x:String>In Maintenance</x:String>
+                        <x:String>Decommissioned</x:String>
+                    </x:Array>
+                </Picker.ItemsSource>
+            </Picker>
+            
+            <Button Text="Save" BackgroundColor="Green" TextColor="White" Clicked="OnSaveButtonClicked" />
+        </StackLayout>
+    </Grid>
+</toolkit:Popup> 
