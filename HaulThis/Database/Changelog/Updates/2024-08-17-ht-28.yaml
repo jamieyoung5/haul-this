@@ -23,7 +23,7 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: license_plate
+                  name: licensePlate
                   type: varchar(255)
                   constraints:
                     nullable: false
@@ -33,12 +33,12 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: created_at
+                  name: createdAt
                   type: datetime
                   constraints:
                     nullable: false
               - column:
-                  name: updated_at
+                  name: updatedAt
                   type: datetime
                   constraints:
                     nullable: true
