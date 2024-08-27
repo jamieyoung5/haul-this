@@ -1,4 +1,5 @@
 using HaulThis.Models;
+using HaulThis.Repositories;
 using HaulThis.Services;
 using HaulThis.ViewModels;
 
@@ -6,13 +7,13 @@ namespace HaulThis.Views.Driver;
 
 public partial class ManageTrips
 {
-	private readonly ITripService _tripService;
+	private readonly IItemRepository _itemRepository;
 	
-	public ManageTrips(ITripService tripService)
+	public ManageTrips(ITripRepository tripRepository, IItemRepository itemRepository)
 	{
 		InitializeComponent();
-		_tripService = tripService;
-		BindingContext = new TripListViewModel(tripService);
+		_itemRepository = itemRepository;
+		BindingContext = new TripListViewModel(tripRepository);
 	}
 
 	private async void OnMarkDeliveredButtonClicked(object sender, EventArgs e)
@@ -21,24 +22,22 @@ public partial class ManageTrips
 
 		if (button?.CommandParameter is not Delivery deliveryToMark) return;
 
-		int result = await _tripService.MarkItemAsDelivered(deliveryToMark.TripId, deliveryToMark.Id);
+		int result = await _itemRepository.MarkAsDeliveredAsync(deliveryToMark.TripId, deliveryToMark.Id);
         
 		if (result <= 0) return;
 
 		var viewModel = BindingContext as TripListViewModel;
 
-		if (viewModel?.Trips == null) return;
-
-		// Locate the trip that contains the delivery item to remove it from the UI
-		var trip = viewModel.Trips.FirstOrDefault(t => t.Id == deliveryToMark.TripId);
+		if (viewModel?.Items == null) return;
+		
+		var trip = viewModel.Items.FirstOrDefault(t => t.Id == deliveryToMark.TripId);
 		if (trip != null)
 		{
 			trip.TripManifest.Remove(deliveryToMark);
-
-			// Optionally, if the TripManifest is empty, you might want to remove the entire trip
+			
 			if (trip.TripManifest.Count == 0)
 			{
-				viewModel.Trips.Remove(trip);
+				viewModel.Items.Remove(trip);
 			}
 		}
 	}

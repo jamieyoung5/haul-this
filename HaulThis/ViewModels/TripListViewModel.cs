@@ -1,31 +1,15 @@
 ﻿using System.Collections.ObjectModel;
 using HaulThis.Models;
+using HaulThis.Repositories;
 using HaulThis.Services;
 
 namespace HaulThis.ViewModels;
 
-public class TripListViewModel : ViewModelEvent
+public class TripListViewModel(ITripRepository tripRepository) 
+    : ListViewModel<Trip, ITripRepository>(tripRepository)
 {
-    private readonly ITripService _tripService;
-
-    public ObservableCollection<Trip> Trips { get; init; } = [];
-
-    public TripListViewModel(ITripService tripService)
+    protected override async Task<IEnumerable<Trip>> GetItemsAsync()
     {
-        _tripService = tripService;
-        LoadTrips();
-    }
-
-    private async Task LoadTrips()
-    {
-        var tripsFromDb = await _tripService.GetTripByDateAsync(DateTime.Now);
-        Trips.Clear();
-
-        foreach (var trip in tripsFromDb)
-        {
-            Trips.Add(trip);
-        }
-
-        OnPropertyChanged(nameof(Trips));
+        return await _service.GetTripByDateAsync(DateTime.Now);
     }
 }

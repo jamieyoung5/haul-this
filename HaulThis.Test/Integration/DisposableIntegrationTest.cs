@@ -9,6 +9,7 @@ public class DisposableIntegrationTest : IDisposable
     protected readonly IDatabaseService _databaseService;
     private readonly SqlConnection _connection;
     private readonly DatabaseSetup _databaseSetup;
+    private bool _disposed;
 
     protected DisposableIntegrationTest()
     {
@@ -22,7 +23,7 @@ public class DisposableIntegrationTest : IDisposable
         ILogger<DatabaseService> logger = loggerFactory.CreateLogger<DatabaseService>();
         _databaseService = new DatabaseService(_connection, logger);
     }
-    
+
     public void Dispose()
     {
         Dispose(true);
@@ -31,7 +32,20 @@ public class DisposableIntegrationTest : IDisposable
 
     protected virtual void Dispose(bool disposing)
     {
-        _databaseSetup.TearDownDatabase(_connection);
-        _databaseService.CloseConnection(); 
+        if (_disposed) return;
+
+        if (disposing)
+            // Tear down the database before closing the connection
+            _databaseSetup.TearDownDatabase(_connection);
+
+        // Close the connection and dispose of it
+        if (_connection != null && _connection.State == ConnectionState.Open)
+        {
+            _databaseService.CloseConnection();
+            _connection.Close();
+            _connection.Dispose();
+        }
+
+        _disposed = true;
     }
 }

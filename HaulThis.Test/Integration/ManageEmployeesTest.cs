@@ -1,19 +1,17 @@
 ﻿using HaulThis.Models;
-using HaulThis.Services;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+using HaulThis.Repositories;
+using HaulThis.Repository;
 
 namespace HaulThis.Test.Integration;
 
+[Collection("Sequential Tests")]
 public class ManageEmployeesTest : DisposableIntegrationTest
 {
-    private readonly IUserService _userService;
-    
+    private readonly IUserRepository _userRepository;
+
     public ManageEmployeesTest()
     {
-        _userService = new UserService(_databaseService);
+        _userRepository = new UserRepository(_databaseService);
     }
 
     [Fact]
@@ -30,12 +28,12 @@ public class ManageEmployeesTest : DisposableIntegrationTest
             Role = Role.Driver,
             CreatedAt = DateTime.UtcNow
         };
-        
+
         // Act
-        int result = await _userService.AddUserAsync(user);
-        
+        int result = await _userRepository.AddUserAsync(user);
+
         // Assert
-        var users = await _userService.GetAllUsersAsync();
+        IEnumerable<User> users = await _userRepository.GetAllUsersAsync();
         Assert.Equal(1, result);
         Assert.Contains(users, u => u.Email == "john.doe@example.com");
     }
@@ -54,20 +52,20 @@ public class ManageEmployeesTest : DisposableIntegrationTest
             Role = Role.Administrator,
             CreatedAt = DateTime.UtcNow
         };
-        
-        int userId = await _userService.AddUserAsync(user);
-        var usersBeforeDeletion = await _userService.GetAllUsersAsync();
+
+        int userId = await _userRepository.AddUserAsync(user);
+        IEnumerable<User> usersBeforeDeletion = await _userRepository.GetAllEmployeesAsync();
         Assert.Contains(usersBeforeDeletion, u => u.Email == "jane.doe@example.com");
-        
+
         // Act
-        int result = await _userService.DeleteUserAsync(userId);
-        
+        int result = await _userRepository.DeleteUserAsync(userId);
+
         // Assert
-        var usersAfterDeletion = await _userService.GetAllUsersAsync();
+        IEnumerable<User> usersAfterDeletion = await _userRepository.GetAllEmployeesAsync();
         Assert.Equal(1, result);
         Assert.DoesNotContain(usersAfterDeletion, u => u.Email == "jane.doe@example.com");
     }
-    
+
     [Fact]
     public async Task UpdateUser_ShouldModifyUserInDatabase_WhenEditsAreValid()
     {
@@ -82,16 +80,16 @@ public class ManageEmployeesTest : DisposableIntegrationTest
             Role = Role.Driver,
             CreatedAt = DateTime.UtcNow
         };
-    
-        int userId = await _userService.AddUserAsync(user);
-        var userToUpdate = await _userService.GetUserByIdAsync(userId);
+
+        int userId = await _userRepository.AddUserAsync(user);
+        var userToUpdate = await _userRepository.GetUserByIdAsync(userId);
         userToUpdate.LastName = "UpdatedSmith";
-        
+
         // Act
-        int result = await _userService.UpdateUserAsync(userToUpdate);
-        
+        int result = await _userRepository.UpdateUserAsync(userToUpdate);
+
         // Assert
-        var updatedUser = await _userService.GetUserByIdAsync(userId);
+        var updatedUser = await _userRepository.GetUserByIdAsync(userId);
         Assert.Equal(1, result);
         Assert.Equal("UpdatedSmith", updatedUser.LastName);
     }

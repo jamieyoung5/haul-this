@@ -34,7 +34,8 @@ namespace HaulThis.Services
             });
             _logger = loggerFactory.CreateLogger<TrackingService>();
         }
-
+        
+        /// <inheritdoc />
         public async Task<TrackingInfo> GetTrackingInfo(int trackingId)
         {
             try

@@ -8,8 +8,6 @@
     FlyoutBehavior="Flyout">
 
     <FlyoutItem FlyoutDisplayOptions="AsMultipleItems">
-        <ShellContent Title="Confirm Pickup" ContentTemplate="{DataTemplate local:CustomerConfirmPickup}" />
-        <ShellContent Title="Manage Account" ContentTemplate="{DataTemplate local:ManageAccount}" />
         <ShellContent Title="Manage Billing" ContentTemplate="{DataTemplate local:ManageBilling}" />
         <ShellContent Title="Request Pickup" ContentTemplate="{DataTemplate local:RequestPickup}" />
         <ShellContent Title="Track Item" ContentTemplate="{DataTemplate local:TrackItem}" />

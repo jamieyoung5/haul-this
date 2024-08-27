@@ -1,8 +1,5 @@
-using Xunit;
-using Moq;
-using HaulThis.ViewModels;
 using HaulThis.Services;
-using System.Threading.Tasks;
+using HaulThis.ViewModels;
 
 namespace HaulThis.Test.ViewModels;
 
@@ -70,7 +67,7 @@ public class TrackingViewModelTests
         // Arrange
         _trackingServiceMock
             .Setup(service => service.GetTrackingInfo(It.IsAny<int>()))
-            .ThrowsAsync(new System.Exception("Service error"));
+            .ThrowsAsync(new Exception("Service error"));
 
         _viewModel.TrackingId = 1;
 

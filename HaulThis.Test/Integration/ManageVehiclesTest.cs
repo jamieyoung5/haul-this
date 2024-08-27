@@ -1,14 +1,13 @@
 using HaulThis.Models;
 using HaulThis.Services;
-using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Logging;
 
 namespace HaulThis.Test.Integration;
 
+[Collection("Sequential Tests")]
 public class ManageVehiclesTest : DisposableIntegrationTest
 {
     private readonly IManageVehiclesService _manageVehiclesService;
-        
+
     public ManageVehiclesTest()
     {
         _manageVehiclesService = new ManageVehiclesService(_databaseService);
@@ -26,12 +25,12 @@ public class ManageVehiclesTest : DisposableIntegrationTest
             LicensePlate = "ABC123",
             CreatedAt = DateTime.UtcNow
         };
-        
+
         // Act
         int result = await _manageVehiclesService.AddVehicleAsync(vehicle);
-        
+
         // Assert
-        var vehicles = await _manageVehiclesService.GetAllVehiclesAsync();
+        IEnumerable<Vehicle> vehicles = await _manageVehiclesService.GetAllVehiclesAsync();
         Assert.Equal(1, result);
         Assert.Contains(vehicles, v => v.LicensePlate == "ABC123");
     }
@@ -48,20 +47,20 @@ public class ManageVehiclesTest : DisposableIntegrationTest
             LicensePlate = "XYZ789",
             CreatedAt = DateTime.UtcNow
         };
-        
+
         int vehicleId = await _manageVehiclesService.AddVehicleAsync(vehicle);
-        var vehiclesBeforeDeletion = await _manageVehiclesService.GetAllVehiclesAsync();
+        IEnumerable<Vehicle> vehiclesBeforeDeletion = await _manageVehiclesService.GetAllVehiclesAsync();
         Assert.Contains(vehiclesBeforeDeletion, v => v.LicensePlate == "XYZ789");
-        
+
         // Act
         int result = await _manageVehiclesService.DeleteVehicleAsync(vehicleId);
-        
+
         // Assert
-        var vehiclesAfterDeletion = await _manageVehiclesService.GetAllVehiclesAsync();
+        IEnumerable<Vehicle> vehiclesAfterDeletion = await _manageVehiclesService.GetAllVehiclesAsync();
         Assert.Equal(1, result);
         Assert.DoesNotContain(vehiclesAfterDeletion, v => v.LicensePlate == "XYZ789");
     }
-    
+
     [Fact]
     public async Task UpdateVehicle_ShouldModifyVehicleInDatabase_WhenEditsAreValid()
     {
@@ -72,21 +71,20 @@ public class ManageVehiclesTest : DisposableIntegrationTest
             Model = "Focus",
             Year = 2018,
             LicensePlate = "LMN456",
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
         };
-    
+
         int vehicleId = await _manageVehiclesService.AddVehicleAsync(vehicle);
         var vehicleToUpdate = await _manageVehiclesService.GetVehicleByIdAsync(vehicleId);
         vehicleToUpdate.Model = "Focus ST";
-        
+
         // Act
         int result = await _manageVehiclesService.UpdateVehicleAsync(vehicleToUpdate);
-        
+
         // Assert
         var updatedVehicle = await _manageVehiclesService.GetVehicleByIdAsync(vehicleId);
         Assert.Equal(1, result);
         Assert.Equal("Focus ST", updatedVehicle.Model);
     }
-
-   
 }
