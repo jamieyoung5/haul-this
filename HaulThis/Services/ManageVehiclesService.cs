@@ -11,8 +11,8 @@ public class ManageVehiclesService(IDatabaseService databaseService) : IManageVe
     private const string GetAllVehiclesByIdQuery = "SELECT v.uniqueId, v.make, v.model, v.year, v.licensePlate, v.status, v.createdAt, v.updatedAt FROM vehicle v WHERE v.uniqueId = @p0";
 
     private const string AddVehicleStmt = """
-                                        INSERT INTO vehicle (make, model, year, licensePlate, status, createdAt)
-                                                              VALUES (@p0, @p1, @p2, @p3, @p4, @p5)
+                                        INSERT INTO vehicle (vehicleName, make, model, year, licensePlate, status, createdAt)
+                                                              VALUES (CONCAT(@p2, ' ', @p0, ' ', @p1), @p0, @p1, @p2, @p3, @p4, @p5)
                                         """;
     private const string UpdateVehicleStmt = """
                                            UPDATE vehicle 
