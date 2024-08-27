@@ -1,10 +1,4 @@
-using Xunit;
-using Moq;
 using HaulThis.Services;
-using HaulThis.Models;
-using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
-using System;
 
 namespace HaulThis.Test.Services;
 
@@ -23,24 +17,26 @@ public class TrackingServiceTests
     public async Task GetTrackingInfo_ValidTrackingId_ShouldReturnTrackingInfo()
     {
         // Arrange
-        _databaseServiceMock.Setup(db => db.CreateConnection()).Returns(true);
-        _databaseServiceMock.Setup(db => db.Query(It.IsAny<string>(), It.IsAny<string>()))
-            .Returns(new Mock<IDataReader>().Object);
+        int trackingId = 1;
+        string expectedLocation = "Gondor";
+        var expectedArrivalTime = DateTime.UtcNow.AddHours(-1);
 
-        var readerMock = new Mock<IDataReader>();
-        readerMock.Setup(reader => reader.Read()).Returns(true);
-        readerMock.Setup(reader => reader.GetString(0)).Returns("Gondor");
-        readerMock.Setup(reader => reader.GetDateTime(1)).Returns(DateTime.UtcNow);
+        Mock<IDataReader> readerMock = new Mock<IDataReader>();
+        readerMock.SetupSequence(reader => reader.Read())
+            .Returns(true)
+            .Returns(false);
+        readerMock.Setup(reader => reader.GetString(0)).Returns(expectedLocation);
+        readerMock.Setup(reader => reader.GetDateTime(1)).Returns(expectedArrivalTime);
 
-        _databaseServiceMock.Setup(db => db.Query(It.IsAny<string>(), It.IsAny<string>()))
+        _databaseServiceMock.Setup(db => db.Query(It.IsAny<string>(), It.IsAny<int>()))
             .Returns(readerMock.Object);
 
         // Act
-        var trackingInfo = await _trackingService.GetTrackingInfo(1);
+        var trackingInfo = await _trackingService.GetTrackingInfo(trackingId);
 
         // Assert
         Assert.NotNull(trackingInfo);
-        Assert.Equal("Gondor", trackingInfo.CurrentLocation);
+        Assert.Equal(expectedLocation, trackingInfo.CurrentLocation);
         Assert.Equal("In Transit", trackingInfo.Status);
     }
 
@@ -49,7 +45,7 @@ public class TrackingServiceTests
     {
         // Arrange
         _databaseServiceMock.Setup(db => db.CreateConnection()).Returns(true);
-        var readerMock = new Mock<IDataReader>();
+        Mock<IDataReader> readerMock = new Mock<IDataReader>();
         readerMock.Setup(reader => reader.Read()).Returns(false);
         _databaseServiceMock.Setup(db => db.Query(It.IsAny<string>(), It.IsAny<string>()))
             .Returns(readerMock.Object);

@@ -4,14 +4,14 @@ namespace HaulThis.Test.Integration;
 
 public class DatabaseSetup
 {
-    public const string LocalDbString = "Server=(localdb)\\MSSQLLocalDB;Database=master;Integrated Security=true;MultipleActiveResultSets=true;";
-   
+    public const string LocalDbString =
+        "Server=(localdb)\\MSSQLLocalDB;Database=master;Integrated Security=true;MultipleActiveResultSets=true;";
+
     public SqlConnection DeployDatabase()
     {
         SqlConnection connection = null;
         int retryCount = 5;
         while (retryCount > 0)
-        {
             try
             {
                 connection = new SqlConnection(LocalDbString);
@@ -21,14 +21,11 @@ public class DatabaseSetup
             }
             catch (SqlException ex)
             {
-                if (retryCount == 0 || !IsTransient(ex))
-                {
-                    throw;
-                }
+                if (retryCount == 0 || !IsTransient(ex)) throw;
                 retryCount--;
-                System.Threading.Thread.Sleep(2000); // Wait for 2 seconds before retrying
+                Thread.Sleep(2000); // Wait for 2 seconds before retrying
             }
-        }
+
         return connection;
     }
 
@@ -84,7 +81,7 @@ public class DatabaseSetup
         using (var command = connection.CreateCommand())
         {
             command.CommandText = @"
-                CREATE TABLE role (
+                    CREATE TABLE role (
                         Id INT PRIMARY KEY IDENTITY(1,1),
                         roleName VARCHAR(255) NOT NULL
                     );
@@ -116,6 +113,10 @@ public class DatabaseSetup
                     CREATE TABLE bill (
                         Id INT PRIMARY KEY IDENTITY(1,1),
                         userId INT,
+                        amount DECIMAL(10, 2) NOT NULL,
+                        billDate DATETIME NOT NULL,
+                        dueDate DATETIME NOT NULL,
+                        status NVARCHAR(10) NOT NULL DEFAULT 'UNPAID',
                         FOREIGN KEY (userId) REFERENCES users(Id)
                     );
 
@@ -126,14 +127,14 @@ public class DatabaseSetup
                     );
 
                     CREATE TABLE vehicle (
-                        Id INT PRIMARY KEY IDENTITY(1,1),
-                        Make NVARCHAR(255),
-                        Model NVARCHAR(255),
-                        Year INT,
-                        LicensePlate NVARCHAR(255),
-                        Status NVARCHAR(255) DEFAULT 'Available',
-                        CreatedAt DATETIME,
-                        UpdatedAt DATETIME NULL
+                        uniqueId INT PRIMARY KEY IDENTITY(1,1),
+                        make NVARCHAR(255),
+                        model NVARCHAR(255),
+                        year INT,
+                        licensePlate NVARCHAR(255),
+                        status NVARCHAR(255) DEFAULT 'Available',
+                        createdAt DATETIME,
+                        updatedAt DATETIME NULL
                     );
 
                 CREATE TABLE trip (

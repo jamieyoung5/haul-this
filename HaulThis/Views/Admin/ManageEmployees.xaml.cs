@@ -56,6 +56,6 @@ public partial class ManageEmployees
         if (result <= 0) return;
         var viewModel = BindingContext as UserListViewModel;
             
-        viewModel?.Employees.Remove(userToDelete);
+        viewModel?.Items.Remove(userToDelete);
     }
 }

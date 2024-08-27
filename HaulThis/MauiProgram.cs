@@ -38,12 +38,16 @@ public static class MauiProgram
             loggerBuilder.AddDebug();
         });
 
-        ILogger<DatabaseService> logger = loggerFactory.CreateLogger<DatabaseService>();
-        logger.LogInformation("Attempting to connect");
-        IDatabaseService db = new DatabaseService(new SqlConnection(connectionString), logger);
-        logger.LogInformation("Connected successfully");
+        ILogger<DatabaseService> dbLogger = loggerFactory.CreateLogger<DatabaseService>();
+        dbLogger.LogInformation("Attempting to connect");
+        IDatabaseService db = new DatabaseService(
+            new SqlConnection(connectionString), 
+            dbLogger
+            );
+        dbLogger.LogInformation("Connected successfully");
+        
         db.CreateConnection();
-        logger.LogInformation(db.Ping() ? "pinged successfully" : "pinged unsuccessfully");
+        dbLogger.LogInformation(db.Ping() ? "pinged successfully" : "pinged unsuccessfully");
 
 
         IUserRepository userRepository = new UserRepository(db);
@@ -52,7 +56,7 @@ public static class MauiProgram
         IItemRepository itemRepository = new ItemRepository(db);
         
         ITrackingService trackingService = new TrackingService(db);
-        IPickupRequestService pickupRequestService = new PickupRequestService(db, loggerFactory);
+        IPickupRequestService pickupRequestService = new PickupRequestService(db, loggerFactory.CreateLogger<PickupRequestService>());
         IManageVehiclesService manageVehiclesService = new ManageVehiclesService(db);
         
         builder.Services.AddSingleton(pickupRequestService);

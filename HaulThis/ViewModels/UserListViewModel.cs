@@ -5,43 +5,20 @@ using HaulThis.Services;
 
 namespace HaulThis.ViewModels;
 
-public sealed class UserListViewModel : ViewModelEvent
+public class UserListViewModel(IUserRepository userRepository) 
+  : ListViewModel<User, IUserRepository>(userRepository)
 {
-    private readonly IUserRepository _userRepository;
+  protected override async Task<IEnumerable<User>> GetItemsAsync()
+  {
+    return await _service.GetAllEmployeesAsync();
+  }
+}
 
-    public ObservableCollection<User> Employees { get; private set; } = new();
-    public ObservableCollection<User> Customers { get; private set; } = new();
-
-  public UserListViewModel(IUserRepository userRepository)
-    {
-        _userRepository = userRepository;
-        LoadEmployees();
-        LoadCustomers();
-    }
-
-    private async Task LoadEmployees()
-    {
-      IEnumerable<User> employeesFromDb = await _userRepository.GetAllEmployeesAsync();
-      Employees.Clear();
-
-      foreach (var employee in employeesFromDb)
-      {
-        Employees.Add(employee);
-      }
-
-      OnPropertyChanged(nameof(Employees));
-    }
-
-    private async Task LoadCustomers()
-    {
-      IEnumerable<User> customersFromDb = await _userRepository.GetAllCustomersAsync();
-      Customers.Clear();
-
-      foreach (var customer in customersFromDb)
-      {
-      Customers.Add(customer);
-      }
-
-      OnPropertyChanged(nameof(Customers));
-    }
+public class CustomerListViewModel(IUserRepository userRepository) 
+  : ListViewModel<User, IUserRepository>(userRepository)
+{
+  protected override async Task<IEnumerable<User>> GetItemsAsync()
+  {
+    return await _service.GetAllCustomersAsync();
+  }
 }

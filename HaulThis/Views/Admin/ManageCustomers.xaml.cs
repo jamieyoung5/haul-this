@@ -16,7 +16,7 @@ public partial class ManageCustomers
   {
     InitializeComponent();
     _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
-    BindingContext = new UserListViewModel(_userRepository);
+    BindingContext = new CustomerListViewModel(_userRepository);
   }
 
   private async void OnAddButtonClicked(object sender, EventArgs e)
@@ -29,7 +29,7 @@ public partial class ManageCustomers
 
     await _userRepository.AddUserAsync(newUser);
 
-    BindingContext = new UserListViewModel(_userRepository);
+    BindingContext = new CustomerListViewModel(_userRepository);
   }
 
   private async void OnEditButtonClicked(object sender, EventArgs e)
@@ -54,8 +54,8 @@ public partial class ManageCustomers
     int result = await _userRepository.DeleteUserAsync(userToDelete.Id);
 
     if (result <= 0) return;
-    var viewModel = BindingContext as UserListViewModel;
+    var viewModel = BindingContext as CustomerListViewModel;
 
-    viewModel?.Customers.Remove(userToDelete);
+    viewModel?.Items.Remove(userToDelete);
   }
 }

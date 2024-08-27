@@ -5,29 +5,11 @@ using HaulThis.Services;
 
 namespace HaulThis.ViewModels;
 
-public class BillingListViewModel : ViewModelEvent
+public class BillingListViewModel(IBillingRepository billingRepository)
+    : ListViewModel<Bill, IBillingRepository>(billingRepository)
 {
-    private readonly IBillingRepository _billingRepository;
-    
-    public ObservableCollection<Bill> Bills { get; private set; } = new();
-
-    public BillingListViewModel(IBillingRepository billingRepository)
+    protected override async Task<IEnumerable<Bill>> GetItemsAsync()
     {
-        _billingRepository = billingRepository;
-
-        LoadBills();
-    }
-
-    private async Task LoadBills()
-    {
-        IEnumerable<Bill> billsFromDb = await _billingRepository.GetBillsByUserAsync(1);
-        Bills.Clear();
-
-        foreach (var bill in billsFromDb)
-        {
-            Bills.Add(bill);
-        }
-        
-        OnPropertyChanged(nameof(Bills));
+        return await _service.GetBillsByUserAsync(1);
     }
 }

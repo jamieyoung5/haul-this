@@ -78,10 +78,18 @@ public class TrackingViewModel : INotifyPropertyChanged
         {
             var trackingInfo = await _trackingService.GetTrackingInfo(TrackingId);
 
-            CurrentLocation = trackingInfo.CurrentLocation;
-            ETA = trackingInfo.ETA;
-            Status = trackingInfo.Status;
-            ErrorMessage = string.Empty;
+            if (trackingInfo != null)
+            {
+                CurrentLocation = trackingInfo.CurrentLocation;
+                ETA = trackingInfo.ETA;
+                Status = trackingInfo.Status;
+                ErrorMessage = string.Empty;
+            }
+            else
+            {
+                ErrorMessage = "Invalid tracking ID. Please try again.";
+                ClearTrackingData();
+            }
         }
         catch (Exception ex)
         {
@@ -101,6 +109,6 @@ public class TrackingViewModel : INotifyPropertyChanged
 
     private void OnPropertyChanged([CallerMemberName] string propertyName = null)
     {
-        PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

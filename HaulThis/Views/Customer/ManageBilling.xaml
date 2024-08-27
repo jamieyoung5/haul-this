@@ -34,7 +34,7 @@
             </Grid>
             
             <CollectionView Grid.Row="1" Grid.Column="1"
-                            ItemsSource="{Binding Bills}"
+                            ItemsSource="{Binding Items}"
                             HorizontalOptions="Center"
                             VerticalOptions="Start">
 

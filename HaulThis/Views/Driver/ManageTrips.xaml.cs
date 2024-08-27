@@ -7,13 +7,11 @@ namespace HaulThis.Views.Driver;
 
 public partial class ManageTrips
 {
-	private readonly ITripRepository _tripRepository;
 	private readonly IItemRepository _itemRepository;
 	
 	public ManageTrips(ITripRepository tripRepository, IItemRepository itemRepository)
 	{
 		InitializeComponent();
-		_tripRepository = tripRepository;
 		_itemRepository = itemRepository;
 		BindingContext = new TripListViewModel(tripRepository);
 	}
@@ -30,18 +28,16 @@ public partial class ManageTrips
 
 		var viewModel = BindingContext as TripListViewModel;
 
-		if (viewModel?.Trips == null) return;
-
-		// Locate the trip that contains the delivery item to remove it from the UI
-		var trip = viewModel.Trips.FirstOrDefault(t => t.Id == deliveryToMark.TripId);
+		if (viewModel?.Items == null) return;
+		
+		var trip = viewModel.Items.FirstOrDefault(t => t.Id == deliveryToMark.TripId);
 		if (trip != null)
 		{
 			trip.TripManifest.Remove(deliveryToMark);
-
-			// Optionally, if the TripManifest is empty, you might want to remove the entire trip
+			
 			if (trip.TripManifest.Count == 0)
 			{
-				viewModel.Trips.Remove(trip);
+				viewModel.Items.Remove(trip);
 			}
 		}
 	}

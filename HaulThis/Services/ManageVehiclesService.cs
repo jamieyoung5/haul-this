@@ -57,7 +57,7 @@ public class ManageVehiclesService(IDatabaseService databaseService) : IManageVe
         {
             throw new InvalidOperationException("Vehicle not found");
         }
-
+        
         return await Task.FromResult(new Vehicle
         {
             Id = reader.GetInt32(0),
@@ -66,8 +66,8 @@ public class ManageVehiclesService(IDatabaseService databaseService) : IManageVe
             Year = reader.GetInt32(3),
             LicensePlate = reader.GetString(4),
             Status = Enum.Parse<VehicleStatus>(reader.GetString(5)),
-            CreatedAt = reader.GetDateTime(5),
-            UpdatedAt = reader.IsDBNull(6) ? null : reader.GetDateTime(6)
+            CreatedAt = reader.GetDateTime(6),
+            UpdatedAt = reader.IsDBNull(7) ? null : reader.GetDateTime(7)
         });
     }
 
