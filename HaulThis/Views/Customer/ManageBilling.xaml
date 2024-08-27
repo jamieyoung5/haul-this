@@ -48,14 +48,24 @@
                                 <ColumnDefinition Width="200" />
                                 <ColumnDefinition Width="120" />
                             </Grid.ColumnDefinitions>
-
-                            <!-- Data Binding -->
+                            
+                            <Grid.Triggers>
+                                <DataTrigger TargetType="Grid" Binding="{Binding Status}" Value="UNPAID">
+                                    <Setter Property="BackgroundColor" Value="Yellow"/>
+                                </DataTrigger>
+                                <DataTrigger TargetType="Grid" Binding="{Binding Status}" Value="PAID">
+                                    <Setter Property="BackgroundColor" Value="Green"/>
+                                </DataTrigger>
+                                <DataTrigger TargetType="Grid" Binding="{Binding Status}" Value="OVERDUE">
+                                    <Setter Property="BackgroundColor" Value="Red"/>
+                                </DataTrigger>
+                            </Grid.Triggers>
+                            
                             <Label Text="{Binding Id}" Grid.Column="0" VerticalOptions="Center" />
                             <Label Text="{Binding Amount}" Grid.Column="1" VerticalOptions="Center" />
                             <Label Text="{Binding BillDate}" Grid.Column="2" VerticalOptions="Center" />
                             <Label Text="{Binding DueDate}" Grid.Column="3" VerticalOptions="Center" />
                             <Label Text="{Binding Status}" Grid.Column="4" VerticalOptions="Center" />
-                            
                             
                         </Grid>
                     </DataTemplate>
