@@ -65,7 +65,107 @@ public class UserServiceTests
         Assert.NotNull(result);
         Assert.Empty(result);
     }
-    
+
+    [Fact]
+    public async Task GetAllCustomersAsync_WhenCalled_ShouldReturnAllCustomers()
+    {
+      // Arrange
+      var mockReader = new Mock<IDataReader>();
+      var customers = new List<User>
+              {
+                  new() { Id = 1, FirstName = "Alice", LastName = "Smith", Email = "alice@example.com", PhoneNumber = "1234567890", Address = "789 Pine St", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow, Role = Role.Customer },
+                  new() { Id = 2, FirstName = "Bob", LastName = "Brown", Email = "bob@example.com", PhoneNumber = "0987654321", Address = "101 Maple St", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow, Role = Role.Customer }
+              };
+
+      SetupMockReader(mockReader, customers);
+      _mockDatabaseService.Setup(ds => ds.Query(It.IsAny<string>())).Returns(mockReader.Object);
+
+      // Act
+      var result = await _subject.GetAllCustomersAsync();
+
+      // Assert
+      Assert.NotNull(result);
+      Assert.Equal(customers.Count, result.Count());
+
+      for (int i = 0; i < customers.Count; i++)
+      {
+        Assert.Equal(customers[i].FirstName, result.ElementAt(i).FirstName);
+        Assert.Equal(customers[i].LastName, result.ElementAt(i).LastName);
+        Assert.Equal(customers[i].Email, result.ElementAt(i).Email);
+        Assert.Equal(customers[i].PhoneNumber, result.ElementAt(i).PhoneNumber);
+        Assert.Equal(customers[i].Address, result.ElementAt(i).Address);
+        Assert.Equal(customers[i].CreatedAt, result.ElementAt(i).CreatedAt);
+        Assert.Equal(customers[i].UpdatedAt, result.ElementAt(i).UpdatedAt);
+        Assert.Equal(customers[i].Role.ToString(), result.ElementAt(i).Role.ToString());
+      }
+    }
+
+    [Fact]
+    public async Task GetAllCustomersAsync_WhenNoCustomersExist_ShouldReturnEmptyList()
+    {
+      // Arrange
+      var mockReader = new Mock<IDataReader>();
+      mockReader.Setup(r => r.Read()).Returns(false); // No data
+      _mockDatabaseService.Setup(ds => ds.Query(It.IsAny<string>())).Returns(mockReader.Object);
+
+      // Act
+      var result = await _subject.GetAllCustomersAsync();
+
+      // Assert
+      Assert.NotNull(result);
+      Assert.Empty(result);
+    }
+
+    [Fact]
+    public async Task GetAllEmployeesAsync_WhenCalled_ShouldReturnAllEmployees()
+    {
+      // Arrange
+      var mockReader = new Mock<IDataReader>();
+      var employees = new List<User>
+              {
+                  new() { Id = 1, FirstName = "Charlie", LastName = "Johnson", Email = "charlie@example.com", PhoneNumber = "1234567890", Address = "202 Oak St", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow, Role = Role.Administrator },
+                  new() { Id = 2, FirstName = "Dana", LastName = "Lee", Email = "dana@example.com", PhoneNumber = "0987654321", Address = "303 Birch St", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow, Role = Role.Driver }
+              };
+
+      SetupMockReader(mockReader, employees);
+      _mockDatabaseService.Setup(ds => ds.Query(It.IsAny<string>())).Returns(mockReader.Object);
+
+      // Act
+      var result = await _subject.GetAllEmployeesAsync();
+
+      // Assert
+      Assert.NotNull(result);
+      Assert.Equal(employees.Count, result.Count());
+
+      for (int i = 0; i < employees.Count; i++)
+      {
+        Assert.Equal(employees[i].FirstName, result.ElementAt(i).FirstName);
+        Assert.Equal(employees[i].LastName, result.ElementAt(i).LastName);
+        Assert.Equal(employees[i].Email, result.ElementAt(i).Email);
+        Assert.Equal(employees[i].PhoneNumber, result.ElementAt(i).PhoneNumber);
+        Assert.Equal(employees[i].Address, result.ElementAt(i).Address);
+        Assert.Equal(employees[i].CreatedAt, result.ElementAt(i).CreatedAt);
+        Assert.Equal(employees[i].UpdatedAt, result.ElementAt(i).UpdatedAt);
+        Assert.Equal(employees[i].Role.ToString(), result.ElementAt(i).Role.ToString());
+      }
+    }
+
+    [Fact]
+    public async Task GetAllEmployeesAsync_WhenNoEmployeesExist_ShouldReturnEmptyList()
+    {
+      // Arrange
+      var mockReader = new Mock<IDataReader>();
+      mockReader.Setup(r => r.Read()).Returns(false); // No data
+      _mockDatabaseService.Setup(ds => ds.Query(It.IsAny<string>())).Returns(mockReader.Object);
+
+      // Act
+      var result = await _subject.GetAllEmployeesAsync();
+
+      // Assert
+      Assert.NotNull(result);
+      Assert.Empty(result);
+    }
+
     [Fact]
     public async Task GetUserByIdAsync_WhenUserExists_ShouldReturnUser()
     {
