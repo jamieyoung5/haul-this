@@ -8,14 +8,9 @@
     FlyoutBehavior="Flyout">
 
     <FlyoutItem FlyoutDisplayOptions="AsMultipleItems">
-        <ShellContent Title="Manage Customer Bills" ContentTemplate="{DataTemplate local:ManageCustomerBills}" />
         <ShellContent Title="Manage Customers" ContentTemplate="{DataTemplate local:ManageCustomers}" />
         <ShellContent Title="Manage Employees" ContentTemplate="{DataTemplate local:ManageEmployees}" />
-        <ShellContent Title="Manage Trip Manifests" ContentTemplate="{DataTemplate local:ManageTripManifests}" />
         <ShellContent Title="Manage Vehicles" ContentTemplate="{DataTemplate local:ManageVehicles}" />
-        <ShellContent Title="Plan Route Trips" ContentTemplate="{DataTemplate local:PlanRouteTrips}" />
-        <ShellContent Title="Resource Trips" ContentTemplate="{DataTemplate local:ResourceTrips}" />
-        <ShellContent Title="Track Trips" ContentTemplate="{DataTemplate local:TrackTrips}" />
     </FlyoutItem>
 
 </Shell>

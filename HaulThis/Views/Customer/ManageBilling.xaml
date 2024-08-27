@@ -3,10 +3,64 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="HaulThis.Views.Customer.ManageBilling"
              Title="ManageBilling">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to Mange Billing!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+    <ContentPage.Content>
+        <Grid Margin="20,40,20,20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            
+            <Grid Grid.Row="0" Grid.Column="1" Padding="10" BackgroundColor="LightGray">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="50" />
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="200" />
+                    <ColumnDefinition Width="120" />
+                </Grid.ColumnDefinitions>
+                
+                <Label Text="ID" FontAttributes="Bold" VerticalOptions="Center" Grid.Column="0" />
+                <Label Text="Amount" FontAttributes="Bold" VerticalOptions="Center" Grid.Column="1" />
+                <Label Text="Date Issued" FontAttributes="Bold" VerticalOptions="Center" Grid.Column="2" />
+                <Label Text="Date Due" FontAttributes="Bold" VerticalOptions="Center" Grid.Column="3" />
+                <Label Text="Status" FontAttributes="Bold" VerticalOptions="Center" Grid.Column="4" />
+                
+            </Grid>
+            
+            <CollectionView Grid.Row="1" Grid.Column="1"
+                            ItemsSource="{Binding Bills}"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Start">
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="10" BackgroundColor="White">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="50" />
+                                <ColumnDefinition Width="100" />
+                                <ColumnDefinition Width="100" />
+                                <ColumnDefinition Width="200" />
+                                <ColumnDefinition Width="120" />
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Data Binding -->
+                            <Label Text="{Binding Id}" Grid.Column="0" VerticalOptions="Center" />
+                            <Label Text="{Binding Amount}" Grid.Column="1" VerticalOptions="Center" />
+                            <Label Text="{Binding BillDate}" Grid.Column="2" VerticalOptions="Center" />
+                            <Label Text="{Binding DueDate}" Grid.Column="3" VerticalOptions="Center" />
+                            <Label Text="{Binding Status}" Grid.Column="4" VerticalOptions="Center" />
+                            
+                            
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Grid>
+    </ContentPage.Content>
 </ContentPage>
