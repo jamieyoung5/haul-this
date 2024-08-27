@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<toolkit:Popup
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    x:Class="HaulThis.Views.Misc.AddExpensePopup">
+    
+    <Grid Padding="10" BackgroundColor="White" WidthRequest="250">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        
+        <Button Text="X" BackgroundColor="Red" TextColor="White" WidthRequest="25" HeightRequest="25"
+                HorizontalOptions="End" Clicked="OnCloseButtonClicked" Grid.Row="0" />
+        
+        <StackLayout Grid.Row="1" Spacing="8">
+            <Label Text="Trip Id" />
+            <Entry x:Name="TripIdEntry" Placeholder="Enter Trip Id" />
+
+            <Label Text="Amount" />
+            <Entry x:Name="AmountEntry" Placeholder="Enter Amount eg 9.99" />
+
+            <Label Text="Description" />
+            <Entry x:Name="DescriptionEntry" Placeholder="Enter Description" />
+           
+            <Button Text="Submit" BackgroundColor="Green" TextColor="White" Clicked="OnSubmitButtonClicked" />
+        </StackLayout>
+    </Grid>
+</toolkit:Popup> 

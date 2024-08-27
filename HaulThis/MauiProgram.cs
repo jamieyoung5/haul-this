@@ -7,6 +7,7 @@ using HaulThis.Views.Admin;
 using Microsoft.Data.SqlClient;
 using HaulThis.Views.Customer;
 using HaulThis.Views.Driver;
+using HaulThis.Views.Driver;
 
 namespace HaulThis;
 
@@ -50,6 +51,8 @@ public static class MauiProgram
         
         IPickupRequestService pickupRequestService = new PickupRequestService(db, loggerFactory);
         builder.Services.AddSingleton(pickupRequestService);
+
+        IManageExpensesService manageExpensesService = new ManageExpensesService(db);
         IManageVehiclesService manageVehiclesService = new ManageVehiclesService(db);
         
         builder.Services.AddSingleton(trackingService);
@@ -57,6 +60,9 @@ public static class MauiProgram
         builder.Services.AddTransient<RequestPickup>(_ => new RequestPickup(pickupRequestService));
         builder.Services.AddSingleton(db);
         builder.Services.AddSingleton(userService);
+        builder.Services.AddTransient<ManageEmployees>(_ => new ManageEmployees(userService));     
+        builder.Services.AddSingleton(manageExpensesService);
+        builder.Services.AddTransient<RecordExpenses>(_ => new RecordExpenses(manageExpensesService));
         builder.Services.AddTransient<ManageEmployees>(_ => new ManageEmployees(userService));
         builder.Services.AddTransient<ManageCustomers>(_ => new ManageCustomers(userService));
         builder.Services.AddSingleton(tripService);
