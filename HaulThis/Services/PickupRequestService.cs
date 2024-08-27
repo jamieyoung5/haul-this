@@ -36,7 +36,8 @@ namespace HaulThis.Services
       _databaseService = databaseService ?? throw new ArgumentNullException(nameof(databaseService));
       _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
-
+    
+    /// <inheritdoc />
     public async Task<PickupDeliveryRequest?> GetPickupRequestInfo(int id)
     {
       try
@@ -74,7 +75,8 @@ namespace HaulThis.Services
         return null;
       }
     }
-
+    
+    /// <inheritdoc />
     public async Task<int> CreatePickupRequest(PickupDeliveryRequest request)
     {
       try

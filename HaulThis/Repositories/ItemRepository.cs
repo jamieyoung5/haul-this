@@ -4,6 +4,7 @@ namespace HaulThis.Repositories;
 
 public class ItemRepository(IDatabaseService databaseService) : IItemRepository
 {
+    /// <inheritdoc />
     public async Task<int> MarkAsDeliveredAsync(int tripId, int itemId)
     {
         const string markItemDeliveredStmt = """

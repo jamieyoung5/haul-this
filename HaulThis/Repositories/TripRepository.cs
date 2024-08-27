@@ -5,6 +5,8 @@ namespace HaulThis.Repositories;
 
 public class TripRepository(IDatabaseService databaseService) : ITripRepository
 {
+    
+    /// <inheritdoc />
     public async Task<IEnumerable<Trip>> GetTripByDateAsync(DateTime date)
     {
         const string getTripByDateQuery = """

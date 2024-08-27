@@ -20,7 +20,8 @@ public class ManageVehiclesService(IDatabaseService databaseService) : IManageVe
                                                                  WHERE uniqueId = @p6
                                            """;
     private const string DeleteVehicleStmt = "DELETE FROM vehicle WHERE uniqueId = @p0";
-
+    
+    /// <inheritdoc />
     public async Task<IEnumerable<Vehicle>> GetAllVehiclesAsync()
     {
         var vehicles = new List<Vehicle>();
@@ -48,7 +49,8 @@ public class ManageVehiclesService(IDatabaseService databaseService) : IManageVe
 
         return await Task.FromResult(vehicles);
     }
-
+    
+    /// <inheritdoc />
     public async Task<Vehicle> GetVehicleByIdAsync(int vehicleId)
     {
         var reader = databaseService.QueryRow(GetAllVehiclesByIdQuery, vehicleId);
@@ -70,21 +72,22 @@ public class ManageVehiclesService(IDatabaseService databaseService) : IManageVe
             UpdatedAt = reader.IsDBNull(7) ? null : reader.GetDateTime(7)
         });
     }
-
+    
+    /// <inheritdoc />
     public async Task<int> AddVehicleAsync(Vehicle vehicle)
     {
         return await Task.FromResult( databaseService.Execute(AddVehicleStmt, vehicle.Make, vehicle.Model, vehicle.Year, vehicle.LicensePlate, vehicle.Status.ToString(), vehicle.CreatedAt));
     }
-
+    
+    /// <inheritdoc />
     public async Task<int> UpdateVehicleAsync(Vehicle vehicle)
     {
         return await Task.FromResult(databaseService.Execute(UpdateVehicleStmt, vehicle.Make, vehicle.Model, vehicle.Year, vehicle.LicensePlate,vehicle.Status.ToString(), DateTime.UtcNow, vehicle.Id));
     }
-
+    
+    /// <inheritdoc />
     public async Task<int> DeleteVehicleAsync(int vehicleId)
     {
         return await Task.FromResult(databaseService.Execute(DeleteVehicleStmt, vehicleId));
     }
-
-
 }

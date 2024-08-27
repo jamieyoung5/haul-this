@@ -5,6 +5,7 @@ namespace HaulThis.Repositories;
 
 public class BillingRepository(IDatabaseService databaseService) : IBillingRepository
 {
+    /// <inheritdoc />
     public async Task<IEnumerable<Bill>> GetBillsByUserAsync(int userId)
     {
         const string getAllBillsByUserIdQuery = """

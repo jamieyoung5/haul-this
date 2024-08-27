@@ -36,7 +36,8 @@ public class UserRepository(IDatabaseService databaseService) : IUserRepository
 
         return await Task.FromResult(users);
     }
-
+    
+    /// <inheritdoc />
     public async Task<IEnumerable<User>> GetAllCustomersAsync()
     {
         const string getAllCustomersQuery = """
@@ -67,7 +68,8 @@ public class UserRepository(IDatabaseService databaseService) : IUserRepository
 
         return await Task.FromResult(users);
     }
-
+    
+    /// <inheritdoc />
     public async Task<IEnumerable<User>> GetAllEmployeesAsync()
     {
         const string getAllEmployeesQuery = """

@@ -18,7 +18,6 @@ public class ListViewModel<TItem, TService> : INotifyPropertyChanged
 
     protected virtual async Task<IEnumerable<TItem>> GetItemsAsync()
     {
-        // This method should be overridden by derived classes to provide specific data loading logic
         return new List<TItem>();
     }
 
