@@ -5,7 +5,7 @@ using HaulThis.Models;
 
 namespace HaulThis.Services
 {
-  public class ReportEmergencyService : IReportEmergencyService
+  public class ReportEmergencyRepository : IReportEmergencyRepository
   {
     // SQL Queries and Statements
     private const string GetAllTripsByDriverIdQuery = "SELECT Id, DriverId, VehicleId, StartDate, EndDate, Status FROM Trips WHERE DriverId = @p0";
@@ -24,7 +24,7 @@ namespace HaulThis.Services
 
     private readonly IDatabaseService databaseService;
 
-    public ReportEmergencyService(IDatabaseService databaseService)
+    public ReportEmergencyRepository(IDatabaseService databaseService)
     {
       this.databaseService = databaseService;
     }

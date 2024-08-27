@@ -5,7 +5,7 @@ namespace HaulThis.Services
   /// <summary>
   /// Provides methods to manage reports of delays and emergencies.
   /// </summary>
-  public interface IReportEmergencyService
+  public interface IReportEmergencyRepository
   {
     /// <summary>
     /// Retrieves all trips asynchronously.

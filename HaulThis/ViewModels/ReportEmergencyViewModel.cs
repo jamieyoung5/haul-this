@@ -11,15 +11,14 @@ namespace HaulThis.ViewModels
 {
   public class ManageReportsViewModel : INotifyPropertyChanged
   {
-    private readonly IReportEmergencyService _reportEmergencyService;
+    private readonly IReportEmergencyRepository _reportEmergencyRepository;
 
     public ObservableCollection<Trip> Trips { get; private init; } = new();
     public ObservableCollection<Report> Reports { get; private init; } = new();
 
-    public ManageReportsViewModel(IReportEmergencyService reportEmergencyService)
+    public ManageReportsViewModel(IReportEmergencyRepository reportEmergencyRepository)
     {
-      _reportEmergencyService = reportEmergencyService;
-      UpdateTripTableCommand = new Command(async () => await LoadTripsFromDriver());
+      _reportEmergencyRepository = reportEmergencyRepository ?? throw new ArgumentNullException(nameof(reportEmergencyRepository)); UpdateTripTableCommand = new Command(async () => await LoadTripsFromDriver());
       SelectTripCommand = new Command(async () => await LoadTripReports());
     }
 
@@ -50,7 +49,7 @@ namespace HaulThis.ViewModels
     {
       if (int.TryParse(DriverId, out int driverId))
       {
-        var tripsFromDb = await _reportEmergencyService.GetTripsByDriverIdAsync(driverId);
+        var tripsFromDb = await _reportEmergencyRepository.GetTripsByDriverIdAsync(driverId);
         Trips.Clear();
 
         foreach (var trip in tripsFromDb)
@@ -71,7 +70,7 @@ namespace HaulThis.ViewModels
     {
       if (SelectedTrip != null)
       {
-        var reportsFromDb = await _reportEmergencyService.GetReportsByTripIdAsync(SelectedTrip.Id);
+        var reportsFromDb = await _reportEmergencyRepository.GetReportsByTripIdAsync(SelectedTrip.Id);
         Reports.Clear();
 
         foreach (var report in reportsFromDb)

@@ -8,13 +8,13 @@ namespace HaulThis.Views.Driver
 {
   public partial class ReportDelaysAndEmergencies : ContentPage
   {
-    private readonly IReportEmergencyService _reportEmergencyService;
+    private readonly IReportEmergencyRepository _reportEmergencyRepository;
 
-    public ReportDelaysAndEmergencies(IReportEmergencyService reportEmergencyService)
+    public ReportDelaysAndEmergencies(IReportEmergencyRepository reportEmergencyRepository)
     {
       InitializeComponent();
-      _reportEmergencyService = reportEmergencyService ?? throw new ArgumentNullException(nameof(reportEmergencyService));
-      BindingContext = new ManageReportsViewModel(_reportEmergencyService);
+      _reportEmergencyRepository = reportEmergencyRepository ?? throw new ArgumentNullException(nameof(reportEmergencyRepository));
+      BindingContext = new ManageReportsViewModel(_reportEmergencyRepository);
     }
 
     private async void OnLoadTripsButtonClicked(object sender, EventArgs e)
@@ -44,7 +44,7 @@ namespace HaulThis.Views.Driver
 
       if (result is not Report newReport) return;
 
-      await _reportEmergencyService.AddReportAsync(newReport);
+      await _reportEmergencyRepository.AddReportAsync(newReport);
 
       // Refresh the view to include the new report
       var viewModel = BindingContext as ManageReportsViewModel;
