@@ -49,8 +49,6 @@ namespace HaulThis.Models
         /// </summary>
         [MaxLength(255)]
         public string Status { get; set; } = string.Empty;
-
-        
     }
 
    

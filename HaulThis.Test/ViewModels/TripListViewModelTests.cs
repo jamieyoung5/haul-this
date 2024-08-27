@@ -28,7 +28,7 @@ public class TripListViewModelTests
     {
         _mockTripService.Verify(s => s.GetTripByDateAsync(It.IsAny<DateTime>()), Times.Once);
     }
-
+    
     [Fact]
     public void LoadTrips_ShouldUpdateTripsCollection()
     {
