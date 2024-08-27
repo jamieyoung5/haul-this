@@ -12,7 +12,7 @@ public partial class AppShell
 		
 		Routing.RegisterRoute(nameof(Views.Driver.ManageTrips), typeof(Views.Driver.ManageTrips));
 		Routing.RegisterRoute(nameof(Views.Driver.RecordExpenses), typeof(Views.Driver.RecordExpenses));
-		Routing.RegisterRoute(nameof(Views.Driver.ReportDelays), typeof(Views.Driver.ReportDelays));
+		Routing.RegisterRoute(nameof(Views.Driver.ReportDelaysAndEmergencies), typeof(Views.Driver.ReportDelaysAndEmergencies));
 	
 		Routing.RegisterRoute(nameof(Views.Admin.ManageEmployees), typeof(Views.Admin.ManageEmployees));
 		Routing.RegisterRoute(nameof(Views.Admin.ManageVehicles), typeof(Views.Admin.ManageVehicles));

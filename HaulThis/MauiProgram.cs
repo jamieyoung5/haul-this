@@ -58,7 +58,8 @@ public static class MauiProgram
         ITrackingService trackingService = new TrackingService(db);
         IPickupRequestService pickupRequestService = new PickupRequestService(db, loggerFactory.CreateLogger<PickupRequestService>());
         IManageVehiclesService manageVehiclesService = new ManageVehiclesService(db);
-        
+        IReportEmergencyRepository reportEmergencyRepository = new ReportEmergencyRepository(db);
+
         builder.Services.AddSingleton(pickupRequestService);
         builder.Services.AddSingleton(trackingService);
         builder.Services.AddTransient<TrackItem>(_ => new TrackItem(trackingService));
@@ -73,6 +74,7 @@ public static class MauiProgram
         builder.Services.AddTransient<ManageVehicles>(_ => new ManageVehicles(manageVehiclesService));
         builder.Services.AddSingleton(billingRepository);
         builder.Services.AddTransient<ManageBilling>(_ => new ManageBilling(billingRepository));
+        builder.Services.AddTransient<ReportDelaysAndEmergencies>(_ => new ReportDelaysAndEmergencies(reportEmergencyRepository));
 
         return builder.Build();
     }
