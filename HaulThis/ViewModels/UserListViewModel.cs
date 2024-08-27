@@ -1,31 +1,24 @@
 ﻿using System.Collections.ObjectModel;
 using HaulThis.Models;
+using HaulThis.Repository;
 using HaulThis.Services;
 
 namespace HaulThis.ViewModels;
 
-public sealed class UserListViewModel : ViewModelEvent
+public class UserListViewModel(IUserRepository userRepository) 
+  : ListViewModel<User, IUserRepository>(userRepository)
 {
-    private readonly IUserService _userService;
+  protected override async Task<IEnumerable<User>> GetItemsAsync()
+  {
+    return await _service.GetAllEmployeesAsync();
+  }
+}
 
-    public ObservableCollection<User> Users { get; private init; } = [];
-
-    public UserListViewModel(IUserService userService)
-    {
-        _userService = userService;
-        LoadUsers();
-    }
-    
-    private async Task LoadUsers()
-    {
-        IEnumerable<User> usersFromDb = await _userService.GetAllUsersAsync();
-        Users.Clear();
-
-        foreach (var user in usersFromDb)
-        {
-            Users.Add(user);
-        }
-
-        OnPropertyChanged(nameof(Users));
-    }
+public class CustomerListViewModel(IUserRepository userRepository) 
+  : ListViewModel<User, IUserRepository>(userRepository)
+{
+  protected override async Task<IEnumerable<User>> GetItemsAsync()
+  {
+    return await _service.GetAllCustomersAsync();
+  }
 }

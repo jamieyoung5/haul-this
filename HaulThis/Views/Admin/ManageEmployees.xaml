@@ -40,7 +40,7 @@
             </Grid>
             
             <CollectionView Grid.Row="1" Grid.Column="1"
-                            ItemsSource="{Binding Users}"
+                            ItemsSource="{Binding Items}"
                             HorizontalOptions="Center"
                             VerticalOptions="Start">
 
@@ -49,23 +49,15 @@
                         <Grid Padding="10" BackgroundColor="White">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="50" />
-                                <!-- ID -->
                                 <ColumnDefinition Width="100" />
-                                <!-- First Name -->
                                 <ColumnDefinition Width="100" />
-                                <!-- Last Name -->
                                 <ColumnDefinition Width="200" />
-                                <!-- Email -->
                                 <ColumnDefinition Width="120" />
-                                <!-- Phone -->
                                 <ColumnDefinition Width="100" />
-                                <!-- Role -->
                                 <ColumnDefinition Width="150" />
-                                <!-- Created At -->
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
-
-                            <!-- Data Binding -->
+                            
                             <Label Text="{Binding Id}" Grid.Column="0" VerticalOptions="Center" />
                             <Label Text="{Binding FirstName}" Grid.Column="1" VerticalOptions="Center" />
                             <Label Text="{Binding LastName}" Grid.Column="2" VerticalOptions="Center" />

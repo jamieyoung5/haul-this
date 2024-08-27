@@ -1,17 +1,26 @@
 ﻿using HaulThis.Models;
 
-namespace HaulThis.Services;
+namespace HaulThis.Repository;
 
-/// <summary>
-/// Interface defining User CRUD operations
-/// </summary>
-public interface IUserService
+public interface IUserRepository
 {
     /// <summary>
     /// Retrieves all users asynchronously.
     /// </summary>
     /// <returns>A collection of all users.</returns>
     Task<IEnumerable<User>> GetAllUsersAsync();
+    
+    /// <summary>
+    /// Retrieves all customers asynchronously.
+    /// </summary>
+    /// <returns>A collection of all customers.</returns>
+    Task<IEnumerable<User>> GetAllCustomersAsync();
+    
+    /// <summary>
+    /// Retrieves all employees asynchronously.
+    /// </summary>
+    /// <returns>A collection of all employees.</returns>
+    Task<IEnumerable<User>> GetAllEmployeesAsync();
     
     /// <summary>
     /// Retrieves a specific user by their ID asynchronously.

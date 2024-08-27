@@ -31,12 +31,13 @@ namespace HaulThis.Services
                 (@p0, @p1, @p2, @p3, @p4, @p5);
             SELECT LAST_INSERT_ID();";
 
-    public PickupRequestService(IDatabaseService databaseService, ILoggerFactory loggerFactory)
+    public PickupRequestService(IDatabaseService databaseService, ILogger<PickupRequestService> logger)
     {
       _databaseService = databaseService ?? throw new ArgumentNullException(nameof(databaseService));
-      _logger = loggerFactory?.CreateLogger<PickupRequestService>() ?? throw new ArgumentNullException(nameof(loggerFactory));
+      _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
-
+    
+    /// <inheritdoc />
     public async Task<PickupDeliveryRequest?> GetPickupRequestInfo(int id)
     {
       try
@@ -74,7 +75,8 @@ namespace HaulThis.Services
         return null;
       }
     }
-
+    
+    /// <inheritdoc />
     public async Task<int> CreatePickupRequest(PickupDeliveryRequest request)
     {
       try

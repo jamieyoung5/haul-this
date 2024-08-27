@@ -3,6 +3,8 @@ using System.Text.Json;
 using HaulThis.Services;
 using Microsoft.Extensions.Logging;
 using CommunityToolkit.Maui;
+using HaulThis.Repositories;
+using HaulThis.Repository;
 using HaulThis.Views.Admin;
 using Microsoft.Data.SqlClient;
 using HaulThis.Views.Customer;
@@ -36,34 +38,41 @@ public static class MauiProgram
             loggerBuilder.AddDebug();
         });
 
-        ILogger<DatabaseService> logger = loggerFactory.CreateLogger<DatabaseService>();
-        logger.LogInformation("Attempting to connect");
-        IDatabaseService db = new DatabaseService(new SqlConnection(connectionString), logger);
-        logger.LogInformation("Connected successfully");
-        db.CreateConnection();
-        logger.LogInformation(db.Ping() ? "pinged successfully" : "pinged unsuccessfully");
-
-
-        ITrackingService trackingService = new TrackingService(db);
-        IUserService userService = new UserService(db);
-        ITripService tripService = new TripService(db);
+        ILogger<DatabaseService> dbLogger = loggerFactory.CreateLogger<DatabaseService>();
+        dbLogger.LogInformation("Attempting to connect");
+        IDatabaseService db = new DatabaseService(
+            new SqlConnection(connectionString), 
+            dbLogger
+            );
+        dbLogger.LogInformation("Connected successfully");
         
-        IPickupRequestService pickupRequestService = new PickupRequestService(db, loggerFactory);
-        builder.Services.AddSingleton(pickupRequestService);
+        db.CreateConnection();
+        dbLogger.LogInformation(db.Ping() ? "pinged successfully" : "pinged unsuccessfully");
+
+
+        IUserRepository userRepository = new UserRepository(db);
+        ITripRepository tripRepository = new TripRepository(db);
+        IBillingRepository billingRepository = new BillingRepository(db);
+        IItemRepository itemRepository = new ItemRepository(db);
+        
+        ITrackingService trackingService = new TrackingService(db);
+        IPickupRequestService pickupRequestService = new PickupRequestService(db, loggerFactory.CreateLogger<PickupRequestService>());
         IManageVehiclesService manageVehiclesService = new ManageVehiclesService(db);
         
+        builder.Services.AddSingleton(pickupRequestService);
         builder.Services.AddSingleton(trackingService);
         builder.Services.AddTransient<TrackItem>(_ => new TrackItem(trackingService));
         builder.Services.AddTransient<RequestPickup>(_ => new RequestPickup(pickupRequestService));
         builder.Services.AddSingleton(db);
-        builder.Services.AddSingleton(userService);
-        builder.Services.AddTransient<ManageEmployees>(_ => new ManageEmployees(userService));
-        builder.Services.AddSingleton(tripService);
-        builder.Services.AddTransient<ManageTrips>(_ => new ManageTrips(tripService));  
+        builder.Services.AddSingleton(userRepository);
+        builder.Services.AddTransient<ManageEmployees>(_ => new ManageEmployees(userRepository));
+        builder.Services.AddTransient<ManageCustomers>(_ => new ManageCustomers(userRepository));
+        builder.Services.AddSingleton(tripRepository);
+        builder.Services.AddTransient<ManageTrips>(_ => new ManageTrips(tripRepository, itemRepository));  
         builder.Services.AddSingleton(manageVehiclesService);
         builder.Services.AddTransient<ManageVehicles>(_ => new ManageVehicles(manageVehiclesService));
-
-
+        builder.Services.AddSingleton(billingRepository);
+        builder.Services.AddTransient<ManageBilling>(_ => new ManageBilling(billingRepository));
 
         return builder.Build();
     }

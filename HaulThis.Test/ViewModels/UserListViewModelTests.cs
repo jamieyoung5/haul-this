@@ -1,56 +1,83 @@
 ﻿using System.Collections.ObjectModel;
 using HaulThis.Models;
-using HaulThis.Services;
+using HaulThis.Repository;
 using HaulThis.ViewModels;
 
 namespace HaulThis.Test.ViewModels;
 
 public class UserListViewModelTests
 {
-    private readonly Mock<IUserService> _mockUserService;
-    private readonly UserListViewModel _viewModel;
+    private readonly Mock<IUserRepository> _mockUserRepository;
+    private readonly UserListViewModel _subject;
 
     public UserListViewModelTests()
     {
-        _mockUserService = new Mock<IUserService>();
-        _viewModel = new UserListViewModel(_mockUserService.Object);
+        _mockUserRepository = new Mock<IUserRepository>();
+        _subject = new UserListViewModel(_mockUserRepository.Object);
     }
 
     [Fact]
     public void Constructor_ShouldInitializeUsersCollection()
     {
-        Assert.NotNull(_viewModel.Users);
-        Assert.IsType<ObservableCollection<User>>(_viewModel.Users);
+        Assert.NotNull(_subject.Items);
+        Assert.IsType<ObservableCollection<User>>(_subject.Items);
     }
 
     [Fact]
-    public void Constructor_ShouldCallLoadUsers()
+    public void Constructor_ShouldCallLoadEmployee()
     {
-        _mockUserService.Verify(s => s.GetAllUsersAsync(), Times.Once);
+        _mockUserRepository.Verify(s => s.GetAllEmployeesAsync(), Times.Once);
     }
 
     [Fact]
-    public void LoadUsers_ShouldUpdateUsersCollection()
+    public async Task LoadCustomers_ShouldUpdateCustomersCollection()
     {
         // Arrange
-        var users = new List<User>
+        List<User> customers = new List<User>
+        {
+            new() { Id = 1, FirstName = "Alice", LastName = "Smith" },
+            new() { Id = 2, FirstName = "Bob", LastName = "Johnson" }
+        };
+        _mockUserRepository.Setup(s => s.GetAllCustomersAsync()).ReturnsAsync(customers);
+
+        var viewModel = new CustomerListViewModel(_mockUserRepository.Object);
+
+        // Act
+        await Task.Delay(100);
+
+        // Assert
+        Assert.Equal(customers.Count, viewModel.Items.Count);
+        for (int i = 0; i < customers.Count; i++)
+        {
+            Assert.Equal(customers[i].Id, viewModel.Items[i].Id);
+            Assert.Equal(customers[i].FirstName, viewModel.Items[i].FirstName);
+            Assert.Equal(customers[i].LastName, viewModel.Items[i].LastName);
+        }
+    }
+
+    [Fact]
+    public async Task LoadEmployees_ShouldUpdateEmployeesCollection()
+    {
+        // Arrange
+        List<User> employees = new List<User>
         {
             new() { Id = 1, FirstName = "John", LastName = "Doe" },
             new() { Id = 2, FirstName = "Jane", LastName = "Doe" }
         };
-        _mockUserService.Setup(s => s.GetAllUsersAsync()).ReturnsAsync(users);
+        _mockUserRepository.Setup(s => s.GetAllEmployeesAsync()).ReturnsAsync(employees);
+
+        var viewModel = new UserListViewModel(_mockUserRepository.Object);
 
         // Act
-        var viewModel = new UserListViewModel(_mockUserService.Object);
+        await Task.Delay(100);
 
         // Assert
-        Assert.Equal(users.Count, viewModel.Users.Count);
-        for (int i = 0; i < users.Count; i++)
+        Assert.Equal(employees.Count, viewModel.Items.Count);
+        for (int i = 0; i < employees.Count; i++)
         {
-            Assert.Equal(users[i].Id, viewModel.Users[i].Id);
-            Assert.Equal(users[i].FirstName, viewModel.Users[i].FirstName);
-            Assert.Equal(users[i].LastName, viewModel.Users[i].LastName);
+            Assert.Equal(employees[i].Id, viewModel.Items[i].Id);
+            Assert.Equal(employees[i].FirstName, viewModel.Items[i].FirstName);
+            Assert.Equal(employees[i].LastName, viewModel.Items[i].LastName);
         }
     }
-    
 }

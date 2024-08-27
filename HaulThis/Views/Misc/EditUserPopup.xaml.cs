@@ -17,6 +17,7 @@ public partial class EditUserPopup
         EmailEntry.Text = user.Email;
         PhoneEntry.Text = user.PhoneNumber;
         RolePicker.SelectedItem = user.Role.ToString();
+        AddressEntry.Text = user.Address;
     }
 
     private void OnCloseButtonClicked(object sender, EventArgs e)

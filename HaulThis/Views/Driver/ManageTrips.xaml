@@ -41,7 +41,7 @@
 
             <!-- CollectionView for the Trips -->
             <CollectionView Grid.Row="1" Grid.Column="1"
-                            ItemsSource="{Binding Trips}"
+                            ItemsSource="{Binding Items}"
                             HorizontalOptions="Center"
                             VerticalOptions="Start">
 
