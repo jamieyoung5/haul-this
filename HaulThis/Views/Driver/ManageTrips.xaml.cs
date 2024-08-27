@@ -1,4 +1,5 @@
 using HaulThis.Models;
+using HaulThis.Repositories;
 using HaulThis.Services;
 using HaulThis.ViewModels;
 
@@ -6,13 +7,15 @@ namespace HaulThis.Views.Driver;
 
 public partial class ManageTrips
 {
-	private readonly ITripService _tripService;
+	private readonly ITripRepository _tripRepository;
+	private readonly IItemRepository _itemRepository;
 	
-	public ManageTrips(ITripService tripService)
+	public ManageTrips(ITripRepository tripRepository, IItemRepository itemRepository)
 	{
 		InitializeComponent();
-		_tripService = tripService;
-		BindingContext = new TripListViewModel(tripService);
+		_tripRepository = tripRepository;
+		_itemRepository = itemRepository;
+		BindingContext = new TripListViewModel(tripRepository);
 	}
 
 	private async void OnMarkDeliveredButtonClicked(object sender, EventArgs e)
@@ -21,7 +24,7 @@ public partial class ManageTrips
 
 		if (button?.CommandParameter is not Delivery deliveryToMark) return;
 
-		int result = await _tripService.MarkItemAsDelivered(deliveryToMark.TripId, deliveryToMark.Id);
+		int result = await _itemRepository.MarkAsDeliveredAsync(deliveryToMark.TripId, deliveryToMark.Id);
         
 		if (result <= 0) return;
 

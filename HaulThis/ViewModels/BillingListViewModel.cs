@@ -1,25 +1,26 @@
 ﻿using System.Collections.ObjectModel;
 using HaulThis.Models;
+using HaulThis.Repositories;
 using HaulThis.Services;
 
 namespace HaulThis.ViewModels;
 
 public class BillingListViewModel : ViewModelEvent
 {
-    private readonly IBillingService _billingService;
+    private readonly IBillingRepository _billingRepository;
     
     public ObservableCollection<Bill> Bills { get; private set; } = new();
 
-    public BillingListViewModel(IBillingService billingService)
+    public BillingListViewModel(IBillingRepository billingRepository)
     {
-        _billingService = billingService;
+        _billingRepository = billingRepository;
 
         LoadBills();
     }
 
     private async Task LoadBills()
     {
-        IEnumerable<Bill> billsFromDb = await _billingService.GetBillingInfoByUserAsync(1);
+        IEnumerable<Bill> billsFromDb = await _billingRepository.GetBillsByUserAsync(1);
         Bills.Clear();
 
         foreach (var bill in billsFromDb)

@@ -1,3 +1,4 @@
+using HaulThis.Repositories;
 using HaulThis.Services;
 using HaulThis.ViewModels;
 
@@ -5,13 +6,12 @@ namespace HaulThis.Views.Customer;
 
 public partial class ManageBilling
 {
-	private readonly IBillingService _billingService;
+	private readonly IBillingRepository _billingRepository;
 	
-	public ManageBilling(IBillingService billingService)
+	public ManageBilling(IBillingRepository billingRepository)
 	{
 		InitializeComponent();
-		_billingService = billingService ?? throw new ArgumentNullException(nameof(billingService));
-		var listService = new BillingListViewModel(_billingService);
-		BindingContext = listService;
+		_billingRepository = billingRepository ?? throw new ArgumentNullException(nameof(billingRepository));
+		BindingContext = new BillingListViewModel(_billingRepository);
 	}
 }

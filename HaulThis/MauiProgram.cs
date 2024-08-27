@@ -3,6 +3,8 @@ using System.Text.Json;
 using HaulThis.Services;
 using Microsoft.Extensions.Logging;
 using CommunityToolkit.Maui;
+using HaulThis.Repositories;
+using HaulThis.Repository;
 using HaulThis.Views.Admin;
 using Microsoft.Data.SqlClient;
 using HaulThis.Views.Customer;
@@ -44,10 +46,12 @@ public static class MauiProgram
         logger.LogInformation(db.Ping() ? "pinged successfully" : "pinged unsuccessfully");
 
 
+        IUserRepository userRepository = new UserRepository(db);
+        ITripRepository tripRepository = new TripRepository(db);
+        IBillingRepository billingRepository = new BillingRepository(db);
+        IItemRepository itemRepository = new ItemRepository(db);
+        
         ITrackingService trackingService = new TrackingService(db);
-        IUserService userService = new UserService(db);
-        ITripService tripService = new TripService(db);
-        IBillingService billingService = new BillingService(db);
         IPickupRequestService pickupRequestService = new PickupRequestService(db, loggerFactory);
         IManageVehiclesService manageVehiclesService = new ManageVehiclesService(db);
         
@@ -56,15 +60,15 @@ public static class MauiProgram
         builder.Services.AddTransient<TrackItem>(_ => new TrackItem(trackingService));
         builder.Services.AddTransient<RequestPickup>(_ => new RequestPickup(pickupRequestService));
         builder.Services.AddSingleton(db);
-        builder.Services.AddSingleton(userService);
-        builder.Services.AddTransient<ManageEmployees>(_ => new ManageEmployees(userService));
-        builder.Services.AddTransient<ManageCustomers>(_ => new ManageCustomers(userService));
-        builder.Services.AddSingleton(tripService);
-        builder.Services.AddTransient<ManageTrips>(_ => new ManageTrips(tripService));  
+        builder.Services.AddSingleton(userRepository);
+        builder.Services.AddTransient<ManageEmployees>(_ => new ManageEmployees(userRepository));
+        builder.Services.AddTransient<ManageCustomers>(_ => new ManageCustomers(userRepository));
+        builder.Services.AddSingleton(tripRepository);
+        builder.Services.AddTransient<ManageTrips>(_ => new ManageTrips(tripRepository, itemRepository));  
         builder.Services.AddSingleton(manageVehiclesService);
         builder.Services.AddTransient<ManageVehicles>(_ => new ManageVehicles(manageVehiclesService));
-        builder.Services.AddSingleton(billingService);
-        builder.Services.AddTransient<ManageBilling>(_ => new ManageBilling(billingService));
+        builder.Services.AddSingleton(billingRepository);
+        builder.Services.AddTransient<ManageBilling>(_ => new ManageBilling(billingRepository));
 
         return builder.Build();
     }

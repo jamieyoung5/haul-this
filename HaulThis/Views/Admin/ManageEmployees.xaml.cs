@@ -1,5 +1,6 @@
 using CommunityToolkit.Maui.Views;
 using HaulThis.Models;
+using HaulThis.Repository;
 using HaulThis.Services;
 using HaulThis.ViewModels;
 using HaulThis.Views.Misc;
@@ -9,13 +10,13 @@ namespace HaulThis.Views.Admin;
 
 public partial class ManageEmployees
 {
-    private readonly IUserService _userService;
+    private readonly IUserRepository _userRepository;
 
-    public ManageEmployees(IUserService userService)
+    public ManageEmployees(IUserRepository userRepository)
     {
         InitializeComponent();
-        _userService = userService ?? throw new ArgumentNullException(nameof(userService));
-        BindingContext = new UserListViewModel(_userService);
+        _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
+        BindingContext = new UserListViewModel(_userRepository);
     }
 
     private async void OnAddButtonClicked(object sender, EventArgs e)
@@ -26,9 +27,9 @@ public partial class ManageEmployees
 
         if (result is not User newUser) return;
         
-        await _userService.AddUserAsync(newUser);
+        await _userRepository.AddUserAsync(newUser);
 
-        BindingContext = new UserListViewModel(_userService);
+        BindingContext = new UserListViewModel(_userRepository);
     }
 
     private async void OnEditButtonClicked(object sender, EventArgs e)
@@ -41,7 +42,7 @@ public partial class ManageEmployees
 
         if (result is true)
         {
-            await _userService.UpdateUserAsync(userToEdit);
+            await _userRepository.UpdateUserAsync(userToEdit);
         }
     }
 
@@ -50,7 +51,7 @@ public partial class ManageEmployees
         var button = sender as Button;
 
         if (button?.CommandParameter is not User userToDelete) return;
-        int result = await _userService.DeleteUserAsync(userToDelete.Id);
+        int result = await _userRepository.DeleteUserAsync(userToDelete.Id);
             
         if (result <= 0) return;
         var viewModel = BindingContext as UserListViewModel;
