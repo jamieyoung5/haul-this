@@ -16,18 +16,18 @@ public partial class ReportEmergencyOrDelayPopup
     Close();
   }
 
-//   private void OnSubmitButtonClicked(object sender, EventArgs e)
-//   // {
-//   //   CreatedReport = new Report
-//   //   {
-//   //     TripId = int.Parse(TripIdEntry.Text),
-//   //     ReportType = ReportTypeEntry.Text,
-//   //     Description = DescriptionEntry.Text,
-//   //     ReportDateTime = DateTime.UtcNow
-//   //   };
+  private void OnSubmitButtonClicked(object sender, EventArgs e)
+  {
+    CreatedReport = new Report
+    {
+      TripId = int.Parse(TripIdEntry.Text),
+      ReportType = ReportTypeEntry.Text,
+      Description = DescriptionEntry.Text,
+      ReportDateTime = DateTime.UtcNow
+    };
 
-//   //   DialogResult = true;
-//   //   Close();
-//   // }
+    DialogResult = true;
+    Close();
+  }
 }
 
