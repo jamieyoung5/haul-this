@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="HaulThis.Views.Driver.ManageTrips"
+             Title="ManageTrips">
+
+    <ContentPage.Content>
+        <Grid Margin="20,40,20,20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Header Grid for the Labels -->
+            <Grid Grid.Row="0" Grid.Column="1" Padding="10" BackgroundColor="LightGray">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="50" />
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="200" />
+                    <ColumnDefinition Width="120" />
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <Label Text="Trip ID" FontAttributes="Bold" VerticalOptions="Center" Grid.Column="0" />
+                <Label Text="Location" FontAttributes="Bold" VerticalOptions="Center" Grid.Column="1" />
+                <Label Text="Item Weight" FontAttributes="Bold" VerticalOptions="Center" Grid.Column="2" />
+                <Label Text="Customer Name" FontAttributes="Bold" VerticalOptions="Center" Grid.Column="3" />
+                <Label Text="Customer Phone" FontAttributes="Bold" VerticalOptions="Center" Grid.Column="4" />
+                <Label Text="Estimated Delivery Time" FontAttributes="Bold" VerticalOptions="Center" Grid.Column="5" />
+                <Label Text="Actions" FontAttributes="Bold" VerticalOptions="Center" Grid.Column="6" />
+            </Grid>
+
+            <!-- CollectionView for the Trips -->
+            <CollectionView Grid.Row="1" Grid.Column="1"
+                            ItemsSource="{Binding Items}"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Start">
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <StackLayout>
+                            <!-- Display Trip ID -->
+                            <Label Text="{Binding Id}" FontAttributes="Bold" />
+
+                            <!-- Nested CollectionView for TripManifest -->
+                            <CollectionView ItemsSource="{Binding TripManifest}"
+                                            HorizontalOptions="FillAndExpand"
+                                            VerticalOptions="Start">
+
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Padding="10" BackgroundColor="White">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="50" />
+                                                <ColumnDefinition Width="100" />
+                                                <ColumnDefinition Width="100" />
+                                                <ColumnDefinition Width="200" />
+                                                <ColumnDefinition Width="120" />
+                                                <ColumnDefinition Width="100" />
+                                                <ColumnDefinition Width="150" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <!-- Bind to the properties of the Delivery object within the TripManifest -->
+                                            <Label Text="{Binding Id}" Grid.Column="0" VerticalOptions="Center" />
+                                            <Label Text="{Binding Waypoint.Location}" Grid.Column="1" VerticalOptions="Center" />
+                                            <Label Text="{Binding ItemWeight}" Grid.Column="2" VerticalOptions="Center" />
+                                            <Label Text="{Binding CustomerName}" Grid.Column="3" VerticalOptions="Center" />
+                                            <Label Text="{Binding CustomerPhone}" Grid.Column="4" VerticalOptions="Center" />
+                                            <Label Text="{Binding Waypoint.EstimatedTime, StringFormat='{0:yyyy-MM-dd HH:mm}'}" Grid.Column="5" VerticalOptions="Center" />
+
+                                            <!-- Action Buttons -->
+                                            <StackLayout Orientation="Horizontal" HorizontalOptions="End" Grid.Column="6">
+                                                <Button Text="Mark Delivered"
+                                                        CommandParameter="{Binding .}"
+                                                        Clicked="OnMarkDeliveredButtonClicked" />
+
+                                            </StackLayout>
+                                        </Grid>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </StackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

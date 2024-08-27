@@ -1,0 +1,33 @@
+﻿databaseChangeLog:
+  - changeSet:
+      id: 12
+      author: Jamie Young (40544666@live.napier.ac.uk)
+      labels: ht-30
+      comment: extend billing table with billing related fields
+      changes:
+        - addColumn:
+            tableName: bill
+            columns:
+              - column:
+                  name: amount
+                  type: decimal(10,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: billDate
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: dueDate
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: varchar(10)
+                  constraints:
+                    nullable: false
+                    defaultValue: 'UNPAID'
+                                  
+      
